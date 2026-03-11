@@ -71,4 +71,12 @@ The new partition leader is the 1st alive ISR
 
 ### Broker was group coordinator
 
+- Coordinator broker dies
+- Controller detects broker is gone via ZK / KRaft
+- Controller elects new leader for __consumer_offsets partition N (first alive replica in the ISR, same as any other topic)
+- That broker is now automatically the coordinator for all groups that hash to partition N
+- Consumers get NOT_COORDINATOR on next request
+- Consumers call FindCoordinator → get directed to new broker
+- Group rebalance triggered
+
 
