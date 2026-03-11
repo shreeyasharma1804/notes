@@ -42,7 +42,6 @@
     color: var(--fg1);
     font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
     min-height: 100vh;
-    padding: 0;
   }
 
   /* ── Header ── */
@@ -51,21 +50,10 @@
     border-bottom: 2px solid var(--yellow);
     padding: 2rem 3rem 1.5rem;
     position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 24px rgba(0,0,0,.5);
   }
-  header h1 {
-    font-size: 1.75rem;
-    color: var(--yellow-b);
-    letter-spacing: .04em;
-    font-weight: 700;
-  }
-  header p {
-    margin-top: .4rem;
-    color: var(--fg4);
-    font-size: .85rem;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-  }
+  header h1 { font-size: 1.75rem; color: var(--yellow-b); letter-spacing: .04em; font-weight: 700; }
+  header p  { margin-top: .4rem; color: var(--fg4); font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; }
 
   /* ── Layout ── */
   .page { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 90px); }
@@ -79,119 +67,80 @@
   }
   aside h2 { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--fg4); margin-bottom: 1rem; }
   aside ul { list-style: none; }
-  aside li { margin-bottom: .5rem; }
+  aside li { margin-bottom: .4rem; }
   aside a {
-    color: var(--fg3);
-    text-decoration: none;
-    font-size: .82rem;
+    color: var(--fg3); text-decoration: none; font-size: .82rem;
     display: flex; align-items: center; gap: .5rem;
-    padding: .3rem .5rem;
-    border-radius: 4px;
-    transition: all .15s;
-    border-left: 2px solid transparent;
+    padding: .3rem .5rem; border-radius: 4px;
+    transition: all .15s; border-left: 2px solid transparent;
   }
   aside a:hover { color: var(--yellow-b); background: var(--bg1); border-left-color: var(--yellow); }
-  aside a .dot {
-    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-  }
+  aside a .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-  /* ── Main content ── */
+  /* ── Main ── */
   main { padding: 2.5rem 3rem; overflow-x: hidden; }
 
-  section { margin-bottom: 3.5rem; }
+  section { margin-bottom: 3.5rem; scroll-margin-top: 100px; }
+
   section h2 {
-    font-size: 1rem;
-    color: var(--orange-b);
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    margin-bottom: 1.25rem;
+    font-size: 1rem; color: var(--orange-b); text-transform: uppercase;
+    letter-spacing: .08em; margin-bottom: 1.25rem;
     display: flex; align-items: center; gap: .75rem;
   }
-  section h2::after {
-    content: '';
-    flex: 1; height: 1px;
-    background: linear-gradient(to right, var(--bg2), transparent);
-  }
+  section h2::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, var(--bg2), transparent); }
 
   /* ── Diagram card ── */
   .diagram-card {
-    background: var(--bg0);
-    border: 1px solid var(--bg2);
-    border-radius: 10px;
-    padding: 1.5rem;
-    overflow-x: auto;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.35);
-    margin-bottom: 1.5rem;
+    background: var(--bg0); border: 1px solid var(--bg2); border-radius: 10px;
+    padding: 1.5rem; overflow-x: auto;
+    box-shadow: 0 2px 16px rgba(0,0,0,.35); margin-bottom: 1.5rem;
   }
   .diagram-card:last-child { margin-bottom: 0; }
   .diagram-card .mermaid svg { width: 100% !important; height: auto !important; max-width: 100%; }
 
-  /* ── Subsection label ── */
+  /* ── Section label ── */
   .sub-label {
-    color: var(--yellow-b);
-    font-size: .82rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
+    color: var(--yellow-b); font-size: .82rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .08em;
     margin: 1.75rem 0 .75rem;
-    padding-bottom: .4rem;
-    border-bottom: 1px solid var(--bg2);
+    padding-bottom: .4rem; border-bottom: 1px solid var(--bg2);
   }
   .sub-label:first-child { margin-top: 0; }
 
-  /* ── Info card grid ── */
+  /* ── Card grid ── */
   .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: .85rem;
-    margin-bottom: 1.5rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: .85rem; margin-bottom: 1.5rem;
   }
+  .card-grid:last-child { margin-bottom: 0; }
 
   /* ── Legend grid ── */
-  .legend-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
-  }
+  .legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
   .legend-item {
-    background: var(--bg0);
-    border: 1px solid var(--bg2);
-    border-radius: 8px;
-    padding: .9rem 1.1rem;
-    display: flex; gap: .75rem; align-items: flex-start;
+    background: var(--bg0); border: 1px solid var(--bg2); border-radius: 8px;
+    padding: .9rem 1.1rem; display: flex; gap: .75rem; align-items: flex-start;
   }
-  .legend-item .swatch {
-    width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; margin-top: 4px;
-  }
+  .legend-item .swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; margin-top: 4px; }
   .legend-item strong { display: block; color: var(--fg1); font-size: .85rem; margin-bottom: .2rem; }
-  .legend-item span { color: var(--fg4); font-size: .77rem; line-height: 1.5; }
+  .legend-item span   { color: var(--fg4); font-size: .77rem; line-height: 1.5; }
 
   /* ── Interaction table ── */
   .interaction-table { width: 100%; border-collapse: collapse; font-size: .83rem; }
   .interaction-table th {
-    background: var(--bg1);
-    color: var(--yellow-b);
-    text-align: left;
-    padding: .6rem 1rem;
-    text-transform: uppercase;
-    letter-spacing: .07em;
-    font-size: .75rem;
-    border-bottom: 2px solid var(--bg2);
+    background: var(--bg1); color: var(--yellow-b); text-align: left;
+    padding: .6rem 1rem; text-transform: uppercase; letter-spacing: .07em;
+    font-size: .75rem; border-bottom: 2px solid var(--bg2);
   }
   .interaction-table td {
-    padding: .65rem 1rem;
-    color: var(--fg2);
-    border-bottom: 1px solid var(--bg1);
-    vertical-align: top;
+    padding: .65rem 1rem; color: var(--fg2); border-bottom: 1px solid var(--bg1); vertical-align: top;
   }
   .interaction-table tr:hover td { background: var(--bg1); }
+
+  code { color: var(--yellow-b); font-family: inherit; }
+
   .tag {
-    display: inline-block;
-    padding: .15rem .55rem;
-    border-radius: 4px;
-    font-size: .73rem;
-    font-weight: 600;
-    letter-spacing: .04em;
+    display: inline-block; padding: .15rem .55rem; border-radius: 4px;
+    font-size: .73rem; font-weight: 600; letter-spacing: .04em;
   }
   .tag-push  { background: var(--blue);   color: var(--bg0-hard); }
   .tag-pull  { background: var(--blue-b); color: var(--bg0-hard); }
@@ -200,10 +149,10 @@
   .tag-rep   { background: var(--orange); color: var(--bg0-hard); }
   .tag-beat  { background: var(--green);  color: var(--bg0-hard); }
 
-  /* ── Mermaid theme overrides ── */
+  /* ── Mermaid init vars shared across all diagrams ── */
   .mermaid svg { max-width: 100%; }
 
-  /* scrollbar */
+  /* ── Scrollbar ── */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg0-hard); }
   ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
@@ -214,167 +163,113 @@
 
 <header>
   <h1>⚡ Kafka Cluster Architecture</h1>
-  <p>Component interactions</p>
+  <p>Component interactions · ZooKeeper · Consumer Groups · Broker Failure</p>
 </header>
 
 <div class="page">
 
+  <!-- ════════════════════ SIDEBAR ════════════════════ -->
   <aside>
     <h2>Contents</h2>
     <ul>
       <li><a href="#overview"><span class="dot" style="background:var(--yellow-b)"></span>Overview</a></li>
       <li><a href="#topic-anatomy"><span class="dot" style="background:var(--orange-b)"></span>Topic Anatomy</a></li>
-      <li><a href="#full-flow"><span class="dot" style="background:var(--green-b)"></span>Full Flow</a></li>
+      <li><a href="#full-flow"><span class="dot" style="background:var(--green-b)"></span>End-to-End Flow</a></li>
       <li><a href="#producer-broker"><span class="dot" style="background:var(--blue-b)"></span>Producer → Broker</a></li>
       <li><a href="#replication"><span class="dot" style="background:var(--orange-b)"></span>Replication &amp; ISR</a></li>
+      <li><a href="#zookeeper"><span class="dot" style="background:var(--purple-b)"></span>ZooKeeper &amp; ZAB</a></li>
+      <li><a href="#zk-leader-election"><span class="dot" style="background:var(--purple-b)"></span>↳ ZK Leader Election</a></li>
+      <li><a href="#consumer-groups"><span class="dot" style="background:var(--aqua-b)"></span>Consumer Groups</a></li>
+      <li><a href="#consumer-flow"><span class="dot" style="background:var(--aqua-b)"></span>↳ Consumer Flow</a></li>
       <li><a href="#broker-failure"><span class="dot" style="background:var(--red-b)"></span>Broker Failure</a></li>
-      <li><a href="#consumer"><span class="dot" style="background:var(--aqua-b)"></span>Consumer Flow</a></li>
-      <li><a href="#coordination"><span class="dot" style="background:var(--purple-b)"></span>Coordination</a></li>
+      <li><a href="#gc-failure"><span class="dot" style="background:var(--red-b)"></span>↳ Coordinator Failure</a></li>
       <li><a href="#heartbeats"><span class="dot" style="background:var(--green-b)"></span>Heartbeats</a></li>
-      <li><a href="#zk-leader-fail"><span class="dot" style="background:var(--red-b)"></span>ZK Leader Failure</a></li>
       <li><a href="#interactions"><span class="dot" style="background:var(--fg3)"></span>Interaction Table</a></li>
       <li><a href="#legend"><span class="dot" style="background:var(--fg4)"></span>Legend</a></li>
     </ul>
   </aside>
 
+  <!-- ════════════════════ MAIN ════════════════════ -->
   <main>
 
-    <!-- OVERVIEW -->
+    <!-- ══ OVERVIEW ══ -->
     <section id="overview">
       <h2>Overview</h2>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836",
-    "primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54",
-    "lineColor": "#fabd2f",
-    "secondaryColor": "#504945",
-    "tertiaryColor": "#282828",
-    "background": "#282828",
-    "nodeBorder": "#7c6f64",
-    "clusterBkg": "#1d2021",
-    "clusterBorder": "#665c54",
-    "titleColor": "#fabd2f",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#fabd2f","secondaryColor":"#504945","tertiaryColor":"#282828","background":"#282828","nodeBorder":"#7c6f64","clusterBkg":"#1d2021","clusterBorder":"#665c54","titleColor":"#fabd2f","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 flowchart TB
   classDef producer fill:#458588,stroke:#83a598,color:#1d2021,font-weight:bold
-  classDef broker   fill:#3c3836,stroke:#fabd2f,color:#ebdbb2,font-weight:bold
   classDef leader   fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
   classDef follower fill:#504945,stroke:#bdae93,color:#ebdbb2
   classDef consumer fill:#689d6a,stroke:#8ec07c,color:#1d2021,font-weight:bold
   classDef zk       fill:#b16286,stroke:#d3869b,color:#1d2021,font-weight:bold
-  classDef topic    fill:#d65d0e,stroke:#fe8019,color:#1d2021,font-weight:bold
-  classDef cg       fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
 
   P1["📤 Producer A"]:::producer
   P2["📤 Producer B"]:::producer
 
-  subgraph CLUSTER["  🗄  Kafka Cluster  "]
+  subgraph CLUSTER["🗄 Kafka Cluster"]
     direction TB
-    subgraph B1["  Broker 1  "]
-      L1["👑 Partition Leader\nTopic-A P0"]:::leader
-      F1["🔁 Follower\nTopic-B P0"]:::follower
-    end
-    subgraph B2["  Broker 2  "]
-      L2["👑 Partition Leader\nTopic-B P0"]:::leader
-      F2["🔁 Follower\nTopic-A P0"]:::follower
-    end
-    subgraph B3["  Broker 3  "]
-      F3["🔁 Follower\nTopic-A P0"]:::follower
-      F4["🔁 Follower\nTopic-B P0"]:::follower
-    end
+    L1["👑 Leader\nBroker 1 · Topic-A P0"]:::leader
+    F1["🔁 Follower\nBroker 1 · Topic-B P0"]:::follower
+    L2["👑 Leader\nBroker 2 · Topic-B P0"]:::leader
+    F2["🔁 Follower\nBroker 2 · Topic-A P0"]:::follower
+    F3["🔁 Follower\nBroker 3 · Topic-A P0"]:::follower
+    F4["🔁 Follower\nBroker 3 · Topic-B P0"]:::follower
   end
 
-  ZK["🔮 ZooKeeper / KRaft\nController Quorum"]:::zk
+  ZK["🔮 ZooKeeper\nCluster Metadata"]:::zk
 
-  subgraph CG["  👥 Consumer Group  "]
+  subgraph CG["👥 Consumer Group"]
     C1["📥 Consumer 1"]:::consumer
     C2["📥 Consumer 2"]:::consumer
   end
 
-  P1 -->|"publish records"| L1
-  P2 -->|"publish records"| L2
-  L1 -->|"replicate"| F2
-  L1 -->|"replicate"| F3
-  L2 -->|"replicate"| F1
-  L2 -->|"replicate"| F4
-  ZK <-->|"metadata / election"| B1
-  ZK <-->|"metadata / election"| B2
-  ZK <-->|"metadata / election"| B3
-  C1 -->|"fetch (poll)"| L1
-  C2 -->|"fetch (poll)"| L2
+  P1 -->|publish| L1
+  P2 -->|publish| L2
+  L1 -->|replicate| F2
+  L1 -->|replicate| F3
+  L2 -->|replicate| F1
+  L2 -->|replicate| F4
+  ZK <-->|metadata| L1
+  ZK <-->|metadata| L2
+  C1 -->|fetch| L1
+  C2 -->|fetch| L2
         </div>
       </div>
     </section>
 
-    <!-- TOPIC ANATOMY -->
+    <!-- ══ TOPIC ANATOMY ══ -->
     <section id="topic-anatomy">
       <h2>Topic Anatomy</h2>
+
+      <div class="sub-label">Partition &amp; Segment structure</div>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#fe8019",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#d65d0e","clusterBkg": "#1d2021",
-    "clusterBorder": "#d65d0e","titleColor": "#fe8019",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#fe8019","secondaryColor":"#504945","background":"#282828","nodeBorder":"#d65d0e","clusterBkg":"#1d2021","clusterBorder":"#d65d0e","titleColor":"#fe8019","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 flowchart TB
-  classDef topic    fill:#d65d0e,stroke:#fe8019,color:#1d2021,font-weight:bold
-  classDef part     fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
-  classDef record   fill:#3c3836,stroke:#7c6f64,color:#ebdbb2
-  classDef seg      fill:#504945,stroke:#bdae93,color:#ebdbb2
-  classDef broker   fill:#458588,stroke:#83a598,color:#1d2021,font-weight:bold
-  classDef index    fill:#282828,stroke:#665c54,color:#a89984
+  classDef topic  fill:#d65d0e,stroke:#fe8019,color:#1d2021,font-weight:bold
+  classDef part   fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
+  classDef seg    fill:#504945,stroke:#bdae93,color:#ebdbb2
+  classDef record fill:#3c3836,stroke:#7c6f64,color:#ebdbb2
 
-  TOPIC["📂 Topic: orders
-retention=7d, cleanup=delete
-replication-factor=3, partitions=4"]:::topic
+  TOPIC["📂 Topic: orders / retention=7d · replication-factor=3 · partitions=4"]:::topic
 
   subgraph P0["  Partition 0  "]
     direction LR
-    S0A["Segment 0
-offset 0-999
-.log + .index"]:::seg
-    S0B["Segment 1
-offset 1000-1999
-.log + .index"]:::seg
-    S0C["Active Segment
-offset 2000+
-(open for writes)"]:::part
-    S0A --> S0B --> S0C
+    S0A["Seg 0 / offset 0-999"]:::seg --> S0B["Seg 1 / offset 1000-1999"]:::seg --> S0C["Active Seg / offset 2000+"]:::part
   end
-
   subgraph P1["  Partition 1  "]
     direction LR
-    S1A["Segment 0
-offset 0-799"]:::seg
-    S1B["Active Segment
-offset 800+"]:::part
-    S1A --> S1B
+    S1A["Seg 0 / offset 0-799"]:::seg --> S1B["Active Seg / offset 800+"]:::part
   end
-
   subgraph P2["  Partition 2  "]
     direction LR
-    S2A["Active Segment
-offset 0+"]:::part
+    S2A["Active Seg / offset 0+"]:::part
   end
-
   subgraph P3["  Partition 3  "]
     direction LR
-    S3A["Active Segment
-offset 0+"]:::part
+    S3A["Active Seg / offset 0+"]:::part
   end
 
   TOPIC --> P0
@@ -382,173 +277,114 @@ offset 0+"]:::part
   TOPIC --> P2
   TOPIC --> P3
 
-  REC["📨 Record anatomy
-offset | timestamp | key | value | headers
-(immutable once written)"]:::record
-  S0C -.->|"each segment
-contains"| REC
+  REC["📨 Record: offset| timestamp | key | value | headers"]:::record
+  S0C -.->|each segment contains|REC
         </div>
       </div>
 
-      <!-- Record layout detail -->
+      <div class="sub-label">Record layout &amp; partition routing</div>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#fabd2f",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#7c6f64","clusterBkg": "#1d2021",
-    "clusterBorder": "#504945","titleColor": "#fabd2f",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#fabd2f","secondaryColor":"#504945","background":"#282828","nodeBorder":"#7c6f64","clusterBkg":"#1d2021","clusterBorder":"#504945","titleColor":"#fabd2f","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 flowchart LR
-  classDef field  fill:#504945,stroke:#bdae93,color:#ebdbb2
-  classDef key    fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
-  classDef val    fill:#458588,stroke:#83a598,color:#1d2021,font-weight:bold
-  classDef meta   fill:#3c3836,stroke:#665c54,color:#a89984
+  classDef field fill:#504945,stroke:#bdae93,color:#ebdbb2
+  classDef key   fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
+  classDef val   fill:#458588,stroke:#83a598,color:#1d2021,font-weight:bold
+  classDef meta  fill:#3c3836,stroke:#665c54,color:#a89984
 
-  subgraph BATCH["  RecordBatch (compressed together)  "]
-    OFF["offset
-(int64)"]:::field
-    TS["timestamp
-(ms)"]:::field
-    K["key
-(bytes, nullable)
-used for partition routing"]:::key
-    V["value
-(bytes)
-the actual payload"]:::val
-    H["headers
-(key-value pairs)
-metadata, tracing, schema ID"]:::field
-    SZ["size + CRC
-(framing)"]:::meta
-    OFF --> TS --> K --> V --> H --> SZ
+  subgraph BATCH["  RecordBatch  "]
+    OFF["offset / (int64)"]:::field --> TS["timestamp / (ms)"]:::field --> K["key / (nullable bytes) / partition routing"]:::key --> V["value / (bytes) / payload"]:::val --> H["headers / tracing / schema ID"]:::field --> SZ["size + CRC"]:::meta
   end
 
-  PART_ROUTE["Partition assignment
-hash(key) mod num_partitions
-(null key = round-robin)"]:::key
-  K -.->|"determines"| PART_ROUTE
+  ROUTE["hash(key) mod num_partitions / null key = round-robin"]:::key
+  K -.->|determines|ROUTE
 
-  COMPACT["🗜 Log compaction
-retains latest record
-per key (tombstone=null value)"]:::meta
-  K -.->|"enables"| COMPACT
+  COMPACT["log compaction: / keep latest record per key / tombstone = null value"]:::meta
+  K -.->|enables|COMPACT
         </div>
       </div>
 
-      <!-- Topic config cards -->
       <div class="card-grid">
         <div class="legend-item" style="border-color:var(--orange-b);">
           <span class="swatch" style="background:var(--orange-b)"></span>
-          <div><strong>Partitions</strong><span>Unit of parallelism. More partitions = higher throughput but more file handles and replication overhead. Partition count can only increase, never decrease.</span></div>
+          <div><strong>Partitions</strong><span>Unit of parallelism. Count can only increase, never decrease. More partitions = higher throughput but more file handles.</span></div>
         </div>
         <div class="legend-item" style="border-color:var(--yellow-b);">
           <span class="swatch" style="background:var(--yellow-b)"></span>
-          <div><strong>Segments</strong><span>Each partition is split into rolling segment files on disk (<code style="color:var(--yellow-b)">.log</code> + <code style="color:var(--yellow-b)">.index</code>). Older segments are eligible for deletion or compaction based on retention policy.</span></div>
+          <div><strong>Segments</strong><span>Each partition splits into rolling <code>.log + .index</code> files. Older segments are deleted or compacted per retention policy.</span></div>
         </div>
         <div class="legend-item" style="border-color:var(--blue-b);">
           <span class="swatch" style="background:var(--blue-b)"></span>
-          <div><strong>Replication factor</strong><span>Each partition is replicated across N brokers. One is the leader; the rest are followers. Minimum ISR size controls durability — if ISR shrinks below <code style="color:var(--yellow-b)">min.insync.replicas</code>, produces with acks=all fail.</span></div>
+          <div><strong>Replication factor</strong><span>Each partition replicated across N brokers. If ISR shrinks below <code>min.insync.replicas</code>, <code>acks=all</code> produces fail.</span></div>
         </div>
         <div class="legend-item" style="border-color:var(--aqua-b);">
           <span class="swatch" style="background:var(--aqua-b)"></span>
-          <div><strong>Offset</strong><span>Monotonically increasing integer per partition. Consumers track their position by offset. Offsets are never reused — even deleted records leave gaps.</span></div>
+          <div><strong>Offset</strong><span>Monotonically increasing integer per partition. Never reused — deleted records leave gaps.</span></div>
         </div>
         <div class="legend-item" style="border-color:var(--green-b);">
           <span class="swatch" style="background:var(--green-b)"></span>
-          <div><strong>Retention policies</strong><span><code style="color:var(--yellow-b)">delete</code> — remove segments older than <code style="color:var(--yellow-b)">retention.ms</code> or larger than <code style="color:var(--yellow-b)">retention.bytes</code>. <code style="color:var(--yellow-b)">compact</code> — keep only the latest record per key (good for changelogs).</span></div>
+          <div><strong>Retention</strong><span><code>delete</code> — remove by age/size. <code>compact</code> — keep latest record per key (changelogs).</span></div>
         </div>
         <div class="legend-item" style="border-color:var(--purple-b);">
           <span class="swatch" style="background:var(--purple-b)"></span>
-          <div><strong>Partition key routing</strong><span>Records with the same key always land in the same partition, preserving order per key. Null keys are distributed round-robin across partitions.</span></div>
+          <div><strong>Key routing</strong><span>Same key → same partition → ordering per key. Null key → round-robin across partitions.</span></div>
         </div>
       </div>
     </section>
 
-    <!-- FULL FLOW -->
+    <!-- ══ FULL FLOW ══ -->
     <section id="full-flow">
-      <h2>Full End-to-End Data Flow</h2>
+      <h2>End-to-End Data Flow</h2>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#fabd2f",
-    "secondaryColor": "#504945","tertiaryColor": "#282828",
-    "background": "#282828","nodeBorder": "#7c6f64",
-    "clusterBkg": "#1d2021","clusterBorder": "#665c54",
-    "titleColor": "#fabd2f","edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#fabd2f","secondaryColor":"#504945","tertiaryColor":"#282828","background":"#282828","nodeBorder":"#7c6f64","clusterBkg":"#1d2021","clusterBorder":"#665c54","titleColor":"#fabd2f","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 flowchart LR
   classDef producer fill:#458588,stroke:#83a598,color:#1d2021,font-weight:bold
-  classDef broker   fill:#3c3836,stroke:#fabd2f,color:#ebdbb2
   classDef leader   fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
   classDef follower fill:#504945,stroke:#bdae93,color:#ebdbb2
   classDef consumer fill:#689d6a,stroke:#8ec07c,color:#1d2021,font-weight:bold
-  classDef zk       fill:#b16286,stroke:#d3869b,color:#1d2021,font-weight:bold
+  classDef broker   fill:#3c3836,stroke:#fabd2f,color:#ebdbb2
   classDef disk     fill:#282828,stroke:#7c6f64,color:#a89984
   classDef coord    fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
 
   PROD["📤 Producer"]:::producer
-  META["📋 Metadata\nBootstrap"]:::broker
+  META["📋 Metadata / Bootstrap"]:::broker
+  PROD -->|1 fetch metadata| META
+  META -->|2 leader address| PROD
 
-  PROD -->|"1 · fetch metadata"| META
-  META -->|"2 · leader address"| PROD
+  PART["👑 Partition Leader"]:::leader
+  PROD -->|3 batch send acks=all| PART
 
-  PART["👑 Partition Leader\n(Broker N)"]:::leader
-  PROD -->|"3 · batch send\n(acks=all)"| PART
-
-  LOG["💾 Commit Log\n(segment files)"]:::disk
-  PART -->|"4 · append to log"| LOG
+  LOG["💾 Commit Log"]:::disk
+  PART -->|4 append to log| LOG
 
   REP1["🔁 Replica 1"]:::follower
   REP2["🔁 Replica 2"]:::follower
-  PART -->|"5 · replicate"| REP1
-  PART -->|"5 · replicate"| REP2
-  REP1 -->|"6 · ack"| PART
-  REP2 -->|"6 · ack"| PART
+  PART -->|5 replicate| REP1
+  PART -->|5 replicate| REP2
+  REP1 -->|6 ack| PART
+  REP2 -->|6 ack| PART
+  PART -->|7 ack to producer| PROD
 
-  PART -->|"7 · ack to producer"| PROD
-
-  CG["👥 Consumer Group\nCoordinator"]:::coord
+  CG["🧭 Group Coordinator"]:::coord
   CONS["📥 Consumer"]:::consumer
-  CONS -->|"8 · join group\n/ heartbeat"| CG
-  CG -->|"9 · partition\nassignment"| CONS
+  CONS -->|8 join group| CG
+  CG  -->|9 partition assignment| CONS
 
-  OFF["📍 __consumer\n_offsets topic"]:::broker
-  CONS -->|"10 · poll records\nfrom offset"| PART
-  PART -->|"11 · records"| CONS
-  CONS -->|"12 · commit offset"| OFF
+  OFF["📍 __consumer_offsets"]:::broker
+  CONS -->|10 poll records| PART
+  PART -->|11 records| CONS
+  CONS -->|12 commit offset|OFF
         </div>
       </div>
     </section>
 
-    <!-- PRODUCER → BROKER -->
+    <!-- ══ PRODUCER → BROKER ══ -->
     <section id="producer-broker">
       <h2>Producer → Broker Detail</h2>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#83a598",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#458588","clusterBkg": "#1d2021",
-    "clusterBorder": "#458588","titleColor": "#83a598",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#83a598","secondaryColor":"#504945","background":"#282828","nodeBorder":"#458588","clusterBkg":"#1d2021","clusterBorder":"#458588","titleColor":"#83a598","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 sequenceDiagram
   participant P  as 📤 Producer
   participant B0 as Broker (any)
@@ -558,39 +394,25 @@ sequenceDiagram
 
   P  ->>  B0 : Metadata Request (topic)
   B0 -->> P  : Leader = BL, Replicas = [R1, R2]
-
   P  ->>  BL : ProduceRequest (batch, acks=all)
   BL ->>  BL : Append to partition log
-
   par Replication
     BL ->> R1 : Fetch replication
     BL ->> R2 : Fetch replication
     R1 -->> BL : ACK
     R2 -->> BL : ACK
   end
-
   BL -->> P  : ProduceResponse (offset, error=none)
         </div>
       </div>
     </section>
 
-    <!-- REPLICATION -->
+    <!-- ══ REPLICATION & ISR ══ -->
     <section id="replication">
       <h2>Replication &amp; ISR</h2>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#fe8019",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#d65d0e","clusterBkg": "#1d2021",
-    "clusterBorder": "#d65d0e","titleColor": "#fe8019",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#fe8019","secondaryColor":"#504945","background":"#282828","nodeBorder":"#d65d0e","clusterBkg":"#1d2021","clusterBorder":"#d65d0e","titleColor":"#fe8019","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 flowchart TD
   classDef zk       fill:#b16286,stroke:#d3869b,color:#1d2021,font-weight:bold
   classDef ctrl     fill:#d65d0e,stroke:#fe8019,color:#1d2021,font-weight:bold
@@ -598,223 +420,240 @@ flowchart TD
   classDef follower fill:#504945,stroke:#bdae93,color:#ebdbb2
   classDef isr      fill:#689d6a,stroke:#8ec07c,color:#1d2021,font-weight:bold
 
-  ZK["ZooKeeper or KRaft Controller"]:::zk
-  CTRL["Active Controller elected broker"]:::ctrl
-
-  ZK <-->|"controller election and broker liveness"| CTRL
+  ZK["ZooKeeper / KRaft Controller"]:::zk
+  CTRL["Active Controller / (elected broker)"]:::ctrl
+  ZK <-->|controller election and broker liveness|CTRL
 
   L["Partition Leader"]:::leader
-  ISR["In-Sync Replicas ISR set"]:::isr
+  ISR["In-Sync Replicas / (ISR set)"]:::isr
   OSR["Out-of-Sync Replica"]:::follower
+  CTRL -->|assign leader, track ISR| L
+  L   -->|replicate writes| ISR
+  L   -.->|lagging > replica.lag.time.max.ms| OSR
+  OSR -->|catch-up fetch| L
+  OSR -->|re-added when caught up| ISR
 
-  CTRL -->|"assign leader and track ISR"| L
-  L -->|"replicate writes"| ISR
-  L -.->|"lagging behind replica.lag.time.max.ms"| OSR
-
-  OSR -->|"catch-up fetch"| L
-  OSR -->|"re-added to ISR when caught up"| ISR
-
-  FAILOVER["Partition Leader Fails"]:::follower
-  FAILOVER -->|"trigger"| CTRL
-  CTRL -->|"elect new leader from ISR"| ISR
+  FAIL["Partition Leader Fails"]:::follower
+  FAIL -->|trigger| CTRL
+  CTRL -->|elect new leader from ISR|ISR
         </div>
       </div>
     </section>
 
-    <!-- BROKER FAILURE -->
-    <section id="broker-failure">
-      <h2>Broker Failure Scenarios</h2>
+    <!-- ══ ZOOKEEPER & ZAB ══ -->
+    <section id="zookeeper">
+      <h2>ZooKeeper &amp; ZAB Protocol</h2>
 
-      <!-- Main broker failure flowchart -->
+      <div class="sub-label">ZooKeeper znode tree</div>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#fb4934",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#cc241d","clusterBkg": "#1d2021",
-    "clusterBorder": "#cc241d","titleColor": "#fb4934",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#d3869b","secondaryColor":"#504945","background":"#282828","nodeBorder":"#b16286","clusterBkg":"#1d2021","clusterBorder":"#b16286","titleColor":"#d3869b","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 flowchart TD
-  classDef dead     fill:#cc241d,stroke:#fb4934,color:#fbf1c7,font-weight:bold
-  classDef ctrl     fill:#d65d0e,stroke:#fe8019,color:#1d2021,font-weight:bold
-  classDef ok       fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
-  classDef decision fill:#504945,stroke:#fabd2f,color:#fabd2f,font-weight:bold
-  classDef action   fill:#3c3836,stroke:#665c54,color:#ebdbb2
-  classDef coord    fill:#689d6a,stroke:#8ec07c,color:#1d2021,font-weight:bold
-  classDef warn     fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
+  classDef root   fill:#b16286,stroke:#d3869b,color:#1d2021,font-weight:bold
+  classDef key    fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
+  classDef detail fill:#3c3836,stroke:#665c54,color:#ebdbb2
+  classDef leaf   fill:#504945,stroke:#bdae93,color:#fg3
 
-  CRASH["Broker N crashes"]:::dead
-  ZK_DETECT["ZK session expires
-or KRaft misses heartbeat"]:::action
-  CTRL["Active Controller notified"]:::ctrl
+  ROOT["/  (znode root)"]:::root
 
-  CRASH --> ZK_DETECT --> CTRL
+  CTRL["/controller / which broker is Controller"]:::key
+  CTRLEP["/controller_epoch / how many times controller changed"]:::detail
+  BROKER["/brokers"]:::key
+  IDS["/brokers/ids / registered brokers / 1, 2, 3"]:::detail
+  TOPICS["/brokers/topics/my-topic / /partitions/0/state /  leader + ISR"]:::detail
+  CONFIG["/config / topics, brokers / users, clients (quotas)"]:::detail
+  ACL["/kafka-acl / ACLs"]:::detail
+  ADMIN["/admin / /reassign_partitions"]:::detail
+  ISR_N["/isr_change_notification / ISR change events"]:::detail
+  LOG_N["/log_dir_event_notification / log dir events"]:::detail
+  CONS_L["/consumers / legacy consumer groups"]:::detail
 
-  IS_CTRL{"Crashed broker
-was Controller?"}:::decision
-  CTRL --> IS_CTRL
-
-  NEW_CTRL["New Controller elected
-via ZK or KRaft"]:::ok
-  IS_CTRL -->|"YES"| NEW_CTRL
-  NEW_CTRL --> PART_CHECK
-  IS_CTRL -->|"NO"| PART_CHECK
-
-  PART_CHECK{"Broker held
-Partition Leaders?"}:::decision
-
-  NO_PART["No leader action needed
-Followers keep replicating"]:::ok
-  PART_CHECK -->|"NO"| NO_PART
-  PART_CHECK -->|"YES"| ELECT_PART
-
-  ELECT_PART["Controller sends LeaderAndIsr
-Elects new leader per partition"]:::action
-
-  ISR_CHECK{"ISR replicas
-available?"}:::decision
-  ELECT_PART --> ISR_CHECK
-
-  NEW_PART_LEADER["New Partition Leader from ISR
-Clients redirect via metadata refresh"]:::ok
-  ISR_CHECK -->|"YES"| NEW_PART_LEADER
-
-  UNCLEAN{"unclean.leader
-.election.enable?"}:::decision
-  ISR_CHECK -->|"NO — ISR empty"| UNCLEAN
-
-  OSR_LEADER["OSR replica promoted
-Possible data loss"]:::warn
-  UNCLEAN -->|"YES"| OSR_LEADER
-
-  PARTITION_OFFLINE["Partition OFFLINE
-Produces fail, consumers stall"]:::dead
-  UNCLEAN -->|"NO"| PARTITION_OFFLINE
-
-  IS_GC{"Broker was
-Group Coordinator?"}:::decision
-  NEW_PART_LEADER --> IS_GC
-  OSR_LEADER --> IS_GC
-  NO_PART --> IS_GC
-
-  NO_GC["Not a coordinator
-No consumer group impact"]:::ok
-  IS_GC -->|"NO"| NO_GC
-
-  GC_FAIL["Coordinator unavailable
-Consumers get NOT_COORDINATOR"]:::dead
-  IS_GC -->|"YES"| GC_FAIL
-
-  NEW_GC["FindCoordinator called
-New coordinator assigned
-Group rebalance triggered"]:::coord
-  GC_FAIL --> NEW_GC
-
-  RESUME["Cluster recovered
-Replication resumes"]:::ok
-  NEW_GC --> RESUME
-  NO_GC --> RESUME
+  ROOT --> CTRL
+  ROOT --> CTRLEP
+  ROOT --> BROKER
+  BROKER --> IDS
+  BROKER --> TOPICS
+  ROOT --> CONFIG
+  ROOT --> ACL
+  ROOT --> ADMIN
+  ROOT --> ISR_N
+  ROOT --> LOG_N
+  ROOT --> CONS_L
         </div>
       </div>
 
-      <!-- Group Coordinator detail cards -->
-      <div class="sub-label">Group Coordinator: What it is &amp; what happens when it dies</div>
-      <div class="card-grid">
-          <div class="legend-item" style="border-color:var(--aqua-b);">
-            <span class="swatch" style="background:var(--aqua-b)"></span>
-            <div><strong>What is a Group Coordinator?</strong><span>A regular broker elected to manage a specific consumer group. It handles JoinGroup, SyncGroup, Heartbeat, and OffsetCommit requests. Which broker is the coordinator is determined by: <code style="color:var(--yellow-b)">hash(group-id) mod __consumer_offsets partitions</code>.</span></div>
-          </div>
-          <div class="legend-item" style="border-color:var(--green-b);">
-            <span class="swatch" style="background:var(--green-b)"></span>
-            <div><strong>When crashed broker is NOT the coordinator</strong><span>Consumer heartbeats keep flowing normally to the surviving coordinator broker. The only impact is partition leader re-election if the broker held partition leaders — consumers get a metadata refresh and reconnect automatically within milliseconds.</span></div>
-          </div>
-          <div class="legend-item" style="border-color:var(--red-b);">
-            <span class="swatch" style="background:var(--red-b)"></span>
-            <div><strong>When crashed broker IS the coordinator</strong><span>Consumers receive <code style="color:var(--yellow-b)">NOT_COORDINATOR</code> on their next heartbeat or request. They call <code style="color:var(--yellow-b)">FindCoordinator</code> which returns the new coordinator (another broker). A full group rebalance then kicks off — all partitions are temporarily unassigned and reassigned.</span></div>
-          </div>
-          <div class="legend-item" style="border-color:var(--orange-b);">
-            <span class="swatch" style="background:var(--orange-b)"></span>
-            <div><strong>When crashed broker is ALSO the Kafka Controller</strong><span>The most disruptive case. ZooKeeper deletes the <code style="color:var(--yellow-b)">/controller</code> znode; remaining brokers race to become controller. The new controller then runs all partition leader elections before normal operations resume. Typically takes 10–30 s.</span></div>
-          </div>
-      </div>
-
-      <div class="sub-label">Partition Leader Change — step by step</div>
-      <div style="color:var(--yellow-b);font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.85rem;">Partition Leader Change — step by step</div>
+      <div class="sub-label">ZAB write protocol (Zookeeper Atomic Broadcast)</div>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#fe8019",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#d65d0e","clusterBkg": "#1d2021",
-    "clusterBorder": "#d65d0e","titleColor": "#fe8019",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#d3869b","secondaryColor":"#504945","background":"#282828","nodeBorder":"#b16286","clusterBkg":"#1d2021","clusterBorder":"#b16286","titleColor":"#d3869b","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 sequenceDiagram
-  participant PL  as Old Partition Leader
-  participant ISR as ISR Replica (Broker 2)
-  participant OSR as Out-of-Sync Replica
-  participant ZK  as ZooKeeper or KRaft
-  participant CTL as Active Controller
-  participant P   as Producer
-  participant C   as Consumer
+  participant C  as Client
+  participant ZL as 👑 ZK Leader
+  participant F1 as ZK Follower 1
+  participant F2 as ZK Follower 2
 
-  Note over PL,CTL: Normal replication
-  P  ->>  PL  : ProduceRequest
-  PL ->>  ISR : Replicate record
-  ISR -->> PL : ACK
-  PL -->> P   : ProduceResponse OK
-
-  Note over PL,ZK: Leader crashes
-  PL  -x  ZK  : ZK session / heartbeat missed
-  ZK  ->> CTL : Broker removed from /brokers/ids
-  CTL ->> CTL : Scan all partitions on dead broker
-
-  Note over CTL,ISR: Controller elects new leader
-  CTL ->> ISR : LeaderAndIsr (you are now leader for partition)
-  ISR ->> ISR : Become leader, advance high-watermark
-
-  Note over OSR,ISR: Out-of-sync replica catches up
-  OSR ->> ISR : FetchRequest from last committed offset
-  ISR -->> OSR : Records to catch up
-  OSR ->> CTL : I am now in-sync (added back to ISR)
-
-  Note over P,C: Clients redirect automatically
-  P  ->>  P   : Metadata refresh (next retry or background)
-  P  ->>  ISR : ProduceRequest to new leader
-  C  ->>  C   : Metadata refresh on NOT_LEADER_FOR_PARTITION
-  C  ->>  ISR : FetchRequest to new leader
+  C  ->>  ZL : Write request
+  ZL ->>  ZL : Create zxid, write to transaction store
+  ZL ->>  F1 : PROPOSAL (zxid, data)
+  ZL ->>  F2 : PROPOSAL (zxid, data)
+  F1 ->>  F1 : Write to transaction store
+  F2 ->>  F2 : Write to transaction store
+  F1 -->> ZL : ACK
+  F2 -->> ZL : ACK
+  Note over ZL: Majority ACKs received (quorum)
+  ZL ->>  F1 : COMMIT
+  ZL ->>  F2 : COMMIT
+  ZL ->>  ZL : Apply to znode
+  F1 ->>  F1 : Apply to znode
+  F2 ->>  F2 : Apply to znode
+  ZL -->> C  : Response
         </div>
       </div>
     </section>
 
-    <!-- CONSUMER FLOW -->
-    <section id="consumer">
+    <!-- ══ ZK LEADER ELECTION ══ -->
+    <section id="zk-leader-election">
+      <h2>ZooKeeper Leader Election</h2>
+
+      <div class="sub-label">FastLeaderElection — triggered when followers miss heartbeats</div>
+      <div class="diagram-card">
+        <div class="mermaid">
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#fb4934","secondaryColor":"#504945","background":"#282828","nodeBorder":"#cc241d","clusterBkg":"#1d2021","clusterBorder":"#cc241d","titleColor":"#fb4934","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
+flowchart TD
+  classDef dead   fill:#cc241d,stroke:#fb4934,color:#fbf1c7,font-weight:bold
+  classDef step   fill:#3c3836,stroke:#665c54,color:#ebdbb2
+  classDef dec    fill:#504945,stroke:#fabd2f,color:#fabd2f,font-weight:bold
+  classDef ok     fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
+  classDef zknew  fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
+
+  DEAD["ZK Leader stops sending heartbeats"]:::dead
+  DETECT["Followers detect silence / after syncLimit x tickTime / default 2 x 2s = 4s"]:::step
+  LOOK["Followers transition to LOOKING state"]:::step
+  VOTE["Each node broadcasts vote for itself / tuple: (zxid, epoch, sid)"]:::step
+  COMPARE["On receiving peer vote / compare: epoch then zxid then sid / Higher wins — node re-votes with winner"]:::step
+  ADOPT["If vote has newer epoch / node adopts epoch and re-votes"]:::step
+  QUORUM{"sid voted for by / majority of quorum?"}:::dec
+  NEW_LEADER["New ZK Leader elected / highest (epoch, zxid, sid)"]:::zknew
+  SYNC["Followers sync to new leader / DIFF / SNAP / TRUNC / uncommitted writes rolled back"]:::step
+  KAFKA["Kafka Controller detects / /controller znode change / Re-elects Kafka Controller if needed"]:::step
+  RESUME["Normal operations resume"]:::ok
+  STALE["No quorum — ZK unavailable / Kafka brokers lose metadata access"]:::dead
+
+  DEAD --> DETECT --> LOOK --> VOTE --> COMPARE --> ADOPT --> QUORUM
+  QUORUM -->|YES — majority alive| NEW_LEADER
+  QUORUM -->|NO — minority only|STALE
+  NEW_LEADER --> SYNC --> KAFKA --> RESUME
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="legend-item" style="border-color:var(--red-b);">
+          <span class="swatch" style="background:var(--red-b)"></span>
+          <div><strong>Trigger</strong><span>Followers miss <code>syncLimit × tickTime</code> (default 4 s) of Zab pings and transition to <code>LOOKING</code> state.</span></div>
+        </div>
+        <div class="legend-item" style="border-color:var(--yellow-b);">
+          <span class="swatch" style="background:var(--yellow-b)"></span>
+          <div><strong>Vote comparison order</strong><span>epoch &lt; zxid &lt; sid — highest wins. If a node receives a vote with a newer epoch, it adopts that epoch and re-votes.</span></div>
+        </div>
+        <div class="legend-item" style="border-color:var(--blue-b);">
+          <span class="swatch" style="background:var(--blue-b)"></span>
+          <div><strong>Log sync after election</strong><span>DIFF for small gaps, SNAP for full resync, TRUNC to roll back uncommitted writes. Zab guarantees committed transactions are never lost.</span></div>
+        </div>
+        <div class="legend-item" style="border-color:var(--green-b);">
+          <span class="swatch" style="background:var(--green-b)"></span>
+          <div><strong>Kafka impact</strong><span>Kafka Controller re-validates <code>/controller</code> znode. If lost, a new Kafka Controller is elected. Typically resolves in &lt; 30 s.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CONSUMER GROUPS ══ -->
+    <section id="consumer-groups">
+      <h2>Consumer Groups &amp; Offset Management</h2>
+
+      <div class="sub-label">Group structure &amp; offset storage</div>
+      <div class="diagram-card">
+        <div class="mermaid">
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#8ec07c","secondaryColor":"#504945","background":"#282828","nodeBorder":"#689d6a","clusterBkg":"#1d2021","clusterBorder":"#689d6a","titleColor":"#8ec07c","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
+flowchart TB
+  classDef consumer fill:#689d6a,stroke:#8ec07c,color:#1d2021,font-weight:bold
+  classDef coord    fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
+  classDef topic    fill:#d65d0e,stroke:#fe8019,color:#1d2021,font-weight:bold
+  classDef mem      fill:#3c3836,stroke:#665c54,color:#ebdbb2
+  classDef key      fill:#d79921,stroke:#fabd2f,color:#1d2021
+
+  subgraph CG["  Consumer Group (same group.id)  "]
+    C1["📥 Consumer 1 / assigned: P0, P1"]:::consumer
+    C2["📥 Consumer 2 / assigned: P2, P3"]:::consumer
+    C3["📥 Consumer 3 / assigned: P4"]:::consumer
+  end
+
+  GC["🧭 Group Coordinator / both partition leader of __consumer_offsets / and group manager"]:::coord
+
+  INMEM["In-memory map / (group.id, topic, partition) → offset / built at startup from __consumer_offsets"]:::mem
+
+  OFF["📍 __consumer_offsets / internal compacted topic / key: (group.id, topic, partition) / value: committed offset"]:::topic
+
+  RULE["If topic has X partitions / recommended: gte X consumers / in the consumer group"]:::key
+
+  CG  <-->|heartbeat, JoinGroup / SyncGroup, Offset Commit| GC
+  GC  <-->|reads at startup / updates on commit| INMEM
+  GC   -->|persists commits to| OFF
+  OFF  -.->|loaded into| INMEM
+  RULE -.->|sizing guideline|CG
+        </div>
+      </div>
+
+      <div class="sub-label">Consumer offset commit flow</div>
+      <div class="diagram-card">
+        <div class="mermaid">
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#8ec07c","secondaryColor":"#504945","background":"#282828","nodeBorder":"#689d6a","clusterBkg":"#1d2021","clusterBorder":"#689d6a","titleColor":"#8ec07c","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
+flowchart LR
+  classDef consumer fill:#689d6a,stroke:#8ec07c,color:#1d2021,font-weight:bold
+  classDef coord    fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
+  classDef mem      fill:#3c3836,stroke:#665c54,color:#ebdbb2
+  classDef topic    fill:#d65d0e,stroke:#fe8019,color:#1d2021,font-weight:bold
+
+  CONS["📥 Consumer / (auto or manual commit)"]:::consumer
+  GC["🧭 Group Coordinator"]:::coord
+  INMEM["In-memory offset table / (group.id, topic, partition): offset"]:::mem
+  OFF["📍 __consumer_offsets / topic"]:::topic
+
+  CONS -->|OffsetCommitRequest / (group.id, topic, partition, offset)| GC
+  GC   -->|1. update| INMEM
+  GC   -->|2. persist| OFF
+  GC  -->|OffsetCommitResponse OK| CONS
+
+  REBAL["Consumer leaves group"]:::consumer
+  REBAL -->|triggers rebalance|GC
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="legend-item" style="border-color:var(--aqua-b);">
+          <span class="swatch" style="background:var(--aqua-b)"></span>
+          <div><strong>Offset key</strong><span>Offsets are stored as the triple <code>(group.id, topic, partition)</code> in both the in-memory table and <code>__consumer_offsets</code>.</span></div>
+        </div>
+        <div class="legend-item" style="border-color:var(--green-b);">
+          <span class="swatch" style="background:var(--green-b)"></span>
+          <div><strong>In-memory map</strong><span>At startup the Group Coordinator builds a map from <code>__consumer_offsets</code>. Subsequent reads/writes use the in-memory map — not the topic.</span></div>
+        </div>
+        <div class="legend-item" style="border-color:var(--orange-b);">
+          <span class="swatch" style="background:var(--orange-b)"></span>
+          <div><strong>Rebalance trigger</strong><span>Consumer leaves, joins, or misses a heartbeat → coordinator triggers rebalance → all partitions are re-assigned within the group.</span></div>
+        </div>
+        <div class="legend-item" style="border-color:var(--yellow-b);">
+          <span class="swatch" style="background:var(--yellow-b)"></span>
+          <div><strong>Partition sizing</strong><span>If a topic has X partitions, use ≥ X consumers in the group. Extra consumers sit idle; fewer consumers means one consumer handles multiple partitions.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CONSUMER FLOW ══ -->
+    <section id="consumer-flow">
       <h2>Consumer Group Flow</h2>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#8ec07c",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#689d6a","clusterBkg": "#1d2021",
-    "clusterBorder": "#689d6a","titleColor": "#8ec07c",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#8ec07c","secondaryColor":"#504945","background":"#282828","nodeBorder":"#689d6a","clusterBkg":"#1d2021","clusterBorder":"#689d6a","titleColor":"#8ec07c","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 sequenceDiagram
   participant C1 as 📥 Consumer 1
   participant C2 as 📥 Consumer 2
@@ -849,326 +688,297 @@ sequenceDiagram
       </div>
     </section>
 
-    <!-- COORDINATION -->
-    <section id="coordination">
-      <h2>ZooKeeper / KRaft Coordination</h2>
+    <!-- ══ BROKER FAILURE ══ -->
+    <section id="broker-failure">
+      <h2>Broker Failure — Partition Leader</h2>
+
+      <div class="sub-label">Decision tree: what happens when any broker crashes</div>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#d3869b",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#b16286","clusterBkg": "#1d2021",
-    "clusterBorder": "#b16286","titleColor": "#d3869b",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
-flowchart LR
-  classDef zk     fill:#b16286,stroke:#d3869b,color:#1d2021,font-weight:bold
-  classDef broker fill:#3c3836,stroke:#fabd2f,color:#ebdbb2
-  classDef meta   fill:#504945,stroke:#bdae93,color:#ebdbb2
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#fb4934","secondaryColor":"#504945","background":"#282828","nodeBorder":"#cc241d","clusterBkg":"#1d2021","clusterBorder":"#cc241d","titleColor":"#fb4934","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
+flowchart TD
+  classDef dead   fill:#cc241d,stroke:#fb4934,color:#fbf1c7,font-weight:bold
+  classDef ctrl   fill:#d65d0e,stroke:#fe8019,color:#1d2021,font-weight:bold
+  classDef ok     fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
+  classDef dec    fill:#504945,stroke:#fabd2f,color:#fabd2f,font-weight:bold
+  classDef step   fill:#3c3836,stroke:#665c54,color:#ebdbb2
+  classDef warn   fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
 
-  subgraph ZK_ENSEMBLE["  ZooKeeper Ensemble / KRaft Quorum  "]
-    ZK1["ZK Node 1\n(leader)"]:::zk
-    ZK2["ZK Node 2"]:::zk
-    ZK3["ZK Node 3"]:::zk
-    ZK1 <-->|"Zab / Raft\nconsensus"| ZK2
-    ZK1 <-->|"Zab / Raft\nconsensus"| ZK3
-  end
+  CRASH["Broker N crashes"]:::dead
+  ZK_DETECT["ZK session expires / or KRaft misses heartbeat"]:::step
+  CTRL["Active Controller notified"]:::ctrl
+  CRASH --> ZK_DETECT --> CTRL
 
-  B1["Broker 1\n(Controller)"]:::broker
-  B2["Broker 2"]:::broker
-  B3["Broker 3"]:::broker
+  IS_CTRL{"Crashed broker / was Controller?"}:::dec
+  CTRL --> IS_CTRL
+  NEW_CTRL["New Controller elected / via ZK or KRaft"]:::ok
+  IS_CTRL -->|YES| NEW_CTRL
+  NEW_CTRL --> PART_CHECK
+  IS_CTRL -->|NO|PART_CHECK
 
-  META["📋 Cluster Metadata\n• broker list\n• topic configs\n• partition leaders\n• ISR sets\n• ACLs / quotas"]:::meta
+  PART_CHECK{"Broker held / Partition Leaders?"}:::dec
+  NO_PART["No leader action needed / Followers keep replicating"]:::ok
+  PART_CHECK -->|NO| NO_PART
+  PART_CHECK -->|YES|ELECT_PART
 
-  ZK_ENSEMBLE <-->|"session / ephemeral\nnodes"| B1
-  ZK_ENSEMBLE <-->|"session"| B2
-  ZK_ENSEMBLE <-->|"session"| B3
-  B1 -->|"reads/writes\nauthoritative\nmetadata"| META
-  B2 -->|"reads metadata"| META
-  B3 -->|"reads metadata"| META
+  ELECT_PART["Controller sends LeaderAndIsr / New leader per partition"]:::step
+  ISR_CHECK{"ISR replicas / available?"}:::dec
+  ELECT_PART --> ISR_CHECK
+
+  NEW_PART_LEADER["New Partition Leader: 1st alive ISR / Clients redirect via metadata refresh"]:::ok
+  ISR_CHECK -->|YES|NEW_PART_LEADER
+
+  UNCLEAN{"unclean.leader / .election.enable?"}:::dec
+  ISR_CHECK -->|NO — ISR empty|UNCLEAN
+  OSR_LEADER["OSR replica promoted / Possible data loss"]:::warn
+  UNCLEAN -->|YES|OSR_LEADER
+  PARTITION_OFFLINE["Partition OFFLINE / Produces fail, consumers stall"]:::dead
+  UNCLEAN -->|NO|PARTITION_OFFLINE
+        </div>
+      </div>
+
+      <div class="sub-label">Partition leader change — step by step</div>
+      <div class="diagram-card">
+        <div class="mermaid">
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#fe8019","secondaryColor":"#504945","background":"#282828","nodeBorder":"#d65d0e","clusterBkg":"#1d2021","clusterBorder":"#d65d0e","titleColor":"#fe8019","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
+sequenceDiagram
+  participant PL  as Old Partition Leader
+  participant ISR as ISR Replica (Broker 2)
+  participant OSR as Out-of-Sync Replica
+  participant ZK  as ZooKeeper
+  participant CTL as Active Controller
+  participant P   as Producer
+  participant C   as Consumer
+
+  Note over PL,CTL: Normal replication
+  P  ->>  PL  : ProduceRequest
+  PL ->>  ISR : Replicate record
+  ISR -->> PL : ACK
+  PL -->> P   : ProduceResponse OK
+
+  Note over PL,ZK: Leader crashes
+  PL  -x  ZK  : ZK session missed
+  ZK  ->> CTL : Broker removed from /brokers/ids
+  CTL ->> CTL : Scan partitions on dead broker
+
+  CTL ->> ISR : LeaderAndIsr — you are new leader
+  ISR ->> ISR : Become leader, advance high-watermark
+
+  OSR ->> ISR : FetchRequest to catch up
+  ISR -->> OSR : Missing records
+  OSR ->> CTL : Re-added to ISR
+
+  P  ->>  P   : Metadata refresh
+  P  ->>  ISR : ProduceRequest to new leader
+  C  ->>  C   : Metadata refresh on NOT_LEADER_FOR_PARTITION
+  C  ->>  ISR : FetchRequest to new leader
         </div>
       </div>
     </section>
 
-    <!-- HEARTBEATS -->
+    <!-- ══ GROUP COORDINATOR FAILURE ══ -->
+    <section id="gc-failure">
+      <h2>Broker Failure — Group Coordinator</h2>
+
+      <div class="sub-label">What is the Group Coordinator?</div>
+      <div class="card-grid" style="margin-bottom:1.5rem;">
+        <div class="legend-item" style="border-color:var(--aqua-b);">
+          <span class="swatch" style="background:var(--aqua-b)"></span>
+          <div><strong>Definition</strong><span>A broker elected to manage a consumer group. Handles JoinGroup, SyncGroup, Heartbeat, OffsetCommit. The coordinator for a group is determined by <code>hash(group.id) mod __consumer_offsets_partitions</code>.</span></div>
+        </div>
+        <div class="legend-item" style="border-color:var(--yellow-b);">
+          <span class="swatch" style="background:var(--yellow-b)"></span>
+          <div><strong>Co-location</strong><span>Each Group Coordinator is also the partition leader of the <code>__consumer_offsets</code> partition that stores that group's offsets. They are the same broker.</span></div>
+        </div>
+      </div>
+
+      <div class="sub-label">Failure flow — when the Group Coordinator's broker dies</div>
+      <div class="diagram-card">
+        <div class="mermaid">
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#fb4934","secondaryColor":"#504945","background":"#282828","nodeBorder":"#cc241d","clusterBkg":"#1d2021","clusterBorder":"#cc241d","titleColor":"#fb4934","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
+flowchart TD
+  classDef dead  fill:#cc241d,stroke:#fb4934,color:#fbf1c7,font-weight:bold
+  classDef step  fill:#3c3836,stroke:#665c54,color:#ebdbb2
+  classDef ok    fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
+  classDef coord fill:#689d6a,stroke:#8ec07c,color:#1d2021,font-weight:bold
+
+  CRASH["Coordinator Broker crashes"]:::dead
+
+  ELECT["New partition leader elected / for __consumer_offsets partition / (next in-sync replica)"]:::step
+
+  AUTO["That broker automatically becomes / the new Group Coordinator / for all groups on that partition"]:::ok
+
+  NOT_COORD["Consumers receive NOT_COORDINATOR / on next heartbeat or request"]:::dead
+
+  FIND["Consumers call FindCoordinator / → directed to new broker"]:::step
+
+  REBAL["Group rebalance triggered / all partitions temporarily unassigned / then reassigned"]:::coord
+
+  RESUME["Normal operation resumes"]:::ok
+
+  CRASH --> ELECT --> AUTO --> NOT_COORD --> FIND --> REBAL --> RESUME
+        </div>
+      </div>
+
+      <div class="sub-label">Side-by-side: coordinator dead vs not coordinator</div>
+      <div class="card-grid">
+        <div class="legend-item" style="border-color:var(--green-b);">
+          <span class="swatch" style="background:var(--green-b)"></span>
+          <div><strong>Broker is NOT coordinator</strong><span>Consumer heartbeats keep flowing to the surviving coordinator. Only impact is partition leader re-election. Consumers auto-refresh metadata and reconnect within milliseconds.</span></div>
+        </div>
+        <div class="legend-item" style="border-color:var(--red-b);">
+          <span class="swatch" style="background:var(--red-b)"></span>
+          <div><strong>Broker IS coordinator</strong><span>Consumers get <code>NOT_COORDINATOR</code>. Call <code>FindCoordinator</code> → new broker. Full group rebalance. All partitions unassigned then re-assigned. Consumption pauses briefly.</span></div>
+        </div>
+        <div class="legend-item" style="border-color:var(--orange-b);">
+          <span class="swatch" style="background:var(--orange-b)"></span>
+          <div><strong>Broker is also Kafka Controller</strong><span>Most disruptive. ZooKeeper deletes <code>/controller</code> znode, remaining brokers race to become controller, then all partition leader elections run before normal operations resume. Typically 10–30 s.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ HEARTBEATS ══ -->
     <section id="heartbeats">
       <h2>Heartbeat Flows</h2>
 
-      <!-- Heartbeat overview diagram -->
+      <div class="sub-label">All heartbeat paths at a glance</div>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#b8bb26",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#98971a","clusterBkg": "#1d2021",
-    "clusterBorder": "#98971a","titleColor": "#b8bb26",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#b8bb26","secondaryColor":"#504945","background":"#282828","nodeBorder":"#98971a","clusterBkg":"#1d2021","clusterBorder":"#98971a","titleColor":"#b8bb26","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 flowchart TD
   classDef consumer fill:#689d6a,stroke:#8ec07c,color:#1d2021,font-weight:bold
   classDef coord    fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
   classDef broker   fill:#3c3836,stroke:#fabd2f,color:#ebdbb2,font-weight:bold
   classDef zk       fill:#b16286,stroke:#d3869b,color:#1d2021,font-weight:bold
   classDef timeout  fill:#cc241d,stroke:#fb4934,color:#fbf1c7,font-weight:bold
-  classDef hb       fill:#282828,stroke:#b8bb26,color:#b8bb26,font-size:12px
 
   C1["📥 Consumer 1"]:::consumer
   C2["📥 Consumer 2"]:::consumer
-  GC["🧭 Group Coordinator\n(a Broker)"]:::coord
-  B1["Broker 1"]:::broker
-  B2["Broker 2"]:::broker
-  B3["Broker 3"]:::broker
+  GC["🧭 Group Coordinator / (a Broker)"]:::coord
 
-  C1 -->|"HeartbeatRequest\nevery session.timeout.ms/3\n→ proves consumer is alive"| GC
-  GC -->|"HeartbeatResponse\nOK / REBALANCE_IN_PROGRESS"| C1
-  C2 -->|"HeartbeatRequest"| GC
-  GC -->|"HeartbeatResponse"| C2
+  C1 -->|HeartbeatRequest / every session.timeout.ms/3 / proves consumer is alive| GC
+  GC -->|HeartbeatResponse OK / or REBALANCE_IN_PROGRESS| C1
+  C2 -->|HeartbeatRequest| GC
 
   subgraph ZK_ENS["  🔮 ZooKeeper Ensemble  "]
     direction TB
     ZK1["👑 ZK Leader"]:::zk
     ZK2["ZK Follower 1"]:::zk
     ZK3["ZK Follower 2"]:::zk
-    ZK1 <-->|"Zab ping (tickTime)\n— quorum liveness"| ZK2
-    ZK1 <-->|"Zab ping (tickTime)"| ZK3
-    ZK2 <-->|"Zab ping"| ZK3
+    ZK1 <-->|Zab PING every tickTime| ZK2
+    ZK1 <-->|Zab PING every tickTime| ZK3
   end
 
-  B1 -->|"ZK session keep-alive\n(tickTime interval)"| ZK_ENS
-  B2 -->|"ZK session keep-alive"| ZK_ENS
-  B3 -->|"ZK session keep-alive"| ZK_ENS
+  B1["Broker 1"]:::broker
+  B2["Broker 2"]:::broker
+  B1 -->|ZK session keep-alive / every tickTime (2s)| ZK_ENS
+  B2 -->|ZK session keep-alive|ZK_ENS
 
-  MISS_C["⚠️ Consumer misses\nheartbeat deadline\n(session.timeout.ms)"]:::timeout
-  MISS_B["⚠️ Broker session\nexpires in ZK"]:::timeout
-  MISS_ZK["⚠️ ZK node stops\nsending Zab pings"]:::timeout
+  MISS_C["Consumer misses deadline / session.timeout.ms elapsed"]:::timeout
+  MISS_B["Broker ZK session expires / /brokers/ids/id deleted"]:::timeout
+  MISS_ZK["ZK node misses Zab pings / syncLimit x tickTime elapsed"]:::timeout
 
-  GC -->|"triggers"| MISS_C
-  MISS_C -->|"Group rebalance\n— partitions reassigned"| GC
-
-  ZK_ENS -->|"triggers"| MISS_B
-  MISS_B -->|"Controller detects\nbroker departure\n— leader election"| ZK_ENS
-
-  ZK_ENS -->|"triggers"| MISS_ZK
-  MISS_ZK -->|"Quorum re-election\namong remaining ZK nodes"| ZK_ENS
+  GC    -->|triggers| MISS_C
+  MISS_C -->|group rebalance| GC
+  ZK_ENS -->|triggers| MISS_B
+  MISS_B -->|controller detects, leader election| ZK_ENS
+  ZK_ENS -->|triggers| MISS_ZK
+  MISS_ZK -->|FastLeaderElection| ZK_ENS
         </div>
       </div>
 
-      <!-- ZK Leader Failure card -->
-      <div class="diagram-card">
-        <div style="margin-bottom:1rem;" id="zk-leader-fail">
-          <span style="color:var(--red-b);font-size:.95rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;">💀 What happens when the ZooKeeper Leader fails?</span>
-        </div>
-        <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#fb4934",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#cc241d","clusterBkg": "#1d2021",
-    "clusterBorder": "#cc241d","titleColor": "#fb4934",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
-flowchart TD
-  classDef dead     fill:#cc241d,stroke:#fb4934,color:#fbf1c7,font-weight:bold
-  classDef zk       fill:#b16286,stroke:#d3869b,color:#1d2021,font-weight:bold
-  classDef zknew    fill:#d79921,stroke:#fabd2f,color:#1d2021,font-weight:bold
-  classDef step     fill:#3c3836,stroke:#665c54,color:#ebdbb2
-  classDef broker   fill:#504945,stroke:#bdae93,color:#ebdbb2
-  classDef ok       fill:#98971a,stroke:#b8bb26,color:#1d2021,font-weight:bold
-
-  DEAD["ZK Leader crashes"]:::dead
-  DETECT["Followers detect silence
-after syncLimit x tickTime
-eg. 2 x 2s = 4s"]:::step
-  ELECT["FastLeaderElection begins
-Exchange LOOKING messages
-Highest zxid epoch sid wins"]:::step
-  QUORUM{"Quorum reached?
-majority > n/2"}
-  NEW_LEADER["New ZK Leader elected
-highest zxid follower"]:::zknew
-  SYNC["Followers sync to new leader
-DIFF / SNAP / TRUNC"]:::step
-  NOTE1["In-flight uncommitted writes
-rolled back - truncated"]:::step
-  REOPEN["New leader reopens
-all client sessions"]:::step
-  KAFKA_CTRL["Kafka Controller detects
-ZK session change
-watches /controller znode"]:::broker
-  RESUME["Cluster resumes
-normal operation"]:::ok
-  STALE["No quorum
-ZK cluster unavailable"]:::dead
-
-  DEAD --> DETECT --> ELECT --> QUORUM
-  QUORUM -->|"majority alive"| NEW_LEADER
-  QUORUM -->|"minority only"| STALE
-  NEW_LEADER --> NOTE1
-  NEW_LEADER --> SYNC --> REOPEN --> KAFKA_CTRL --> RESUME
-        </div>
-        <div class="card-grid" style="margin-top:1rem;">
-          <div class="legend-item" style="border-color:var(--red-b);">
-            <span class="swatch" style="background:var(--red-b)"></span>
-            <div><strong>Detection</strong><span>Followers notice missing Zab pings after <code style="color:var(--yellow-b)">syncLimit × tickTime</code> (default 4 s). They transition to <code style="color:var(--yellow-b)">LOOKING</code> state.</span></div>
-          </div>
-          <div class="legend-item" style="border-color:var(--yellow-b);">
-            <span class="swatch" style="background:var(--yellow-b)"></span>
-            <div><strong>FastLeaderElection</strong><span>Each node votes for the candidate with the highest <code style="color:var(--yellow-b)">(zxid, epoch, sid)</code> — highest zxid means most up-to-date transaction log.</span></div>
-          </div>
-          <div class="legend-item" style="border-color:var(--blue-b);">
-            <span class="swatch" style="background:var(--blue-b)"></span>
-            <div><strong>Log sync (DIFF/SNAP/TRUNC)</strong><span>New leader syncs followers. Uncommitted writes (not quorum-acked before crash) are <strong>truncated</strong> — Zab guarantees no data loss for committed transactions.</span></div>
-          </div>
-          <div class="legend-item" style="border-color:var(--green-b);">
-            <span class="swatch" style="background:var(--green-b)"></span>
-            <div><strong>Kafka impact</strong><span>Kafka brokers briefly lose ZK connectivity. The Kafka Controller re-validates its <code style="color:var(--yellow-b)">/controller</code> znode. If lost, a new Kafka Controller is elected. Typically resolves in &lt; 30 s.</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Heartbeat sequence detail -->
+      <div class="sub-label">Detailed heartbeat sequence</div>
       <div class="diagram-card">
         <div class="mermaid">
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#3c3836","primaryTextColor": "#ebdbb2",
-    "primaryBorderColor": "#665c54","lineColor": "#b8bb26",
-    "secondaryColor": "#504945","background": "#282828",
-    "nodeBorder": "#98971a","clusterBkg": "#1d2021",
-    "clusterBorder": "#98971a","titleColor": "#b8bb26",
-    "edgeLabelBackground": "#282828",
-    "fontFamily": "JetBrains Mono, Fira Code, monospace"
-  }
-}}%%
+%%{init:{"theme":"base","themeVariables":{"primaryColor":"#3c3836","primaryTextColor":"#ebdbb2","primaryBorderColor":"#665c54","lineColor":"#b8bb26","secondaryColor":"#504945","background":"#282828","nodeBorder":"#98971a","clusterBkg":"#1d2021","clusterBorder":"#98971a","titleColor":"#b8bb26","edgeLabelBackground":"#282828","fontFamily":"JetBrains Mono, Fira Code, monospace"}}}%%
 sequenceDiagram
-  participant C   as 📥 Consumer
-  participant GC  as 🧭 Group Coordinator
-  participant ZK  as 🔮 ZooKeeper / KRaft
-  participant B   as Broker (any)
+  participant C  as 📥 Consumer
+  participant GC as 🧭 Group Coordinator
+  participant B  as Broker
+  participant ZK as 🔮 ZooKeeper
   participant ZKL as 👑 ZK Leader
   participant ZKF as ZK Follower
 
-  Note over C,GC: Consumer to Group Coordinator heartbeat
-  loop every session.timeout.ms divided by 3 (approx 3s)
+  Note over C,GC: Consumer heartbeat (every session.timeout.ms / 3)
+  loop Normal
     C  ->>  GC : HeartbeatRequest (group-id, generation-id, member-id)
     GC -->> C  : HeartbeatResponse OK
   end
 
-  Note over C,GC: If consumer is slow or crashed
+  Note over C,GC: Consumer misses heartbeat
   C  -x   GC : HeartbeatRequest missed
   Note over GC: session.timeout.ms elapsed
-  GC -->> C  : HeartbeatResponse REBALANCE_IN_PROGRESS
   GC  ->> GC : Kick member, trigger group rebalance
 
-  Note over B,ZK: Broker to ZooKeeper session keep-alive
-  loop every tickTime (default 2s)
-    B  ->>  ZK : ZK Ping session keep-alive
+  Note over B,ZK: Broker ZK session keep-alive (every tickTime)
+  loop Normal
+    B  ->>  ZK : ZK Ping
     ZK -->> B  : ZK Pong
   end
 
-  Note over B,ZK: If broker crashes
+  Note over B,ZK: Broker crashes
   B  -x   ZK : ZK Ping missed
-  Note over ZK: zookeeper.session.timeout.ms elapsed
   ZK  ->> ZK : Expire session, delete /brokers/ids/id
-  ZK -->> B  : Controller detects and triggers leader election
+  ZK -->> B  : Controller detects, triggers leader election
 
-  Note over C,GC: KRaft mode - Broker to Active Controller (no ZK)
-  B  ->>  GC : BrokerHeartbeatRequest (epoch, offset)
-  GC -->> B  : BrokerHeartbeatResponse isFenced=false
-
-  Note over ZKL,ZKF: ZooKeeper Ensemble internal - Zab protocol
-  loop every tickTime (default 2s)
-    ZKL ->>  ZKF : Zab PING heartbeat
+  Note over ZKL,ZKF: ZK ensemble Zab internal heartbeat (every tickTime)
+  loop Normal
+    ZKL ->>  ZKF : Zab PING
     ZKF -->> ZKL : Zab PONG
-    ZKF ->>  ZKL : Zab PING heartbeat
-    ZKL -->> ZKF : Zab PONG
   end
-  Note over ZKL,ZKF: If ZK Leader stops sending pings
+
+  Note over ZKL,ZKF: ZK Leader stops pinging
   ZKL  -x  ZKF : Zab PING missed
-  Note over ZKF: initLimit and syncLimit elapsed
-  ZKF  ->> ZKF : Start leader election FastLeaderElection
-  ZKF -->> ZKL : New ZK Leader elected from quorum
+  Note over ZKF: syncLimit x tickTime elapsed
+  ZKF  ->> ZKF : Transition to LOOKING, start FastLeaderElection
         </div>
       </div>
 
-      <!-- Heartbeat config callout -->
       <div class="card-grid">
         <div class="legend-item" style="border-color:var(--green-b);">
           <span class="swatch" style="background:var(--green-b)"></span>
-          <div>
-            <strong>Consumer → Group Coordinator</strong>
-            <span>HeartbeatRequest sent on a background thread. Interval ≈ <code style="color:var(--yellow-b)">session.timeout.ms / 3</code>. Missing the deadline triggers a group rebalance and partition reassignment.</span>
-          </div>
+          <div><strong>Consumer → Group Coordinator</strong><span>Background thread. Interval ≈ <code>session.timeout.ms / 3</code>. Miss triggers group rebalance and partition reassignment.</span></div>
         </div>
         <div class="legend-item" style="border-color:var(--purple-b);">
           <span class="swatch" style="background:var(--purple-b)"></span>
-          <div>
-            <strong>Broker → ZooKeeper (classic mode)</strong>
-            <span>TCP session ping every <code style="color:var(--yellow-b)">tickTime</code> (default 2 s). Expiry deletes the ephemeral <code style="color:var(--yellow-b)">/brokers/ids/&lt;id&gt;</code> znode, signalling the controller to run leader election.</span>
-          </div>
+          <div><strong>Broker → ZooKeeper</strong><span>TCP session ping every <code>tickTime</code> (2 s). Expiry deletes ephemeral <code>/brokers/ids/&lt;id&gt;</code> znode → controller runs leader election.</span></div>
         </div>
         <div class="legend-item" style="border-color:var(--orange-b);">
           <span class="swatch" style="background:var(--orange-b)"></span>
-          <div>
-            <strong>Broker → Active Controller (KRaft)</strong>
-            <span>BrokerHeartbeatRequest sent by every broker to the active KRaft controller, carrying the broker's epoch and log end offset. Replaces ZooKeeper session keep-alives in KRaft mode.</span>
-          </div>
+          <div><strong>Broker → Active Controller (KRaft)</strong><span>BrokerHeartbeatRequest carrying epoch and log end offset. Replaces ZK session keep-alives in KRaft mode. Miss fences the broker.</span></div>
         </div>
         <div class="legend-item" style="border-color:var(--yellow-b);">
           <span class="swatch" style="background:var(--yellow-b)"></span>
-          <div>
-            <strong>ZooKeeper Node → ZooKeeper Node (Zab)</strong>
-            <span>ZK nodes exchange <code style="color:var(--yellow-b)">PING/PONG</code> messages every <code style="color:var(--yellow-b)">tickTime</code> via the Zab protocol. The ZK leader also sends periodic heartbeats to followers. If a follower misses <code style="color:var(--yellow-b)">syncLimit</code> ticks from the leader, it disconnects and FastLeaderElection kicks off a new ZK leader vote among the surviving quorum members.</span>
-          </div>
+          <div><strong>ZK Node ↔ ZK Node (Zab)</strong><span>PING/PONG every <code>tickTime</code>. Follower misses <code>syncLimit</code> ticks → disconnects → FastLeaderElection among surviving quorum.</span></div>
         </div>
         <div class="legend-item" style="border-color:var(--red-b);">
           <span class="swatch" style="background:var(--red-b)"></span>
-          <div>
-            <strong>Missed heartbeat consequences</strong>
-            <span>Consumer miss → <strong>group rebalance</strong>. Broker miss (ZK) → <strong>leader election</strong>. Broker miss (KRaft) → broker <strong>fenced</strong>. ZK node miss → <strong>ZK leader re-election</strong> via FastLeaderElection.</span>
-          </div>
+          <div><strong>Consequences at a glance</strong><span>Consumer miss → group rebalance. Broker miss (ZK) → leader election. Broker miss (KRaft) → broker fenced. ZK node miss → ZK leader re-election.</span></div>
         </div>
       </div>
     </section>
 
-    <!-- INTERACTION TABLE -->
+    <!-- ══ INTERACTION TABLE ══ -->
     <section id="interactions">
       <h2>Interaction Reference</h2>
       <div class="diagram-card" style="padding:0; overflow:hidden;">
         <table class="interaction-table">
           <thead>
-            <tr>
-              <th>From</th><th>To</th><th>Type</th><th>Description</th>
-            </tr>
+            <tr><th>From</th><th>To</th><th>Type</th><th>Description</th></tr>
           </thead>
           <tbody>
             <tr><td>Producer</td><td>Any Broker</td><td><span class="tag tag-meta">META</span></td><td>Bootstrap metadata request — learns partition leaders</td></tr>
             <tr><td>Producer</td><td>Partition Leader</td><td><span class="tag tag-push">PUSH</span></td><td>ProduceRequest with record batches; acks=0/1/all</td></tr>
             <tr><td>Partition Leader</td><td>Followers / ISR</td><td><span class="tag tag-rep">REP</span></td><td>Followers fetch new data; leader tracks high-watermark</td></tr>
             <tr><td>Follower</td><td>Partition Leader</td><td><span class="tag tag-rep">REP</span></td><td>FetchRequest to replicate and acknowledge writes</td></tr>
-            <tr><td>Consumer</td><td>Group Coordinator</td><td><span class="tag tag-coord">COORD</span></td><td>JoinGroup, SyncGroup, LeaveGroup</td></tr>
-            <tr><td>Consumer</td><td>Group Coordinator</td><td><span class="tag tag-beat">BEAT</span></td><td>HeartbeatRequest every ~<code>session.timeout.ms / 3</code> — keeps membership alive; miss triggers group rebalance</td></tr>
-            <tr><td>Broker</td><td>ZooKeeper</td><td><span class="tag tag-beat">BEAT</span></td><td>ZK session ping every <code>tickTime</code> — expiry deletes ephemeral broker znode and triggers leader election</td></tr>
-            <tr><td>ZK Node ↔ ZK Node</td><td>Each other (Zab)</td><td><span class="tag tag-beat">BEAT</span></td><td>Zab PING/PONG every <code>tickTime</code> — ZK leader pings followers; if follower misses <code>syncLimit</code> ticks it disconnects and FastLeaderElection elects a new ZK leader</td></tr>
-            <tr><td>Broker</td><td>KRaft Controller</td><td><span class="tag tag-beat">BEAT</span></td><td>BrokerHeartbeatRequest (KRaft mode) — carries epoch &amp; log offset; miss fences the broker</td></tr>
+            <tr><td>ZK Leader</td><td>ZK Followers</td><td><span class="tag tag-beat">BEAT</span></td><td>Zab PROPOSAL broadcast; followers ACK; leader COMMITs on majority</td></tr>
+            <tr><td>ZK Followers</td><td>ZK Leader</td><td><span class="tag tag-beat">BEAT</span></td><td>Zab PING/PONG every tickTime; miss syncLimit ticks → FastLeaderElection</td></tr>
+            <tr><td>Consumer</td><td>Group Coordinator</td><td><span class="tag tag-coord">COORD</span></td><td>JoinGroup, SyncGroup, LeaveGroup, FindCoordinator</td></tr>
+            <tr><td>Consumer</td><td>Group Coordinator</td><td><span class="tag tag-beat">BEAT</span></td><td>HeartbeatRequest every ~<code>session.timeout.ms / 3</code>; miss triggers group rebalance</td></tr>
+            <tr><td>Consumer</td><td>Group Coordinator</td><td><span class="tag tag-meta">META</span></td><td>OffsetCommitRequest; coordinator updates in-memory map and <code>__consumer_offsets</code></td></tr>
+            <tr><td>Broker</td><td>ZooKeeper</td><td><span class="tag tag-beat">BEAT</span></td><td>ZK session ping every tickTime; expiry deletes ephemeral broker znode → leader election</td></tr>
+            <tr><td>Broker</td><td>KRaft Controller</td><td><span class="tag tag-beat">BEAT</span></td><td>BrokerHeartbeatRequest (KRaft mode); miss fences the broker</td></tr>
             <tr><td>Consumer</td><td>Partition Leader</td><td><span class="tag tag-pull">PULL</span></td><td>FetchRequest with offset; long-poll until data available</td></tr>
-            <tr><td>Consumer</td><td>__consumer_offsets</td><td><span class="tag tag-meta">META</span></td><td>OffsetCommitRequest after processing records</td></tr>
-            <tr><td>Brokers</td><td>ZooKeeper / KRaft</td><td><span class="tag tag-coord">COORD</span></td><td>Session keep-alive, broker registration, config changes</td></tr>
             <tr><td>Controller</td><td>All Brokers</td><td><span class="tag tag-coord">COORD</span></td><td>LeaderAndIsr requests after elections or topic changes</td></tr>
             <tr><td>Admin Client</td><td>Controller</td><td><span class="tag tag-meta">META</span></td><td>CreateTopics, AlterConfigs, DescribeCluster</td></tr>
           </tbody>
@@ -1176,7 +986,7 @@ sequenceDiagram
       </div>
     </section>
 
-    <!-- LEGEND -->
+    <!-- ══ LEGEND ══ -->
     <section id="legend">
       <h2>Component Legend</h2>
       <div class="legend-grid">
@@ -1202,15 +1012,19 @@ sequenceDiagram
         </div>
         <div class="legend-item">
           <span class="swatch" style="background:var(--purple-b)"></span>
-          <div><strong>ZooKeeper / KRaft</strong><span>Manages cluster metadata, broker liveness, controller election, and config storage.</span></div>
+          <div><strong>ZooKeeper / KRaft</strong><span>Manages cluster metadata, broker liveness, controller election, config storage. Uses ZAB protocol for writes.</span></div>
         </div>
         <div class="legend-item">
           <span class="swatch" style="background:var(--orange-b)"></span>
           <div><strong>Controller</strong><span>Elected broker that orchestrates leader elections, ISR changes, and partition reassignments.</span></div>
         </div>
         <div class="legend-item">
+          <span class="swatch" style="background:var(--aqua)"></span>
+          <div><strong>Group Coordinator</strong><span>Broker that manages a consumer group. Also the partition leader of the group's <code>__consumer_offsets</code> partition.</span></div>
+        </div>
+        <div class="legend-item">
           <span class="swatch" style="background:var(--red-b)"></span>
-          <div><strong>__consumer_offsets</strong><span>Internal compacted topic storing committed offsets for all consumer groups.</span></div>
+          <div><strong>__consumer_offsets</strong><span>Internal compacted topic. Stores committed offsets keyed by <code>(group.id, topic, partition)</code>.</span></div>
         </div>
       </div>
     </section>
