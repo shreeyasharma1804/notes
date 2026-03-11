@@ -46,3 +46,22 @@ This is triggered when followers do not heartbeats from the leader in a specifie
 - When a node recieves a peer's vote, it runs a comparision in the order epoch < zxid < sid. If the recieved vote has a higher precedence, the node revotes with the recieved vote.
 - If the node is voting with an earlier epoch number, it adopts the latest epoch and votes again
 - Every node checks the vote from all the other nodes. The sid which is voted for by the majority of the quorum. is elected as the new leader.
+
+### Consumer groups and consumer offset management
+
+### Group coordinator
+
+### Topic
+
+Each topic is configured with the number of partitions and replication factor. The replication factor decides the number of replicas for each partition.
+Each partition has a leader broker and replica brokers.
+
+### Broker failure
+
+#### Broker was partition leader
+
+The new partition leader is the 1st alive ISR
+
+### Broker was group coordinator
+
+
