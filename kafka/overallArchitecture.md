@@ -47,9 +47,16 @@ This is triggered when followers do not heartbeats from the leader in a specifie
 - If the node is voting with an earlier epoch number, it adopts the latest epoch and votes again
 - Every node checks the vote from all the other nodes. The sid which is voted for by the majority of the quorum. is elected as the new leader.
 
-### Consumer groups and consumer offset management
+### Consumer groups, consumer offset management, and Group coordinator
 
-### Group coordinator
+Any number of consumer clients with the same group.id belong to the same consumer group.
+If a topic has x partitions, it is recommended to have >=x consumers in the consumer group associated with the topic
+
+consumer offset:(group.id, topic, partition) stored in the topic __consumer_offsets.
+After the consumer commits (auto/manually), the coordinator updated the in memory table and __consumer_offsets topic.
+At startup, the group coordinator creates an in memory map of (group.id, topic, partition): offset. This map is updated and managed in memory instead of reading the data in __consumer_offsets topic.
+
+If a consumer leaves a consumer group, the group coordinator triggers a rebalance.
 
 ### Topic
 
