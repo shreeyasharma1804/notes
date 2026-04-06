@@ -32,7 +32,20 @@ Add both the PCs to the same subnet and run the ping command.
 
 Since switches use unicast flooding with no maximum hop number, it's possible for a packet to be lost due to a loop in the graph. This is a layer 2 limitation.
 
+![alt text](image-1.png)
 
+In this setup, with an aditional router, most of the ping packets timeout
+
+```bash
+PC1> ping 192.168.1.3 -c 50
+
+192.168.1.3 icmp_seq=1 timeout
+192.168.1.3 icmp_seq=2 timeout
+192.168.1.3 icmp_seq=3 timeout
+192.168.1.3 icmp_seq=4 timeout
+192.168.1.3 icmp_seq=5 timeout
+192.168.1.3 icmp_seq=6 timeout
+```
 
 ### ARP
 
