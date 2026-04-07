@@ -6,7 +6,7 @@
 
 - 2 switches with different VLAN IDs cannot connect with each other.
 
-- VLAN ID maximum value is 4096 bits.
+- VLAN ID maximum value is 4096 bits. Since switch loops can occur inside a VLAN ID network, overlay networks are used.
 
 ### GNS3 Layer2 Network
 
