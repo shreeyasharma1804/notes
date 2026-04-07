@@ -69,35 +69,56 @@ Implement using `keepalived`
 
 https://keepalived.readthedocs.io/en/latest/case_study_mixing.html
 
-The VRRP instance associated with the virtual IP and marked as MASTER responds to the ARP request in the local network.
+```
+# VRRP Instance Configuration — VI_1
+#
+# How this works:
+#   This node participates in a VRRP group that owns a shared floating VIP (192.168.31.160).
+#   The MASTER holds the VIP; if it dies, the highest-priority BACKUP takes over.
+#
+# Two separate signalling mechanisms keep this working:
+#
+#   1. Heartbeats (advert_int)
+#      The MASTER periodically multicasts advertisements to 224.0.0.18 (IANA-reserved for VRRP,
+#      RFC 3768/5798) on protocol 112. Only nodes that have joined this multicast group receive
+#      them — normal hosts silently discard them. 224.0.0.18 is link-local (TTL=1), so
+#      advertisements never leave the subnet. If a BACKUP misses 3 consecutive advertisements,
+#      it declares the MASTER dead and promotes itself.
+#
+#   2. Gratuitous ARP (GARP)
+#      When a node becomes MASTER it broadcasts "IP 192.168.31.160 is at MAC <mine>" to the
+#      entire L2 segment, forcing switches and hosts to flush stale ARP cache entries immediately.
+#      Without this, traffic would keep flowing to the old MASTER's MAC until ARP caches
+#      naturally expired (potentially minutes of downtime). GARPs are re-sent periodically
+#      as a safety net for devices with long ARP TTLs.
+#
+#   Heartbeats  → talk to VRRP peers only  (who owns the VIP?)
+#   GARPs       → talk to the whole network (where is the VIP now?)
 
-In the below config all requests for the virtual IP are to MAC(wlo1).
-
-```nginx
 vrrp_instance VI_1 {
-    state MASTER
-    interface wlo1
-    virtual_router_id 51                 # Cluster ID
-    priority 150                         # Determines MASTER election
-    advert_int 1                         # Multicast Broadcast interval (heartbeat)
+    state MASTER                         # Initial state of this node (MASTER or BACKUP)
+    interface wlo1                       # Network interface to run VRRP on
+    virtual_router_id 51                 # Cluster ID — must match across all nodes in the same VRRP group (Works in L3)
+    priority 150                         # Election priority; highest value wins MASTER role (range: 1–254)
+    advert_int 1                         # Interval (seconds) between VRRP advertisement multicasts (heartbeat)
 
-    nopreempt                            # If the MASTER is alive again, the current MASTER is not changed
+    nopreempt                            # Prevents a recovered former MASTER from reclaiming the role automatically
 
-    authentication {                     # Authenticate the server
-        auth_type PASS
-        auth_pass k@l!ve1
+    authentication {                     # Shared secret to authenticate VRRP peers and prevent rogue nodes
+        auth_type PASS                   # Authentication method: PASS (simple plaintext password)
+        auth_pass k@l!ve1               # Shared password — must be identical on all nodes in this VRRP group
     }
 
     virtual_ipaddress {
-        192.168.31.160/32
+        192.168.31.160/32               # Floating VIP assigned to whichever node is currently MASTER
     }
 
-    garp_master_delay 1                  # Wait 1 second after sending the GARP to become MASTER
-    garp_master_repeat 5                 # Send 5 GARP after becoming MASTER
-    garp_master_refresh 60               # Resend GARP every **60 seconds** while MASTER.
-    garp_master_refresh_repeat 2         # Number of GARPs per refresh event.
+    garp_master_delay 1                  # Seconds to wait after election before sending the first GARP (allows NIC stabilisation)
+    garp_master_repeat 5                 # Number of GARPs to send in a burst upon becoming MASTER (helps flush stale ARP caches)
+    garp_master_refresh 60               # Interval (seconds) at which GARP bursts are re-sent while remaining MASTER
+    garp_master_refresh_repeat 2         # Number of GARPs to send per periodic refresh event
 }
-``` ### VRRP
+```
 
 
 
