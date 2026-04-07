@@ -63,20 +63,6 @@ arping -I <interface> <IP-address>
 ip neigh
 ```
 
-### GNS3 Configuration
-
-- Connect 2 devices with different IP addresses to 2 switch interfaces
-
-- Assigning IP to an end device:
-```bash
-ip <ip address>
-show ip
-```
-
-### Switch Loops
-
-Since switches use unicast flooding with no maximum hop number, it's possible for a packet to be lost due to a loop in the graph. This is a layer 2 limitation.
-
 ### VRRP (Virtual Router Redundancy Protocol)
 
 Implement using `keepalived`
