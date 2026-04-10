@@ -28,6 +28,13 @@ show ip
 
 Add both the PCs to the same subnet and run the ping command.
 
+To define the VLAN ID of a router interface:
+
+```bash
+interface FastEthernet0/2
+switchport access vlan 10
+```
+
 ### Switch Loops
 
 Since switches use unicast flooding with no maximum hop number, it's possible for a packet to be lost due to a loop in the graph. This is a layer 2 limitation.
