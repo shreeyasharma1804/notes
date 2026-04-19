@@ -118,7 +118,7 @@ int  main() {
 
 One thread (Main thread) for the `accept` system call (since its blocking), and offloading the data to a thread pool
 
-`pthread_cond_wait` wakes up only one thread from all the threads waiting on `queue_cond` for thread safety
+Note for thread safety: `pthread_cond_wait` wakes up only one thread from all the threads waiting on `queue_cond` for thread safety
 
 ```c
 #include  <stdio.h>
@@ -375,6 +375,10 @@ int  main() {
 | Server socket| A new connection has completed the TCP handshake and is waiting in the accept queue |
 | Client socket | Data bytes have arrived in the socket's receive buffer
 
+Note: In this code, the event loop is stalled until the read completes. 
+
+![alt text](image-2.png)
+
 ### Multi process epoll server (~ Nginx)
 
 `epoll_wait` is thread safe, out of all the threads/ processes waiting on `epoll_wait`, only one wakes up
@@ -521,6 +525,32 @@ int  main() {
 }
 ``` 
 
+Thread safety:
+
+```
+kernel
+                      │
+          ┌───────────▼───────────┐
+          │       server_fd       │
+          │     (one socket in    │
+          │     kernel space)     │
+          └───────────┬───────────┘
+                      │  connection arrives
+                      │
+          ┌───────────▼───────────┐
+          │  who's watching this? │
+          │  epoll_fd[0] worker 0 │
+          │  epoll_fd[1] worker 1 │
+          │  epoll_fd[2] worker 2 │
+          │  ...                  │
+          └───────────┬───────────┘
+                      │
+            EPOLLEXCLUSIVE: wake ONE
+                      │
+                      ▼
+              worker 2 wakes up
+```
+
 ### Client system calls
 
 - socket
@@ -653,7 +683,7 @@ net.ipv4.tcp_max_syn_backlog = 65535  # SYN queue size
 #### TIME_WAIT and Port Exhaustion
 
 Every outgoing connection consumes an ephemeral port. 
-When the connection closes, that port sits in TIME_WAIT for ~120s before it's available again. On a service making a very high rate of outbound connections — a proxy, a load balancer, a scraper — you can exhaust the entire ephemeral port range
+When the connection closes, that port sits in TIME_WAIT for ~120s before it's available again (To ensure that all client packets have been consumed). On a service making a very high rate of outbound connections — a proxy, a load balancer, a scraper — you can exhaust the entire ephemeral port range
 
 ```bash
 net.ipv4.tcp_tw_reuse =  1
@@ -707,4 +737,18 @@ ss -tan state close-wait # All sockets where the other side has closed the socke
 
 ss -s # All open socket statistics
 ss -tip # PID of the socket
+```
+
+Example:
+
+```bash
+
+Listen: nc -l 1234 # Listens on all interfaces with port 1234
+nc -v 1234 # This is a client
+
+ss -tan shows 3 sockets for the above setup
+
+LISTEN 0.0.0.0:1234 0.0.0.0:* # Listen socket
+ESTAB 127.0.0.1:1234 127.0.0.01:56682 # connection_fd socket
+ESTAB 127.0.0.01:56682 127.0.0.1:1234 # Client socket
 ```
