@@ -1,27 +1,27 @@
+### Routing Table
 
-Layer3
-Layer3
-Routing Table
+- The dynamic entries of the routing table are populated by DHCP
 
-    The dynamic entries of the routing table are populated by DHCP
+- Check the interface where a packet will be forwarded for a destination IP address:
 
-    Check the interface where a packet will be forwarded for a destination IP address:
-
+```
 ip route get <ip-address>
+```
 
-NAT
+### NAT
 
-    Enable NAT:
+- Enable NAT:
 
+```
 sysctl net.ipv4.ip_forward
+```
 
-    NAT uses iptables to determine the source/destination IP
+- NAT uses iptables to determine the source/destination IP
 
-    DNAT or PREROUTING: The destination IP of the packet is changed.
+- DNAT or PREROUTING: The destination IP of the packet is changed.
 
-    SNAT or POSTROUTING: The source IP of the packet is changed. Also called Masquerading. (The new IP is the IP of the interface the packet is leaving).
-
-    Example:
+- SNAT or POSTROUTING: The source IP of the packet is changed. Also called Masquerading. (The new IP is the IP of the interface the packet is 
+- Example:
 
 HostA → RouterA → RouterB → HostB
 
