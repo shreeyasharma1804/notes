@@ -253,6 +253,9 @@ ping -c 5 -s 1400 -M do <target>  # don't-fragment bit set — forces PMTUD path
 
 #### Trace the routing path
 
+traceroute: Shows all the packet hops and the maximum hops allowed before TTl
+The 3 values in the output are 3 RTTs
+
 ```
 traceroute <target>                # UDP by default (often blocked)
 ---------------------------
@@ -272,19 +275,17 @@ traceroute to example.com (172.66.147.243), 64 hops max, 40 byte packets
 ---------------------------
 
 
-traceroute -I <target>             # ICMP mode (more likely to get through)
-traceroute -T -p 443 <target>      # TCP mode on port 443 — bypasses ICMP blocks
+traceroute -I <target>             # ICMP mode
+traceroute -T -p 443 <target>      # TCP mode with target port 443 — bypasses ICMP blocks
 ```
 
-# MTR — combines ping + traceroute, runs continuously
-mtr --report --report-cycles 60 <target>
-mtr --tcp --port 443 <target>      # TCP mode
+#### MTR
 
-# Check MTU of an interface
-ip link show eth0 | grep mtu
+Combines ping + traceroute, runs continuously
 
-# Lower MTU on the interface
-ip link set eth0 mtu 1400
+```
+mtr --report --report-cycles 4 <target>        # ICMP mode by default
+mtr --tcp --port 443 --report --report-cycles 60 <target>      # TCP mode
 
 Reading mtr output:
 
@@ -294,21 +295,37 @@ Host                     Loss%  Snt  Last  Avg  Best  Wrst StDev
 3. target (10.10.0.5)    20.0%   60   5.4  8.2   4.1  42.1   7.3
 
 Loss only at the final hop = real packet loss. Loss at an intermediate hop but not later hops = that router rate-limits ICMP (ignore it).
-Routing
+```
 
-# Show the kernel routing table
+#### Check MTU of an interface
+
+```
+ip link show wlo1 | grep mtu
+3: wlo1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DORMANT group default qlen 1000
+
+# Lower MTU on the interface
+ip link set eth0 mtu 1400
+```
+
+#### Show the kernel routing table
+
+```
 ip route show
 ip route show table all          
 
 # Which route would the kernel use for a given destination?
 ip route get 8.8.8.8
+```
 
-# Show ARP/neighbor cache (L2/L3 boundary — useful when packets aren't leaving)
+# Show ARP cache (useful when packets aren't leaving the host interface)
+
+```
 ip neigh show
 ip neigh show dev eth0
 
 # Flush ARP cache for a specific IP (force re-ARP)
 ip neigh flush dev eth0 to 10.0.0.1
+```
 
 Asymmetric routing
 
