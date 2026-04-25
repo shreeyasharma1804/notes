@@ -522,37 +522,57 @@ ping -c 3 -s 1200 -M do <target>  # works = confirms MTU is the issue
 tracepath <target>                 # reports path MTU at each hop
 ```
 
-Error: “Intermittent packet loss — hard to reproduce”
+### Error: “Intermittent packet loss — hard to reproduce”
 
-# 1. Run mtr for several minutes — get statistically meaningful loss %
+- Run mtr for several minutes — get statistically meaningful loss %
+
+```bash
 mtr --report --report-cycles 120 <target>
+```
 
-# 2. Check interface error counters — driver-level drops
+- Check interface error counters — driver-level drops
+
+```bash
 ip -s link show eth0
+```
 
-# 4. Check NIC ring buffer — small ring = drops under burst
+- Check NIC ring buffer — small ring = drops under burst
+
+```bash
 ethtool -g eth0
 # Increase RX ring:
 ethtool -G eth0 rx 4096
+```
 
-# 5. Check for ARP table exhaustion (drops silent at L3)
+- Check for ARP table exhaustion (drops silent at L3)
+
+```bash
 ip neigh show | wc -l
+```
 
-# 6. If loss is between specific hosts only, check for duplex mismatch
+# 6. If loss is between specific hosts only, check for duplex mismatch between the host and the switch
+
+```bash
 ethtool eth0 | grep -i duplex
+```
 
-Error: “High latency — not a loss issue”
+### Error: “High latency — not a loss issue”
 
-# 1. Baseline — measure RTT at different times
-ping -c 100 -i 0.2 <target> | tail -1   # min/avg/max/mdev
+-  mtr to isolate which hop adds latency
 
-# 2. mtr to isolate which hop adds latency
+```bash
 mtr --report -c 30 <target>
+```
 
-# 4. Check for interrupt coalescing — NIC batching ACKs adds latency
+- Check for interrupt coalescing — NIC batching ACKs adds latency
+
+Interrupt coalescing is the batching of requests at NIC such that multiple requests cause one interrupt. This is a tradeeoff between latency and CPU utilization.
+
+```bash
 ethtool -c eth0
 # For latency-sensitive workloads, lower coalescing:
 ethtool -C eth0 rx-usecs 50   # default is often 100-200µs
+```
 
 # 5. Check IRQ affinity — all NIC interrupts on CPU 0 = bottleneck
 cat /proc/interrupts | grep eth0
@@ -610,4 +630,8 @@ iperf3 -c <receiver-ip> -t 30 -P 4    # 4 parallel streams, 30 seconds
 watch -n1 'ethtool -S eth0 | grep -i drop'
 watch -n1 'cat /proc/net/softnet_stat'
 
-HTML 12997 characters 2555 words 330 paragraphs
+### Buffers
+
+```
+Wire → NIC → [NIC ring buffer] → Kernel (skb) → [Socket receive buffer] → Application
+```
