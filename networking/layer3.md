@@ -20,9 +20,11 @@ sysctl net.ipv4.ip_forward
 
 - DNAT or PREROUTING: The destination IP of the packet is changed.
 
-- SNAT or POSTROUTING: The source IP of the packet is changed. Also called Masquerading. (The new IP is the IP of the interface the packet is 
+- SNAT or POSTROUTING: The source IP of the packet is changed. Also called Masquerading. (The new IP is the IP of the interface the packet is leaving through).
+ 
 - Example:
 
+```
 HostA → RouterA → RouterB → HostB
 
 HostA: 192.168.1.10/24, GW = 192.168.1.1 (Router A)
@@ -44,16 +46,17 @@ The NAT chain is executed once, Prerouting is executed when the packet enters th
 
 NAT chain: 
      -  Prerouting
-     -  Check the routing table: 172.16.0.10 → send via eth1, next-hop 10.0.0.2
+     -  Check the routing table: 172.16.0.10 → send via eth1
      -  Packet reached eth1
      -  Postrouting: SNAT is performed and conntrack table entry is created
 
 The packet reaches eth0 on Router B
 
 The same actions are performed by Router B for the packet to reach to HostB
+```
+- iptable
 
-    iptable
-
+```
 sudo iptables -t nat -L -n -v
 
 Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
@@ -81,6 +84,7 @@ Chain DOCKER (2 references)
  pkts bytes target     prot opt in     out     source               destination         
     0     0 DNAT       tcp  --  !br-37864d9fbcbf *       0.0.0.0/0            0.0.0.0/0            tcp dpt:9093 to:172.18.0.2:9093
     0     0 DNAT       tcp  --  !br-37864d9fbcbf *       0.0.0.0/0            0.0.0.0/0            tcp dpt:19093 to:172.18.0.2:19093
+```
 
 prot: Protocol
 target: The next chain to jump to
@@ -95,106 +99,119 @@ POSTROUTING: Applied when a packet is leaving an interface
 DOCKER: Specific rules for published ports
 INPUT: Destination IP ∈ host’s IP addresses
 OUPUT:Source IP ∈ host’s IP addresses
-Docker to Docker
+
+#### Docker to Docker
 
 Pure L2 forwarding using the bridge (virtual switch). Name resolution through /etc/hosts file which is populated when a new bridge network is created and containers are connected to it.
-Docker to Internet NAT
 
-    The packet is generated inside the container and routed to the gateway address.
-    The packet reaches the host veth.
-    PREROUTINGrules are applied
-    The condition ADDRTYPE match dst-type LOCALis not met in the PREROUTING chain
-    The packet is routed according to the kernel routing table and reaches the interface according to the routing table.
-    Now the POSTROUTING rule is applied
-    According to the table above, for any input interface and a non docker bridge output interface, the source IP belonging to the docker subnet and a foreign destination IP, the packet is MASQUERADED (SNAT to the host IP)
+#### Docker to Internet NAT
 
-Internet to Docker NAT (Response)
+- The packet is generated inside the container and routed to the gateway address.
+- The packet reaches the host veth.
+- PREROUTING rules are applied.
+- The condition ADDRTYPE match dst-type LOCALis not met in the PREROUTING chain
+- The packet is routed according to the kernel routing table and reaches the interface according to the routing table.
+- Now the POSTROUTING rule is applied
+- According to the table above, for any input interface and a non docker bridge output interface, the source IP belonging to the docker subnet and a foreign destination IP, the packet is MASQUERADED (SNAT to the host IP)
 
-    Consider a packet:
+#### Internet to Docker NAT (Response)
 
+- Consider a packet:
+
+```
 Client: 192.168.1.10
 Router (NAT): 203.0.113.1
 Internet Server: 8.8.8.8:80
+```
 
-    Original packet: 192.168.1.10:54321 → 8.8.8.8:80
-    Router performs SNAT and changes the packet to: 203.0.113.1:40000 → 8.8.8.8:80
-    Conntrack entry
+- Original packet: 192.168.1.10:54321 → 8.8.8.8:80
+- Router performs SNAT and changes the packet to: 203.0.113.1:40000 → 8.8.8.8:80
+- Conntrack entry
 
+```
 <src>                  <dst>           <host>
 192.168.1.10:54321  8.8.8.8:80   203.0.113.1:40000
+```
 
-    Server sends response to: 8.8.8.8:80 → 203.0.113.1:40000
-    Router finds the conntrack entry for port 40000, performs DNAT and changes the packet to: 8.8.8.8:80 -> 192.168.1.10:54321
+- Server sends response to: 8.8.8.8:80 → 203.0.113.1:40000
+- Router finds the conntrack entry for port 40000, performs DNAT and changes the packet to: 8.8.8.8:80 -> 192.168.1.10:54321
 
 The kernel always check the conntrack table before the iptable
 
+```
 sudo conntrack -L
+```
 
-Routed according to the mapping in the conntrack table
+- Routed according to the mapping in the conntrack table
+
+
 NAT table for port forwarding
 
-    Redirecting traffic arriving on one IP/port to another IP/port.
-    Requires IP forwarding to be enabled
-    Uses NAT
-    Enable port forwarding:
+- Redirecting traffic arriving on one IP/port to another IP/port.
+- Requires IP forwarding to be enabled
+- Uses NAT
+- Enable port forwarding:
 
+```
 sudo iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 192.168.1.100:80
+```
+- Used in docker and kubectl port forwarding commands.
+- When we port forward in docker, the following happens:
 
-    Used in docker and kubectl port forwarding commands.
-    When we port forward in docker, the following happens:
-        Connection via host_ip: port (ex. localhost:8080)
-        In the iptable, the PREROUTING chain meets the packet criteria
-        The DOCKER chain contains the port forwarding rules
-        DNAT is performed
-        The packet is routed to the docker_ip:port
+ ``` 
+Connection via host_ip: port (ex. localhost:8080)
+In the iptable, the PREROUTING chain meets the packet criteria
+The DOCKER chain contains the port forwarding rules
+DNAT is performed
+The packet is routed to the docker_ip:port
+```
 
-OSPF (Open shortest path first)
+### OSPF (Open shortest path first)
 
-    Used for routers within an AS (Example, data center)
+- Used for routers within an AS (Example, data center)
 
 Algorithm:
 
-    When a new router is added to the network, it advertises all the subnets it can connect to using Link State Advertisement (LSA)
-    All the routers store this information and create a Link State Database (LSDB)
-    The cost of connection between 2 routers is calculated based on the bandwidth of the connection between the 2 routers (Cost = Reference Bandwidth / Interface Bandwidth)
-    Dijikstra is run over the network topology to construct the shortest distances to reach all the reachable subnets (with the least cost)
+- When a new router is added to the network, it advertises all the subnets it can connect to using Link State Advertisement (LSA)
+- All the routers store this information and create a Link State Database (LSDB)
+- The cost of connection between 2 routers is calculated based on the bandwidth of the connection between the 2 routers (Cost = Reference Bandwidth / Interface Bandwidth)
+- Dijikstra is run over the network topology to construct the shortest distances to reach all the reachable subnets (with the least cost)
 
-BGP
+### BGP
 
-    Used for routing between AS
-    A router does not know the entire network topology, just the best way to reach an AS as advertised by the AS’s connected to it.
-    All the paths are stored in the BGP DB
-    Only the best path is stored in the routing table.
+- Used for routing between AS
+- A router does not know the entire network topology, just the best way to reach an AS as advertised by the AS’s connected to it.
+- All the paths are stored in the BGP DB
+- Only the best path is stored in the routing table.
 
-Tunneling
+### Tunneling
 
 Tunneling is the process of encapsulating one network protocol’s data inside another protocol to securely or logically transmit it across a network.
 
-    SSH Tunneling
-    Application-layer data (e.g., HTTP, DB traffic, shell input/output) is encapsulated inside the Layer 4 SSH protocol, which is then carried over a single TCP connection.
+- SSH Tunneling: Application-layer data (e.g., HTTP, DB traffic, shell input/output) is encapsulated inside the Layer 4 SSH protocol, which is then carried over a single TCP connection.
 
-    VXLAN
-    Layer 3 data is encapsulated and sent over layer 2 to achieve the k8s principle that all pods belong to the same cidr.
+- VXLAN: Layer 3 data is encapsulated and sent over layer 2 to achieve the k8s principle that all pods belong to the same cidr.
 
-IP forwarding
+### IP forwarding
 
-    When IP Forwarding is DISABLED (default on most systems)
+When IP Forwarding is DISABLED (default on most systems), The kernel acts as a normal end-host. When it receives a packet on one interface whose destination IP is not its own, it simply drops the packet.
 
-The kernel acts as a normal end-host. When it receives a packet on one interface whose destination IP is not its own, it simply drops the packet.
-
+```
 [Host A] --> [Linux Machine] --> ❌ packet dropped (not for me)
+```
 
-    When IP Forwarding is ENABLED
+When IP Forwarding is ENABLED, The kernel acts as a router. When it receives a packet on one interface, it looks up the destination IP in its routing table and, if a route exists, forwards the packet out through the appropriate interface — even if that interface is different from the one it arrived on.
 
-The kernel acts as a router. When it receives a packet on one interface, it looks up the destination IP in its routing table and, if a route exists, forwards the packet out through the appropriate interface — even if that interface is different from the one it arrived on.
-
+```
 [Host A: 192.168.1.10]                    [Host B: 10.0.0.20]
         |                                          |
    [eth0: 192.168.1.1]---[Linux Router]---[eth1: 10.0.0.1]
                            ✅ forwards packet
+```
 
 Docker automatically enables IP forwarding on the host to allow Internet -> Docker interface access
 
+```
 Internet
    |
 [eth0: 203.0.113.5]        ← public-facing interface (packet arrives here)
@@ -207,6 +224,7 @@ Internet
 
 systl -a | grep ip_forward
 net.ipv4.ip_forward =  1
+```
 
 Troubleshooting
 
