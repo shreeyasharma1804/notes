@@ -419,20 +419,40 @@ pkt = IP(dst="8.8.8.8", options=[IPOption_LSRR(["1.1.1.1","2.2.2.2"])])/ICMP()
 send(pkt)
 ```
 
-ICMP behaviour
+### ICMP behaviour
 
-# Respond to broadcast pings (disable — Smurf attack vector)
+# Respond to broadcast pings
+
+- Broadcast pings are sent to a broadcast IP address and all machines in the subnet reply to it.
+- Should be disabled.
+
+```bash
+# Send a broadcast ping
+ping -b <broadcast_ip>
+
+# Disable response to broadcast ping
 net.ipv4.icmp_echo_ignore_broadcasts = 1
+```
 
-# Ignore bogus ICMP error responses
+#### Ignore bogus ICMP error responses
+
+- ICMP error messages that are invalid, irrelevant, or maliciously crafted, and don’t correspond to a legitimate packet you actually sent.
+- Fake ICMP can can cause errors like, decrease mcu even if not required, think that destination is unreachable etc
+
+```bash
 net.ipv4.icmp_ignore_bogus_error_responses = 1
+```
 
-# Rate limit ICMP replies (prevents ICMP flood amplification)
-net.ipv4.icmp_ratelimit = 1000
-net.ipv4.icmp_ratemask = 6168
+#### Rate limit ICMP replies (prevents ICMP flood amplification)
 
-ARP tuning (important on hosts with many peers)
+```bash
+net.ipv4.icmp_ratelimit = 1000 # 1 ICMP error per second. This avoids sending ICMP errors for repeated bad packets.
+```
 
+#### ARP tuning (important on hosts with many peers)
+
+
+```bash
 # How long to cache ARP entries (seconds)
 net.ipv4.neigh.default.gc_stale_time = 60
 
@@ -443,6 +463,7 @@ net.ipv4.neigh.default.gc_thresh3 = 4096   # hard limit, entries dropped
 
 # Check current ARP table size
 ip neigh show | wc -l
+```
 
 Error: “Service is unreachable from some hosts but not others”
 
