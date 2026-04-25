@@ -378,20 +378,46 @@ tcpdump -i wlo1 -nn icmp
 tcpdump -i wlo1 -nn 'ip[6:2] & 0x1fff != 0'   # Capture all packets where the fragment offset in IP headers is not 0
 ```
 
-sysctl properties
+### sysctl properties
 
-# Enable IP forwarding (required on routers, LB nodes, hosts with multiple interfaces)
+#### Enable IP forwarding (required on routers, LB nodes, hosts with multiple interfaces and port forwarding)
+```
 net.ipv4.ip_forward = 1
+```
 
-# Reverse path filtering — drops packets where source IP doesn't match routing table
-# 0 = off, 1 = strict, 2 = loose
-# Set to 2 (loose) if you have asymmetric routing
+#### Reverse path filtering
+
+- Packet arrives on interface ethX with source IP S.
+- Kernel looks up the route to S (a normal routing-table lookup).
+- Compare the egress interface from that lookup with the ingress interface:
+- Match → accept
+- Mismatch → drop (depending on mode)
+
+- 0 = off, 1 = strict, 2 = loose
+- Set to 2 (loose) if you have asymmetric routing
+
+```bash
 net.ipv4.conf.all.rp_filter = 1
 net.ipv4.conf.default.rp_filter = 1
+```
 
-# Accept source routing (almost always leave off)
-# System will not honor the path specified by sender
+#### Accept source routing 
+
+- Almost always leave off
+- System will not honor the path specified by sender
+
+```bash  
 net.ipv4.conf.all.accept_source_route = 0
+```
+
+Example of source routing:
+
+```python
+from scapy.all import *
+
+pkt = IP(dst="8.8.8.8", options=[IPOption_LSRR(["1.1.1.1","2.2.2.2"])])/ICMP()
+send(pkt)
+```
 
 ICMP behaviour
 
