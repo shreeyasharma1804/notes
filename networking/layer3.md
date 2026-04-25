@@ -237,21 +237,27 @@ Troubleshooting
 
 ### Connectivity & reachability
 
-    MTU: Maximum transaction unit. The highest size of a TCP packet allowed in a network.
-    If a packet size > MTU, layer 3 fragmentation occurs. This is highly discouraged. Use the don’t fragment flag. This way, the packet is dropped and ICMP error is returned stating fragmantation needed
+- MTU: Maximum transaction unit. The highest size of a TCP packet allowed in a network.
+- If a packet size > MTU, layer 3 fragmentation occurs. This is highly discouraged. Use the don’t fragment flag. This way, the packet is dropped and ICMP error is returned stating fragmantation needed
 
-# Basic reachability — ICMP echo
+#### Basic reachability — ICMP echo
+
+```
 ping -c 10 <target>
 
 # With specific packet size (useful for MTU debugging)
 ping -c 5 -s 1472 <target>        # 1472 + 28 (IP+ICMP header) = 1500 MTU
 ping -c 5 -s 1400 -M do <target>  # don't-fragment bit set — forces PMTUD path
 # If the packet reaches, all the interfaces involved in this path support that MTU value. If not, the MTU value needs to be decreased.
+```
 
-# Trace the routing path
+#### Trace the routing path
+
+```
 traceroute <target>                # UDP by default (often blocked)
 traceroute -I <target>             # ICMP mode (more likely to get through)
 traceroute -T -p 443 <target>      # TCP mode on port 443 — bypasses ICMP blocks
+```
 
 # MTR — combines ping + traceroute, runs continuously
 mtr --report --report-cycles 60 <target>
