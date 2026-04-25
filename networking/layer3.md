@@ -228,14 +228,14 @@ net.ipv4.ip_forward =  1
 
 Troubleshooting
 
-    IP addressing & subnets: is the host reachable at all?
-    Routing tables: is the kernel sending packets to the right next hop?
-    ICMP — diagnostic protocol (ping, traceroute, MTU discovery)
-    MTU / fragmentation: packet size mismatches that silently kill throughput
-    Kernel IP forwarding & sysctl params: tuning how the kernel handles IP traffic
-    Packet loss & reachability: distinguishing L3 loss from L4 (TCP) loss
+- IP addressing & subnets: is the host reachable at all?
+- Routing tables: is the kernel sending packets to the right next hop?
+- ICMP — diagnostic protocol (ping, traceroute, MTU discovery)
+- MTU / fragmentation: packet size mismatches that silently kill throughput
+- Kernel IP forwarding & sysctl params: tuning how the kernel handles IP traffic
+- Packet loss & reachability: distinguishing L3 loss from L4 (TCP) loss
 
-Connectivity & reachability
+### Connectivity & reachability
 
     MTU: Maximum transaction unit. The highest size of a TCP packet allowed in a network.
     If a packet size > MTU, layer 3 fragmentation occurs. This is highly discouraged. Use the don’t fragment flag. This way, the packet is dropped and ICMP error is returned stating fragmantation needed
