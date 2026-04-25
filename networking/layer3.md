@@ -421,7 +421,7 @@ send(pkt)
 
 ### ICMP behaviour
 
-# Respond to broadcast pings
+#### Respond to broadcast pings
 
 - Broadcast pings are sent to a broadcast IP address and all machines in the subnet reply to it.
 - Should be disabled.
@@ -449,7 +449,7 @@ net.ipv4.icmp_ignore_bogus_error_responses = 1
 net.ipv4.icmp_ratelimit = 1000 # 1 ICMP error per second. This avoids sending ICMP errors for repeated bad packets.
 ```
 
-#### ARP tuning (important on hosts with many peers)
+### ARP tuning (important on hosts with many peers)
 
 
 ```bash
@@ -465,41 +465,62 @@ net.ipv4.neigh.default.gc_thresh3 = 4096   # hard limit, entries dropped
 ip neigh show | wc -l
 ```
 
-Error: “Service is unreachable from some hosts but not others”
+### Error: “Service is unreachable from some hosts but not others”
 
-# 1. Check if you can reach the host at all
+- Check if you can reach the host at all
+  
+```bash
 ping -c 5 <target>
+```
 
-# 2. Traceroute to find where it stops
+- Traceroute to find where it stops
+  
+```bash
 mtr --report -c 20 <target>
+```
 
-# 3. Check routing table on the source host
+- Check routing table on the source host
+
+```bash
 ip route get <target-ip>
+```
 
-# 4. Check if the target host has a route back
+- Check if the target host has a route back
+
+```bash
 # (ssh to target)
 ip route get <source-ip>
+```
 
-# 5. Check for rp_filter drops (asymmetric routing dropping packets)
-# On the target:
-cat /proc/net/netstat | grep -i rpf
-# or check:
+- Check for rp_filter drops (asymmetric routing dropping packets)
+
+```bash
 sysctl net.ipv4.conf.all.rp_filter
+```
 
-# 6. Check iptables isn't dropping at L3
+- Check iptables isn't dropping at L3
+
+```
 iptables -L -n -v | grep DROP
 iptables -t raw -L -n -v          # pre-routing drops
+```
 
-Error: “Connection works for small transfers, fails or stalls for large ones”
+### Error: “Connection works for small transfers, fails or stalls for large ones”
 
 This is almost always MTU.
 
-# 1. Confirm with sized pings
+- Confirm with sized pings
+
+```bash
 ping -c 3 -s 1472 -M do <target>  # fails = MTU problem
 ping -c 3 -s 1200 -M do <target>  # works = confirms MTU is the issue
+```
 
-# 2. Find the path MTU
+- Find the path MTU
+
+```bash
 tracepath <target>                 # reports path MTU at each hop
+```
 
 Error: “Intermittent packet loss — hard to reproduce”
 
