@@ -317,7 +317,7 @@ ip route show table all
 ip route get 8.8.8.8
 ```
 
-# Show ARP cache (useful when packets aren't leaving the host interface)
+#### Show ARP cache (useful when packets aren't leaving the host interface)
 
 ```
 ip neigh show
@@ -327,14 +327,29 @@ ip neigh show dev eth0
 ip neigh flush dev eth0 to 10.0.0.1
 ```
 
-Asymmetric routing
+#### Asymmetric routing
 
-# Asymmetric routing — packets leave via eth0, replies come back via eth1
-# Can cause stateful firewall drops. Check:
+- Asymmetric routing — packets leave via eth0, replies come back via eth1.
+- Asymmetric routing and stateful firewalls do not work together.
+- Stateful firewalls: Placed at the network edge of, for example, a DMZ
+
+```
+Internet -> firewall -> Internal network
+
+The fireall maintains a table everytime a request is sent, containing:
+(src IP, src port, dst IP, dst port, protocol)
+
+If a response is coming from the internet, the firewall checks if the entry exists in the table, if not, the packet is dropped
+
+But in asymmetric routing (common in BGP), the response packet might follow a different path and land on a different firewall which does not contain the request entry.
+```
+
+- To check if the network is asymmetric:
+
+``` 
 ip route get <src-ip>
 ip route get <dst-ip>
-
-# If both these interfaces are different, then the routing is asymmetric.
+```
 
 Stateful firewalls maintain a table
 
