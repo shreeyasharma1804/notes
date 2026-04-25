@@ -351,36 +351,32 @@ ip route get <src-ip>
 ip route get <dst-ip>
 ```
 
-Stateful firewalls maintain a table
+### Interface & IP inspection
 
-(src IP, src port, dst IP, dst port, protocol)
+#### Show all interfaces with IPs
 
-Interface & IP inspection
-
-# Show all interfaces with IPs
+```
 ip addr show
+```
 
-# Check interface stats — errors, drops, overruns
+#### Check interface stats — errors, drops etc
+
+```
 ip -s link show eth0
-# or
-cat /proc/net/dev
+```
 
-Packet capture at L3
+#### Packet capture
 
-# Capture IP traffic to/from a host
-tcpdump -i eth0 -nn host 10.10.0.5
+```
+# Captures and displays all packets on interface wlo0 to or from 10.10.0.5, without resolving names.
+tcpdump -i wlo1 -nn host 10.10.0.5
 
-# Capture only ICMP
-tcpdump -i eth0 -nn icmp
+# Capture all ICMP traffic
+tcpdump -i wlo1 -nn icmp
 
 # Capture and check for IP fragmentation
-tcpdump -i eth0 -nn 'ip[6:2] & 0x1fff != 0'   # fragmented packets
-
-# Capture ICMP "fragmentation needed" messages (MTU probe responses)
-tcpdump -i eth0 -nn 'icmp[icmptype] == 3 and icmp[icmpcode] == 4'
-
-# Write to file for Wireshark analysis
-tcpdump -i eth0 -w /tmp/capture.pcap -s 0 host 10.10.0.5
+tcpdump -i wlo1 -nn 'ip[6:2] & 0x1fff != 0'   # Capture all packets where the fragment offset in IP headers is not 0
+```
 
 sysctl properties
 
