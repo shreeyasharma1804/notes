@@ -246,7 +246,7 @@ Troubleshooting
 ping -c 10 <target>
 
 # With specific packet size (useful for MTU debugging)
-ping -c 5 -s 1472 <target>        # 1472 + 28 (IP+ICMP header) = 1500 MTU
+ping -c 5 -s 1472 <target>        # 1472 + 28 (IP+ICMP header) = 1500 MTU. If the MTU is huge, the packet is either fragmented or dropped (if fragmentation is not supported by any device in the hops). This results is a 100% packet loss
 ping -c 5 -s 1400 -M do <target>  # don't-fragment bit set — forces PMTUD path
 # If the packet reaches, all the interfaces involved in this path support that MTU value. If not, the MTU value needs to be decreased.
 ```
@@ -255,6 +255,23 @@ ping -c 5 -s 1400 -M do <target>  # don't-fragment bit set — forces PMTUD path
 
 ```
 traceroute <target>                # UDP by default (often blocked)
+---------------------------
+traceroute example.com                                                              ↵ 1
+traceroute: Warning: example.com has multiple addresses; using 172.66.147.243
+traceroute to example.com (172.66.147.243), 64 hops max, 40 byte packets
+ 1  192.168.1.1 (192.168.1.1)  3.977 ms  4.174 ms  3.649 ms
+ 2  223.178.8.1 (223.178.8.1)  5.212 ms  6.873 ms  6.913 ms
+ 3  nsg-corporate-61.95.187.122.airtel.in (122.187.95.61)  7.813 ms  6.186 ms
+    nsg-corporate-57.95.187.122.airtel.in (122.187.95.57)  7.194 ms
+ 4  116.119.33.230 (116.119.33.230)  37.676 ms  20.743 ms  24.678 ms
+ 5  * * *
+ 6  162.158.226.81 (162.158.226.81)  26.494 ms
+    162.158.226.77 (162.158.226.77)  21.478 ms
+    162.158.226.21 (162.158.226.21)  32.458 ms
+ 7  172.66.147.243 (172.66.147.243)  29.632 ms  23.086 ms  25.599 ms
+---------------------------
+
+
 traceroute -I <target>             # ICMP mode (more likely to get through)
 traceroute -T -p 443 <target>      # TCP mode on port 443 — bypasses ICMP blocks
 ```
