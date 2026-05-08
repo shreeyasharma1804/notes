@@ -52,9 +52,8 @@ $$
 Euler's theorum:
 
 $$
-a^{\phi(b)} mod b = 1
+$$a^{\phi(b)} \bmod b = 1 \text{ where } \gcd(a,b) = 1$$
 $$
-where gcd(a,b) = 1
 
 RSA:
 
