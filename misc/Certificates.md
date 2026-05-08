@@ -1,6 +1,4 @@
-#### Certificate types:
-
-Details
+### Details
 
 - SAN
 - Subject CN
@@ -9,29 +7,29 @@ Details
 - Validity
 - Public Key: (Modulus and public key exponent)
 - Fingerprint: Hash value of the entire certificate content
-- Signature
+- Signature: The CA signs the certificate data using the private key. (This establishes that the server actually has the private key)
 
-Certificate is verified by matching the CN, SAN with the url.
+### Verification
+ 
+- The browser verifies the certificate by matching the CN/SAN with the host.
+- Certificate hierarchy is verified by matching the decrypted value of the signature(using next certificate's public key) and the locally calculated hash value of certificate content.
 
-Certificate hierarchy is verified by matching the decrypted value of the signature(using next certificate's public key) and the hash value of certificate details.
+### Generation
 
-Edge certificates: The certificate presented by the proxy to the user
-Origin certificates: The certificate presented by the proxy to the upstream server
-Client certificates: The certificate presented by the user for mutualauth
-
-**Key Generation**
-
-Private key generation
+- Private key generation
 ```bash
 openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048
 ```
-Public key extraction
+
+- Public key extraction
 ```bash
 openssl rsa -in private.key -pubout -out public.pem
 ```
-Generate CSR
+
+- Generate CSR
 
 CSR requires the private key to establish that the private key is owned by the csr owner
+
 ```bash
 shreeya@Shreeyas-MacBook-Air ~/Documents> openssl req -new -key private.key -out request.csr
 You are about to be asked to enter information that will be incorporated
@@ -50,7 +48,7 @@ Common Name (eg, fully qualified host name) []:shreeya.online
 Email Address []:shreeyasharmma@gmail.com
 ```
 
-Self signed certificate generation (pem format)
+- Self signed certificate generation (pem format)
 
 Self signed certificates do not contain inter, root certificates. Only server signed with same subject and issuer
 ```bash
