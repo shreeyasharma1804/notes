@@ -2,13 +2,13 @@
 
 Details
 
-- CN, SAN
-- Subject
-- Issuer (Same for root cert)
-- Serial number
+- SAN
+- Subject CN
+- Issuer CN (Subject and Issuer CN is same for root cert)
+- Serial number (Unique ID assigned to the certificate by the CA)
 - Validity
 - Public Key: (Modulus and public key exponent)
-- Fingerprint: Hash value of the entire certificate
+- Fingerprint: Hash value of the entire certificate content
 - Signature
 
 Certificate is verified by matching the CN, SAN with the url.
