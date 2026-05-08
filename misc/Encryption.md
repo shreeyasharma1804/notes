@@ -88,9 +88,7 @@ m^{k\phi(n)} mod n = 1
 $$
 
 and
-$$
-m^{ed} mod n = m
-$$
+$$m^{ed} \bmod n = m$$
 
 
 #### Random number generation
