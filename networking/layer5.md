@@ -2,7 +2,7 @@
 
 View the handshake data with `tls.handshake`
 
-## TLS 1.
+## TLS 1.2
 ```bash
 curl --tls-max 1.2 --tlsv1.2 https://example.com
 sudo tcpdump -i any -s 0 -w tls_handshake.pcap port 443
@@ -37,7 +37,7 @@ Master Secret=PRF(PreMasterSecret, ClientRandom || ServerRandom)
 - Extension: application_layer_protocol_negotiation
 - Extension: supported_groups: The elliptical curves supported by the clients (For ECDHA)
 - Extension: signature_algorithms: The signature algorithms supported by the client
-- Session ID: If the client and server have the sesion ID within TTL, no handshake occurs
+- Session ID: If the client and server have the sesion ID within TTL, then both sides reuse previous master secret to derive fresh symmetric keys.
 
 
 #### RTT1: ServerHello
