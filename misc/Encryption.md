@@ -104,7 +104,7 @@ For sender B, consider its private key value to be `b`
 
 A calculates
 $$
-(g^a)mod(n)
+g^{a} \bmod n
 $$
 
 B calculates
