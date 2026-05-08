@@ -72,6 +72,7 @@ keytool -importkeystore \
 ```
 
 Encoding: Binary
+
 Contains: Public + Private Key
 
 View the certificates in pem format:
@@ -80,7 +81,6 @@ openssl pkcs12 -info -in <file_name>
 ```
 One file can contain only one private key with one or more certificates
 
-Implements the pkcs standards and is an open source replacement for jks format
 
 Add certificate to java trust store (pem)
 ```bash
