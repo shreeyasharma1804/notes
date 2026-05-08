@@ -49,7 +49,7 @@ Master Secret=PRF(PreMasterSecret, ClientRandom || ServerRandom)
 - Server key exchange: Sent if algorithms like diffie helman are used which require key sharing
 	- curve name
 	- Public key: $g^amod(n)$ for DHE and $a.G$ for ECDHE
-	- Signature. (server random, client random, dh params) are hashed and signed using the server private key. he lien erifies the signature. The dh params are g,n. These params are signed as an authentication that the server sent these params for this session(session random values)
+	- Signature. (server random, client random, dh params) are hashed and signed using the server private key. The client verifies the signature. The dh params are g,n. These params are signed as an authentication that the server sent these params for this session(session random values)
 - Server hello done
 - After this, both the client and the server can calculate the pre-master key.
 - `MasterSecret = PRF(PreMasterSecret, ClientRandom || ServerRandom)`
