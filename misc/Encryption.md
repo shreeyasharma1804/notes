@@ -51,9 +51,7 @@ $$
 
 Euler's theorum:
 
-$$
 $$a^{\phi(b)} \bmod b = 1 \text{ where } \gcd(a,b) = 1$$
-$$
 
 RSA:
 
