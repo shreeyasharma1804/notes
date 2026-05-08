@@ -25,7 +25,7 @@ Client                                Server
 
 #### RTTT:1 ClientHello
 
-- Supoorted ciphers: All the ciphers supported by the client (Example, `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`)
+- Supported ciphers: All the ciphers supported by the client (Example, `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`)
 - Client Random:
 
 ```
