@@ -136,7 +136,7 @@ $$g^{a}*g^{b} = (c_1n + k_1)(c_2n + k_2)$$
 
 $$g^{a}*g^{b} = c_1c_2n^{2} + c_1k_2n + c_2k_1n + k_1k_2$$
 
-$$g^{a}*g^{b} \bmod n = k_1*k_2$$
+$$g^{a}*g^{b} \bmod n = k_1k_2$$
 
 Both sides have the key:
 
@@ -145,6 +145,7 @@ $$g^{a+b} \bmod n$$
 The shared secret is:
 
 $$g^{ab} \bmod n$$
+
 Which required knowing either a or b.
 
 
