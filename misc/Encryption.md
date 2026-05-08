@@ -102,10 +102,9 @@ For sender A, consider its private key value to be `a`
 
 For sender B, consider its private key value to be `b`
 
-A calculates
-$$
-g^{a} \bmod n
-$$
+A calculates:
+
+$$g^{a} \bmod n$$
 
 B calculates
 $$
