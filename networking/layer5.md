@@ -2,7 +2,7 @@
 
 View the handshake data with `tls.handshake`
 
-## LS 1.
+## TLS 1.
 ```bash
 curl --tls-max 1.2 --tlsv1.2 https://example.com
 sudo tcpdump -i any -s 0 -w tls_handshake.pcap port 443
@@ -12,9 +12,9 @@ sudo tcpdump -i any -s 0 -w tls_handshake.pcap port 443
 Client                                Server
   |                                     |
   |-------- ClientHello --------------->|  (supported cihers ersion)
-  |<------- Serverelo ----------------|  (chosen cipher, ertificate)
+  |<------- ServerHello ----------------|  (chosen cipher, ertificate)
   |<------- Certificate ----------------|
-  |-------- eeyxchange --------->|  (key material)
+  |-------- Keyxchange --------->|  (key material)
   |-------- ChangeCipherSpec ---------->|
   |-------- Finished ------------------>|
   |<------- ChangeCipherSpec -----------|
@@ -25,20 +25,18 @@ Client                                Server
 
 #### RTTT:1 ClientHello
 
-- Cipher Ss All c i supported by he client (Example, `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`)
+- Supoorted ciphers: All the ciphers supported by the client (Example, `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`)
 - Client Random:
 
 ```
-# Consider the asymmetric key is rraten difiean
-
 The server and client random are used along with the shared secret to create the MasterSecret:
 Master Secret=PRF(PreMasterSecret, ClientRandom || ServerRandom)
 ```
 
-- Extension: Server name name=example.com
+- Extension: Server name name=example.com (SNI)
 - Extension: application_layer_protocol_negotiation
 - Extension: supported_groups: The elliptical curves supported by the clients (For ECDHA)
-- Extension: signature_algorithms: The signate a ms suort by the client
+- Extension: signature_algorithms: The signature algorithms supported by the client
 - Session ID: If the client and server have the sesion ID within TTL, no handshake occurs
 
 
