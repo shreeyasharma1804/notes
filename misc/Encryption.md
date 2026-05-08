@@ -88,6 +88,7 @@ m^{k\phi(n)} mod n = 1
 $$
 
 and
+
 $$m^{ed} \bmod n = m$$
 
 
