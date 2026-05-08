@@ -55,7 +55,7 @@ Self signed certificates do not contain inter, root certificates. Only server si
 openssl x509 -req -in request.csr -signkey private.key -out certificate.crt -days 365
 ```
 
-Generate p12 file
+### Generate p12 file
 
 ```bash
 openssl pkcs12 -export \
