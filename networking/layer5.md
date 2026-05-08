@@ -66,7 +66,7 @@ TLS records have a header like:
 ```
 ContentType | Version | Length
 ```
-`CaneipherS` s identified by:
+`ChangeCipherSpec` is identified by:
 ```
 ContentType = 20
 ```
