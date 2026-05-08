@@ -55,7 +55,7 @@ Self signed certificates do not contain inter, root certificates. Only server si
 openssl x509 -req -in request.csr -signkey private.key -out certificate.crt -days 365
 ```
 
-### Generate p12 file
+### p12
 
 ```bash
 openssl pkcs12 -export \
@@ -70,6 +70,17 @@ keytool -importkeystore \
      -srckeystore certificate.p12 -srcstoretype PKCS12 \
      -destkeystore keystore.jks -deststoretype PKCS12
 ```
+
+Encoding: Binary
+Contains: Public + Private Key
+
+View the certificates in pem format:
+```bash
+openssl pkcs12 -info -in <file_name>
+```
+One file can contain only one private key with one or more certificates
+
+Implements the pkcs standards and is an open source replacement for jks format
 
 Add certificate to java trust store (pem)
 ```bash
