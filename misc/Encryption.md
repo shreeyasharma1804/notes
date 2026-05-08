@@ -1,6 +1,101 @@
 
 ### Encryption algorithms
 
+#### RSA
+
+Public key
+n: Very large number (p*q)
+e = exponent
+
+Private key:
+d: decryption coefficient
+p: very large prime
+q: very large prime
+
+Encrypted message:
+
+$$
+(m^e) mod n
+$$
+
+Decrypt the message using:
+
+$$
+m^{ed} mod n = m
+$$
+
+Proof:
+
+gcd(a,b) is the highest common divisor of both a and b.
+Coprimes: gcd(a,b)  = 1
+
+Euler's totient:
+
+$$
+\phi (n)
+$$
+
+Is the total number of coprimes of n
+
+If n is a prime number:
+
+$$
+\phi (n) = n-1
+$$
+
+If n is a product of 2 prime numbers p,q:
+
+$$
+\phi (n) = (p-1)(q-1)
+$$
+
+Euler's theorum:
+
+$$
+a^\phi(b) mod (b) = 1
+$$
+where gcd(a,b) = 1
+
+RSA:
+
+Choose e,d such that
+
+$$
+ed = 1+k\phi(n)
+$$
+
+Should satisfy:
+
+$$
+m^{ed} mod n = m
+$$
+
+Thus
+
+$$
+m^{1+k\phi(n)} mod n = m*m^{k\phi(n)} mod n
+$$
+
+By the eurlers theorum:
+
+$$
+m^{k\phi(n)} mod n = 1
+$$
+
+if m and n are coprimes
+
+Thus,
+
+$$
+m^{k\phi(n)} mod n = 1
+$$
+
+and
+$$
+m^{ed} mod n = m
+$$
+
+
 #### Random number generation
 - /dev/random
 
@@ -191,101 +286,6 @@ $$
 g^{ab}mod(n)
 $$
 Which required knowing either a or b.
-
-
-#### RSA
-
-Public key
-n: Very large number (p*q)
-e = exponent
-
-Private key:
-d: decryption coefficient
-p: very large prime
-q: very large prime
-
-Encrypted message:
-
-$$
-(m^e) mod n
-$$
-
-Decrypt the message using:
-
-$$
-m^{ed} mod n = m
-$$
-
-Proof:
-
-gcd(a,b) is the highest common divisor of both a and b.
-Coprimes: gcd(a,b)  = 1
-
-Euler's totient:
-
-$$
-\phi (n)
-$$
-
-Is the total number of coprimes of n
-
-If n is a prime number:
-
-$$
-\phi (n) = n-1
-$$
-
-If n is a product of 2 prime numbers p,q:
-
-$$
-\phi (n) = (p-1)(q-1)
-$$
-
-Euler's theorum:
-
-$$
-a^\phi(b) mod (b) = 1
-$$
-where gcd(a,b) = 1
-
-RSA:
-
-Choose e,d such that
-
-$$
-ed = 1+k\phi(n)
-$$
-
-Should satisfy:
-
-$$
-m^{ed} mod n = m
-$$
-
-Thus
-
-$$
-m^{1+k\phi(n)} mod n = m*m^{k\phi(n)} mod n
-$$
-
-By the eurlers theorum:
-
-$$
-m^{k\phi(n)} mod n = 1
-$$
-
-if m and n are coprimes
-
-Thus,
-
-$$
-m^{k\phi(n)} mod n = 1
-$$
-
-and
-$$
-m^{ed} mod n = m
-$$
 
 #### TPM
 
