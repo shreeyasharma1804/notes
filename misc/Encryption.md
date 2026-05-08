@@ -106,10 +106,9 @@ A calculates:
 
 $$g^{a} \bmod n$$
 
-B calculates
-$$
-(g^b)mod(n)
-$$
+B calculates:
+
+$$g^{b} \bmod n$$
 
 Since the above values can range between 1 to n, without figuring out the private value, they can be shared.
 
