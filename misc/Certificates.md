@@ -96,6 +96,7 @@ Encoding: Base64
 Contains: Public Key
 
 Can be read directly from the terminal.
+
 Identified by `-----BEGIN CERTIFICATE-----`
 
 
@@ -112,8 +113,8 @@ Keystore has entry type: PrivateKeyEntry
 Truststore has entry type: trustedCertEntry
 
 
-#### Check cert sent by server
+### Check cert sent by server
 
 ```bash
-openssl s_client -showcerts -connect http://google.com:443
+openssl s_client -showcerts -connect google.com:443
 ```
