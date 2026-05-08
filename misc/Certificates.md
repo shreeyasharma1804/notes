@@ -81,6 +81,7 @@ openssl pkcs12 -info -in <file_name>
 ```
 One file can contain only one private key with one or more certificates
 
+### pem
 
 Add certificate to java trust store (pem)
 ```bash
@@ -91,26 +92,11 @@ Add certificate to java trust store (pem)
          -storepass changeit
 ```
 
-#### Certificate formats
-
-- **pem**:
-
 Encoding: Base64
 Contains: Public Key
 
 Can be read directly from the terminal. Identified by `-----BEGIN CERTIFICATE-----`
 
-1. **p12**:
-Encoding: Binary
-Contains: Public + Private Key
-
-View the certificates in pem format:
-```bash
-openssl pkcs12 -info -in <file_name>
-```
-One file can contain only one private key with one or more certificates
-
-Implements the pkcs standards and is an open source replacement for jks format
 
 3. **jks**
 
