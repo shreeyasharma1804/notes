@@ -51,13 +51,13 @@ Master Secret=PRF(PreMasterSecret, ClientRandom || ServerRandom)
 	- Public key: $g^amod(n)$ for DHE and $a.G$ for ECDHE
 	- Signature. (server random, client random, dh params) are hashed and signed using the server private key. The client verifies the signature. The dh params are g,n. These params are signed as an authentication that the server sent these params for this session(session random values)
 - Server hello done
-- After this, both the client and the server can calculate the pre-master key.
-- `MasterSecret = PRF(PreMasterSecret, ClientRandom || ServerRandom)`
-- For cipher `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`: RSA is used for decrypting data encrypted using server private key. ECDHE is used for PreMasterSecret and AES encryption is used for encrypting all the data. The AES encryption uses the MasterSecret.
+- For cipher `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`: RSA is used for signature verification using the server public key in the certificate. ECDHE is used for PreMasterSecret and AES encryption is used for encrypting all the data. The AES encryption uses the MasterSecret.
 - The random values are temporary and not stored anywhere, thus, even if the server private keys are leaked, the `MasterSecret` can be never be computed, and the packets cannot  be decypted. This is forward secrecy
 
 #### RTT2
 - Client sends ECDHE public key
+- After this, both the client and the server can calculate the pre-master secret key (The shared diffie-hellman secret).
+- `MasterSecret = PRF(PreMasterSecret, ClientRandom || ServerRandom)`
 - Sets Change cipher spec to 1, which means the shared secret will be used to communicate from now on.
 - Encrypted handshake message is sent
 - Server also sets Change cipher spec to 1 and sends encrypted handshake message
