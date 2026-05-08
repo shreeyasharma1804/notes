@@ -1,7 +1,7 @@
 
-### Encryption algorithms
+## Encryption algorithms
 
-#### RSA
+### RSA
 
 - Public key
 `n`: Very large number (p*q)
@@ -24,7 +24,7 @@ $$
 m^{ed} mod n = m
 $$
 
-- Proof:
+#### Proof:
 
 gcd(a,b) is the highest common divisor of both a and b.
 Coprimes: gcd(a,b)  = 1
