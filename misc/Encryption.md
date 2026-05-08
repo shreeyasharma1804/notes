@@ -112,58 +112,39 @@ $$g^{b} \bmod n$$
 
 Since the above values can range between 1 to n, without figuring out the private value, they can be shared.
 
-Consider A
-Has:
-$$
-(g^a)mod(n)
-$$
+Consider A's public key:
 
-Recieves:
-$$
-(g^b)mod(n)
-$$
+$$g^{a} \bmod n$$
+
+And it recieves:
+
+$$g^{b} \bmod n$$
 
 Also:
-$$
-(g^a)mod(n) * (g^b)mod(n) = g^{a+b}mod(n)
-$$
+
+$$g^{a} \bmod n * g^{b} \bmod n = g^{a+b} \bmod n$$
 
 Proof:
 
-$$
-g^a = c_1n + k_1
-$$
+$$g^{a} = c_1n + k_1$$
 
-$$
-g^b = c_2n + k_2
-$$
+$$g^{b} = c_2n + k_2$$
 
-$$
-(g^a)mod(n)*(g^b)mod(n) = k_1k_2
-$$
+$$g^{a} \b mod n * g^{b} \bmod n = k_1*k_2$$
 
-$$
-g^a*g^b = (c_1n + k_1)*(c_2n + k_2)
-$$
+$$g^{a}*g^{b} = (c_1n + k_1)*(c_2n + k_2)$$
 
-$$
-g^a*g^b = c_1c_2n^2  + c_1k_2n + c_2k_1n + k_1k_2
-$$
+$$g^{a}*g^{b} = c_1*c_2*n^2  + c_1*k_2*n + c_2*k_1*n + k_1*k_2$$
 
-$$
-(g^a*g^b) mod(n) = k_1k_2
-$$
+$$g^{a}*g^{b} \bmod n = k_1*k_2$$
 
 Both sides have the key:
-$$
-g^{a+b}mod(n)
-$$
+
+$$g^{a+b} \bmod n$$
 
 The shared secret is:
 
-$$
-g^{ab}mod(n)
-$$
+$$g^{ab} \bmod n$$
 Which required knowing either a or b.
 
 
