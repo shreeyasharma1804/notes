@@ -3,29 +3,28 @@
 
 #### RSA
 
-Public key
-n: Very large number (p*q)
+- Public key
+`n`: Very large number (p*q)
+`e` = exponent
 
-e = exponent
+- Private key:
+`d`: decryption coefficient
+`p`: very large prime
+`q`: very large prime
 
-Private key:
-d: decryption coefficient
-p: very large prime
-q: very large prime
-
-Encrypted message:
+- Encrypted message:
 
 $$
 (m^e) mod n
 $$
 
-Decrypt the message using:
+- Decrypt the message using:
 
 $$
 m^{ed} mod n = m
 $$
 
-Proof:
+- Proof:
 
 gcd(a,b) is the highest common divisor of both a and b.
 Coprimes: gcd(a,b)  = 1
