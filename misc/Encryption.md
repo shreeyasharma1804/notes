@@ -134,14 +134,7 @@ $$g^{a} \bmod n * g^{b} \bmod n = k_1*k_2$$
 
 $$g^{a}*g^{b} = (c_1n + k_1)(c_2n + k_2)$$
 
-$$
-g^{a} \times g^{b}
-=
-c_1 c_2 n^{2}
-+ c_1 k_2 n
-+ c_2 k_1 n
-+ k_1 k_2
-$$
+$$g^{a}*g^{b} = c_1c_2n + c_1k_2n + c_2k_1n + k_1*k_2$$
 
 $$g^{a}*g^{b} \bmod n = k_1*k_2$$
 
