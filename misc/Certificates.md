@@ -95,7 +95,8 @@ Add certificate to java trust store (pem)
 Encoding: Base64
 Contains: Public Key
 
-Can be read directly from the terminal. Identified by `-----BEGIN CERTIFICATE-----`
+Can be read directly from the terminal.
+Identified by `-----BEGIN CERTIFICATE-----`
 
 
 3. **jks**
