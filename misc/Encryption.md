@@ -93,10 +93,10 @@ $$m^{ed} \bmod n = m$$
 
 ### Diffie-Hellman (Symmetric encryption)
 
-- Public key components:
-`n`: A very huge prime number (2000-4000 bits)
+Public key components:
+- `n`: A very huge prime number (2000-4000 bits)
 
-`g`(generator): A small number
+- `g`(generator): A small number
 
 For sender A, consider its private key value to be `a`
 
