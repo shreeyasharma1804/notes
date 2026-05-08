@@ -91,6 +91,81 @@ and
 
 $$m^{ed} \bmod n = m$$
 
+#### Diffie-Hellman (Symmetric encryption)
+
+Public key components:
+n: A very huge prime number (2000-4000 bits)
+g(generator): A small number
+
+For sender A, consider its private key value to be a
+For sender B, consider its private key value to be b
+
+A calculates
+$$
+(g^a)mod(n)
+$$
+
+B calculates
+$$
+(g^b)mod(n)
+$$
+
+Since the above values can range between 1 to n, without figuring out the private value, they can be shared.
+
+Consider A
+Has:
+$$
+(g^a)mod(n)
+$$
+
+Recieves:
+$$
+(g^b)mod(n)
+$$
+
+Also:
+$$
+(g^a)mod(n) * (g^b)mod(n) = g^{a+b}mod(n)
+$$
+
+Proof:
+
+$$
+g^a = c_1n + k_1
+$$
+
+$$
+g^b = c_2n + k_2
+$$
+
+$$
+(g^a)mod(n)*(g^b)mod(n) = k_1k_2
+$$
+
+$$
+g^a*g^b = (c_1n + k_1)*(c_2n + k_2)
+$$
+
+$$
+g^a*g^b = c_1c_2n^2  + c_1k_2n + c_2k_1n + k_1k_2
+$$
+
+$$
+(g^a*g^b) mod(n) = k_1k_2
+$$
+
+Both sides have the key:
+$$
+g^{a+b}mod(n)
+$$
+
+The shared secret is:
+
+$$
+g^{ab}mod(n)
+$$
+Which required knowing either a or b.
+
 
 #### Random number generation
 - /dev/random
@@ -207,81 +282,6 @@ $$
 $$
 
 Sieve of eratosthenes is used to increase this probability.
-
-#### Diffie-Hellman (Symmetric encryption)
-
-Public key components:
-n: A very huge prime number (2000-4000 bits)
-g(generator): A small number
-
-For sender A, consider its private key value to be a
-For sender B, consider its private key value to be b
-
-A calculates
-$$
-(g^a)mod(n)
-$$
-
-B calculates
-$$
-(g^b)mod(n)
-$$
-
-Since the above values can range between 1 to n, without figuring out the private value, they can be shared.
-
-Consider A
-Has:
-$$
-(g^a)mod(n)
-$$
-
-Recieves:
-$$
-(g^b)mod(n)
-$$
-
-Also:
-$$
-(g^a)mod(n) * (g^b)mod(n) = g^{a+b}mod(n)
-$$
-
-Proof:
-
-$$
-g^a = c_1n + k_1
-$$
-
-$$
-g^b = c_2n + k_2
-$$
-
-$$
-(g^a)mod(n)*(g^b)mod(n) = k_1k_2
-$$
-
-$$
-g^a*g^b = (c_1n + k_1)*(c_2n + k_2)
-$$
-
-$$
-g^a*g^b = c_1c_2n^2  + c_1k_2n + c_2k_1n + k_1k_2
-$$
-
-$$
-(g^a*g^b) mod(n) = k_1k_2
-$$
-
-Both sides have the key:
-$$
-g^{a+b}mod(n)
-$$
-
-The shared secret is:
-
-$$
-g^{ab}mod(n)
-$$
-Which required knowing either a or b.
 
 #### TPM
 
