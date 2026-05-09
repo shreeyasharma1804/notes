@@ -356,3 +356,18 @@ cat /etc/nsswicth.conf
 
 hosts:          files dns
 ```
+
+### Sudo
+
+- Sudo determines the user and group id of the iser running the comamand using `id`
+- Parse the sudoers policy in `/etc/sudoers`
+
+```bash
+alice ALL=(ALL) ALL
+user host = (runas) command
+%sudo ALL=(ALL:ALL) ALL %sudo: any member of group sudo
+```
+
+- If the user can execute the command, execute it.
+- Check if the user belongs to the sudo group.
+- Use NOPASSWD to allow executing a command without sudo password
