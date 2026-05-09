@@ -116,6 +116,12 @@ Minor number: The number used by the driver to identify the device
 
 `ctime`: The last time a file meta data was modified (Example permissions, link count etc)
 
+Check:
+
+```bash
+stat
+```
+
 Default time shown in `ls -la` is `mtime`.
 
 For `atime`: `ls -lu`
@@ -129,3 +135,5 @@ Check all open files:
 ```bash
 lsof
 ```
+
+The ls -la and size field in stat command report the actual file size in bytes
