@@ -143,3 +143,60 @@ To check the file disk usage:
 ```bash
 du -h <filename>
 ```
+
+### Systemctl
+
+- List all services:
+
+```bash
+systemctl list-units --type=service
+```
+
+- List all timers:
+
+```bash
+sudo systemctl list-unit-files --type=timer
+```
+
+- Edit a service:
+
+```bash
+sudo systemctl cat <service>
+sudo systemctl edit <service>
+```
+
+- Define the user of the process:
+
+```
+# /etc/systemd/system/<service>.service
+[Service]
+User=appuser
+Group=appuser
+```
+
+- User systemd
+
+Create a user specific systemd file:
+
+```bash
+~/.config/systemd/user/
+```
+
+Reload user systemd daemon
+
+```bash
+systemctl --user daemon-reload
+```
+
+Common operations
+
+```bash
+systemctl --user start myapp.service
+systemctl --user enable myapp.service
+```
+
+User systemd stops after the user logs out. To keep the service alive:
+
+```bash
+sudo loginctl enable-linger <username>
+```
