@@ -150,6 +150,48 @@ Which required knowing either a or b.
 
 $$(g^{b} \bmod n)^{a} \bmod n =g^{ab} \bmod n$$
 
+### Elliptic curves (Elliptic Curve Diffie-Hellman)
+
+Curve: 
+
+$$
+y^2 = x^3 + 7
+$$
+
+For 2 points P and Q, a line passing though them intersects the curve at -(P+Q)
+
+Consider a point G on the curve
+
+Consider A:
+
+$$
+A_{public} =  A_{private}G
+$$
+
+Consider B:
+
+$$
+B_{public} =  B_{private}G
+$$
+
+It’s computationally infeasible to find $A_{private}$ and $B_{private}$
+
+Shared key:
+
+$$
+B_{private}*A_{public} = B_{private}*A_{private}G = A_{private}*(B_{private}G) = A_{private}*B_{public}
+$$
+
+Thus, A encrypts using
+
+$$
+A_{private}*B_{public}
+$$
+
+B decrypts using
+$$
+B_{private}*A_{public}
+$$
 
 #### Random number generation
 - /dev/random
@@ -363,48 +405,5 @@ PR/pLKWGzP7slIq+SHp4h91JtxPXntjpxNbSq6kbvTw=
 shreeya@pop-os /e/nginx> sudo cat aes_key.bin | base64
 PR/pLKWGzP7slIq+SHp4h91JtxPXntjpxNbSq6kbvTw=
 ```
-
-#### Elliptic curves (Elliptic Curve Diffie-Hellman)
-
-Curve: 
-
-$$
-y^2 = x^3 + 7
-$$
-
-For 2 points P and Q, a line passing though them intersects the curve at -(P+Q)
-
-Consider a point G on the curve
-
-Consider A:
-
-$$
-A_{public} =  A_{private}G
-$$
-
-Consider B:
-
-$$
-B_{public} =  B_{private}G
-$$
-
-It’s computationally infeasible to find $A_{private}$ and $B_{private}$
-
-Shared key:
-
-$$
-B_{private}*A_{public} = B_{private}*A_{private}G = A_{private}*(B_{private}G) = A_{private}*B_{public}
-$$
-
-Thus, A encrypts using
-
-$$
-A_{private}*B_{public}
-$$
-
-B decrypts using
-$$
-B_{private}*A_{public}
-$$
 
 
