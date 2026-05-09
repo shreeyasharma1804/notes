@@ -14,4 +14,7 @@ sudo mount -t tmpfs tmpfs /mnt/tmp
 -t tmpfs: type of filesystem
 tmpfs: Device name
 mnt/tmp: Mount location of the tmpfs
+
+Check:
+df -h
 ```
