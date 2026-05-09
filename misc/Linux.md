@@ -111,11 +111,21 @@ Minor number: The number used by the driver to identify the device
 ### Files
 
 `atime`: The last time a file was accessed
+
 `mtime`: The last time a file content was modified
+
 `ctime`: The last time a file meta data was modified (Example permissions, link count etc)
 
-Default time shown in `ls -la` is `mtime`
+Default time shown in `ls -la` is `mtime`.
+
 For `atime`: `ls -lu`
+
 For `ctime`: `ls -lc`
 
 -t option sorts the file according to the mtime
+
+Check all open files:
+
+```bash
+lsof
+```
