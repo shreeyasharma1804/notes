@@ -148,7 +148,7 @@ $$g^{ab} \bmod n$$
 
 Which required knowing either a or b.
 
-$$(g^{b} \b mod n)^{a} \b mod n =g^{ab} \bmod n
+$$(g^{b} \bmod n)^{a} \bmod n =g^{ab} \bmod n
 
 
 #### Random number generation
