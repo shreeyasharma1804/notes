@@ -137,3 +137,9 @@ lsof
 ```
 
 The ls -la and size field in stat command report the actual file size in bytes
+
+To check the file disk usage:
+
+```bash
+du -h <filename>
+```
