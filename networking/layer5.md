@@ -26,13 +26,7 @@ Client                                Server
 #### RTTT:1 ClientHello
 
 - Supported ciphers: All the ciphers supported by the client (Example, `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`)
-- Client Random:
-
-```
-The server and client random are used along with the shared secret to create the MasterSecret:
-Master Secret=PRF(PreMasterSecret, ClientRandom || ServerRandom)
-```
-
+- Client Random
 - Extension: Server name name=example.com (SNI)
 - Extension: application_layer_protocol_negotiation
 - Extension: supported_groups: The elliptical curves supported by the clients (For ECDHA)
@@ -56,8 +50,10 @@ Master Secret=PRF(PreMasterSecret, ClientRandom || ServerRandom)
 
 #### RTT2
 - Client sends ECDHE public key
-- After this, both the client and the server can calculate the pre-master secret key (The shared diffie-hellman secret).
-- `MasterSecret = PRF(PreMasterSecret, ClientRandom || ServerRandom)`
+- After this, both the client and the server can calculate the Master secret key:
+```
+`MasterSecret = PRF(PreMasterSecret, ClientRandom || ServerRandom)`
+```
 - Sets Change cipher spec to 1, which means the shared secret will be used to communicate from now on.
 - Encrypted handshake message is sent
 - Server also sets Change cipher spec to 1 and sends encrypted handshake message
