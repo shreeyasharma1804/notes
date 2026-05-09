@@ -104,9 +104,9 @@ Client                                Server
 
 ### 0 RTT
 
+- A previous session shared secret can be used by the client to start encryption from the 1st message onwards.
+
 ### Differences
 
 - TLS 1.3 supports forward secrecy (if the private keys are compromised, then any past records cannot be decrypted) by removing all ciphers which do not support ephemeral keys.
 - The certificates are also encrypted in TLS 1.3
-- Uses **PRF (HMAC-based)**, Uses **HKDF (Extract + Expand)**
-- 
