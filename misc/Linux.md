@@ -331,3 +331,20 @@ Persistent=true
 # Start this timer automatically during boot
 WantedBy=timers.target
 ```
+
+### Networking
+
+- Hosts which are mapped in `/etc/hosts`can be resolved without dns.
+- `/etc/resolv.conf`:
+
+```bash
+nameserver 127.0.0.53 # 127.0.0.53:53 is the local DNS server which returns cached responses
+options edns0 trust-ad
+search .
+```
+
+- To check the cache hits and misses
+
+```bash
+resolvectl statistics
+```
