@@ -348,3 +348,11 @@ search .
 ```bash
 resolvectl statistics
 ```
+
+- The lookup order /etc/hosts and then dns is defined in nsswicth.conf
+
+```bash
+cat /etc/nsswicth.conf
+
+hosts:          files dns
+```
