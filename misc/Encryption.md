@@ -179,7 +179,7 @@ It’s computationally infeasible to find $A_{private}$ and $B_{private}$
 Shared key:
 
 $$
-B_{private}*A_{public} = B_{private}*A_{private}G = A_{private}*(B_{private}G) = A_{private}*B_{public}
+B_{private}A_{public} = B_{private}A_{private}G = A_{private}(B_{private}G) = A_{private}B_{public}
 $$
 
 Thus, A encrypts using
