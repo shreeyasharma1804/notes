@@ -371,3 +371,15 @@ user host = (runas) command
 - If the user can execute the command, execute it.
 - Check if the user belongs to the sudo group.
 - Use NOPASSWD to allow executing a command without sudo password
+
+
+### Misc
+
+- Crons are user specific and stored at `/var/spool/cron/crontabs/<username>`. System wide crons are defined at /etc/cron.d, /etc/cron/hourly etc
+- `sort`: Sort in ascending order based on ascii
+- `uniq -c`: Outputs the count of every occurrence, {count: value} map.
+- Update the binary to be used when multiple versions exist: `sudo update-alternatives --config java`
+- Check the OOM score of a process: `cat /proc/<pid>/oom_score`
+- Apparmour: Define all files a process can access, overriding the linux permissions
+- Nohup: When a shell is closed, the SIGHUP signal is sent to all the processes who started it, even in the backgroup. Due to this, any process started by ansible immediately exists. `nohup`handles the SIGHUP so that the process does not exit after the shell is closed
+- `setsid`: Creates a new session, starts the process and detaches from the controlling terminal.
