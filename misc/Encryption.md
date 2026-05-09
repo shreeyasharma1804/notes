@@ -185,13 +185,12 @@ $$
 Thus, A encrypts using
 
 $$
-A_{private}*B_{public}
+A_{private}B_{public}
 $$
 
 B decrypts using
-$$
-B_{private}*A_{public}
-$$
+
+$$B_{private}A_{public}$$
 
 #### Random number generation
 - /dev/random
