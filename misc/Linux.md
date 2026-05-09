@@ -292,3 +292,42 @@ ProtectSystem=full
 # Start during normal multi-user boot
 WantedBy=multi-user.target
 ```
+
+- Timer
+
+```bash
+# /etc/systemd/system/health.timer
+
+[Unit]
+
+# Human-readable description of the timer
+Description=Run health check every 10 seconds
+
+
+[Timer]
+
+# Run the timer 10 seconds after system boot
+OnBootSec=10s
+
+# Run again 10 seconds after the last successful activation
+#
+# This creates a recurring timer.
+OnUnitActiveSec=10s
+
+# Service unit triggered by this timer
+#
+# When the timer fires, systemd starts:
+# health.service
+Unit=health.service
+
+# Optional:
+# If the system was powered off during a scheduled run,
+# execute missed runs immediately on next boot.
+Persistent=true
+
+
+[Install]
+
+# Start this timer automatically during boot
+WantedBy=timers.target
+```
