@@ -261,7 +261,7 @@ Encrypt using a passphrase
 gpg --decrypt <encrypted_file>
 ```
 **Encrypt and sign a file**
-This command encrypts the file using recipient@example.com's public key and signs it using its own public key
+This command encrypts the file using recipient@example.com's public key and signs it using its own private key
 ```bash
  gpg --encrypt --sign --armor --recipient recipient@example.com --output <output_file> <file to be encrypted>
  ```
