@@ -43,6 +43,7 @@ uid                      Shreeya_Shreeya <shreeyasharmma@gmail.com>
 sub   cv25519 2025-12-04 [E] [expires: 2028-12-03]
 ```
 ### List the keys
+
 ```bash
 Print public and private keys
 gpg --list-keys
@@ -55,23 +56,32 @@ gpg --list-keys --fingerprint --keyid-format=long
 
 gpg --show-keys --keyid-format=long keyfile.asc
 ```
+
 **Fingerprint**: Hash of all the public key data
+
 **KeyID**: Uniquely identify a key
 
 **gpg --list-keys output**:
+
 ```bash
 pub   ed25519 2025-12-04 [SC] [expires: 2028-12-03]
       A3A17CDEEEA82BDBD9B41A0E289C78457D249803
 uid           [ultimate] Shreeya_Shreeya <shreeyasharmma@gmail.com>
 sub   cv25519 2025-12-04 [E] [expires: 2028-12-03]
 ```
+
 *ed25519*: Key algorithm
+
 2025-12-04: Creation Day
+
 SC: Used for signing an verifying
+
 A3A17CDEEEA82BDBD9B41A0E289C78457D249803: Key fingerprint
+
 UID: User ID
 
 **gpg --list-keys --fingerprint --keyid-format=long output**:
+
 ```bash
 pub   ed25519/289C78457D249803 2025-12-04 [SC] [expires: 2028-12-03]
       Key fingerprint = A3A1 7CDE EEA8 2BDB D9B4  1A0E 289C 7845 7D24 9803
@@ -83,6 +93,7 @@ sub   cv25519/D518799335B01EC5 2025-12-04 [E] [expires: 2028-12-03]
 Note: Key ID is a shortened version of the fingerprint
 
 **View the key and export it**:
+
 ```bash
 # public key
 gpg --export --armor [key-id]
@@ -90,6 +101,7 @@ gpg --export --armor [key-id]
 # private key
 gpg --export-secret-keys --armor [key-id]
 ```
+
 *--armor*: Print the output in ascii encoding
 
 **Importing a public key and certifying it**
@@ -128,15 +140,19 @@ sig!3        F231550C4F47E38E 2019-10-15  [self-signature]
 sub   cv25519 2019-01-22 [E]
 sig!         F231550C4F47E38E 2019-01-22  [self-signature]
 ```
+
 !: Means that the public key is in the keyring
+
 -   Level 0: No particular verification.
 -   Level 1: Verified the key owner by belief.
 -   Level 2: Casual verification, e.g., checked fingerprint and photo ID.
 -   Level 3: Extensive verification, e.g., checked fingerprint, verified identity with photo ID, and verified email address via correspondence
+  
 ```bash
 # Sign the key
 gpg --sign-key <key id>
 ```
+
 This approach by default signs the key with level 1 signature.
 
 **Trust a key**
