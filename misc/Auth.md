@@ -179,3 +179,5 @@ HMAC(
   secret_key
 )
 ```
+
+JWT acts like a temporary signed prrof that "This client has already been authenticated by me recently."
