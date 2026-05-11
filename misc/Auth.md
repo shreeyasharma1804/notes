@@ -182,3 +182,169 @@ HMAC(
 
 JWT acts like a temporary signed prrof that "This client has already been authenticated by me recently."
 This method is preferred over session_ids because no DB lookup is required
+
+```python
+import sqlite3
+import datetime
+import bcrypt
+import jwt
+
+from flask import Flask, request, jsonify, g
+
+app = Flask(__name__)
+
+SECRET_KEY = "super-secret-key"
+DB_NAME = "users.db"
+
+# -----------------------------
+# Initialize database
+# -----------------------------
+def init_db():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE,
+            password_hash BLOB
+        )
+    """)
+
+    username = "admin"
+    password = "password123"
+
+    hashed = bcrypt.hashpw(
+        password.encode(),
+        bcrypt.gensalt()
+    )
+
+    cursor.execute("""
+        INSERT OR IGNORE INTO users
+        (username, password_hash)
+        VALUES (?, ?)
+    """, (username, hashed))
+
+    conn.commit()
+    conn.close()
+
+
+# -----------------------------
+# Validate credentials
+# -----------------------------
+def validate_user(username, password):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT password_hash
+        FROM users
+        WHERE username = ?
+    """, (username,))
+
+    row = cursor.fetchone()
+
+    conn.close()
+
+    if not row:
+        return False
+
+    stored_hash = row[0]
+
+    return bcrypt.checkpw(
+        password.encode(),
+        stored_hash
+    )
+
+
+# -----------------------------
+# Middleware
+# -----------------------------
+@app.before_request
+def authenticate():
+    # Skip auth for login route
+    if request.path == "/login":
+        return
+
+    auth_header = request.headers.get("Authorization")
+
+    if not auth_header:
+        return jsonify({
+            "error": "Missing token"
+        }), 401
+
+    try:
+        token = auth_header.split(" ")[1]
+
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+
+        # Store user info globally for request
+        g.user = payload
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({
+            "error": "Token expired"
+        }), 401
+
+    except jwt.InvalidTokenError:
+        return jsonify({
+            "error": "Invalid token"
+        }), 401
+
+
+# -----------------------------
+# Login endpoint
+# -----------------------------
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+
+    username = data.get("username")
+    password = data.get("password")
+
+    if not validate_user(username, password):
+        return jsonify({
+            "error": "Invalid credentials"
+        }), 401
+
+    payload = {
+        "username": username,
+        "exp": datetime.datetime.utcnow()
+               + datetime.timedelta(hours=1)
+    }
+
+    token = jwt.encode(
+        payload,
+        SECRET_KEY,
+        algorithm="HS256"
+    )
+
+    return jsonify({
+        "message": "Login successful",
+        "jwt": token
+    })
+
+
+# -----------------------------
+# Protected route
+# -----------------------------
+@app.route("/profile")
+def profile():
+    return jsonify({
+        "message": "Authenticated",
+        "user": g.user["username"]
+    })
+
+
+# -----------------------------
+# Start app
+# -----------------------------
+if __name__ == "__main__":
+    init_db()
+
+    app.run(debug=True)
+```
