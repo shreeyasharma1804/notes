@@ -348,3 +348,31 @@ if __name__ == "__main__":
 
     app.run(debug=True)
 ```
+
+### OAuth
+
+This protocol allows one application to access another application's resources without sharing the user's password.
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant C as Client App
+    participant G as Google OAuth Server
+    participant API as Google API
+
+    U->>C: Click "Login with Google"
+
+    C->>G: Redirect user to Google
+
+    U->>G: Login + Consent
+
+    G-->>C: Authorization Code
+
+    C->>G: Exchange code for Access Token
+
+    G-->>C: Access Token
+
+    C->>API: Request user info using token
+
+    API-->>C: User profile data
+```
