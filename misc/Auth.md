@@ -157,28 +157,25 @@ if __name__ == "__main__":
 
 ### JWT
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant S as Server
-    participant DB as Database
+```
+User submits username + password
+Server verifies the password, creates a JWT and signs it
+Server returns the token to client
+The token sent by the client in all subsequent requests
+```
 
-    U->>S: Login(username, password)
-    S->>DB: Verify password hash
-    DB-->>S: Valid user
+JWT consists of:
 
-    S->>S: Create & sign JWT
+```bash
+base64url(header).base64url(payload).base64url(signature)
+```
+- Header: Contains the algorithm used for signing the data
+- Payload: The claims of the JWT and the expiry date
+- Signature
 
-    S-->>U: Return JWT (cookie/header)
-
-    Note over U,S: Future requests
-
-    U->>S: Request + JWT
-    S->>S: Verify JWT signature & expiry
-
-    alt JWT valid
-        S-->>U: Return protected data
-    else JWT invalid/expired
-        S-->>U: 401 Unauthorized
-    end
+```bash
+HMAC(
+  base64(header) + "." + base64(payload),
+  secret_key
+)
 ```
