@@ -377,9 +377,13 @@ user host = (runas) command
 
 - Crons are user specific and stored at `/var/spool/cron/crontabs/<username>`. System wide crons are defined at /etc/cron.d, /etc/cron/hourly etc
 - `sort`: Sort in ascending order based on ascii
-- `uniq -c`: Outputs the count of every occurrence, {count: value} map.
+- `uniq -c`: Outputs the count of every adjacent occurrence, {count: value} map.
 - Update the binary to be used when multiple versions exist: `sudo update-alternatives --config java`
 - Check the OOM score of a process: `cat /proc/<pid>/oom_score`
 - Apparmour: Define all files a process can access, overriding the linux permissions
 - Nohup: When a shell is closed, the SIGHUP signal is sent to all the processes who started it, even in the backgroup. Due to this, any process started by ansible immediately exists. `nohup`handles the SIGHUP so that the process does not exit after the shell is closed
 - `setsid`: Creates a new session, starts the process and detaches from the controlling terminal.
+- `open`: Open a file and return its file descriptor
+- `read`: Read a fd
+- `futex`: Faster locking in user space
+- 
