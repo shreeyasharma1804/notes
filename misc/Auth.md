@@ -181,3 +181,4 @@ HMAC(
 ```
 
 JWT acts like a temporary signed prrof that "This client has already been authenticated by me recently."
+This method is preferred over session_ids because no DB lookup is required
