@@ -245,9 +245,8 @@ Strict-Transport-Security: max-age=31536000
 
 ### Authorization headers
 
-- Authorization
-- Cookie
-- Set Cookie
+- Cookie: Server sends set-cookie, the browser stores the  cookie and sends it for every applicable request
+- Authorization: Bearer <JWT>: Browser does not automaticaally handle this, the frontend must explicitly store the token in the local storage and send it to fetch server data.
 
 ### Rate limiting headers
 
