@@ -118,7 +118,9 @@ int  main() {
 
 One thread (Main thread) for the `accept` system call (since its blocking), and offloading the data to a thread pool
 
-Note for thread safety: `pthread_cond_wait` wakes up only one thread from all the threads waiting on `queue_cond` for thread safety
+Note for thread safety: `pthread_cond_wait` wakes up only one thread from all the threads waiting on `queue_cond` for thread safety.
+
+recv is a blocking call. The socket is blocked and the worker thread keeps polling recv in an infinite loop. Thus, this design only allows 4 concurrent connections at a time. This was used in earlier memcached servers becasue the connection was closed after every lookup
 
 ```c
 #include <stdio.h>
