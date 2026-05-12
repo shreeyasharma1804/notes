@@ -121,119 +121,169 @@ One thread (Main thread) for the `accept` system call (since its blocking), and 
 Note for thread safety: `pthread_cond_wait` wakes up only one thread from all the threads waiting on `queue_cond` for thread safety
 
 ```c
-#include  <stdio.h>
-#include  <stdlib.h>
-#include  <string.h>
-#include  <unistd.h>
-#include  <errno.h>
-#include  <arpa/inet.h>
-#include  <pthread.h>
-#include  <sys/socket.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#include <arpa/inet.h>
+#include <pthread.h>
+#include <sys/socket.h>
 
-#define  PORT  8080
-#define  BACKLOG  16
-#define  THREAD_COUNT  4
-#define  QUEUE_SIZE  64
-#define  BUFFER_SIZE  1024
+#define PORT 8080
+#define BACKLOG 16
+#define THREAD_COUNT 4
+#define QUEUE_SIZE 64
+#define BUFFER_SIZE 1024
 
-int  queue[QUEUE_SIZE];
-int  front = 0, rear =  0,  count  =  0;
+int queue[QUEUE_SIZE];
+int front = 0;
+int rear = 0;
+int count = 0;
 
-pthread_mutex_t  queue_mutex  =  PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t  queue_cond  =  PTHREAD_COND_INITIALIZER;
+pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t not_empty = PTHREAD_COND_INITIALIZER;
+pthread_cond_t not_full = PTHREAD_COND_INITIALIZER;
 
-void  enqueue(int  fd)  {
-	pthread_mutex_lock(&queue_mutex);
-	while (count  ==  QUEUE_SIZE)  {
-		pthread_cond_wait(&queue_cond,  &queue_mutex);
-	}
-	queue[rear]  =  fd;
-	rear  =  (rear  +  1)  %  QUEUE_SIZE;
-	count++;
+void handle_client(int connection_fd);
 
-    pthread_cond_signal(&queue_cond);
-	pthread_mutex_unlock(&queue_mutex);
+void enqueue(int fd) {
+    pthread_mutex_lock(&queue_mutex);
+
+    while (count == QUEUE_SIZE) {
+        pthread_cond_wait(&not_full, &queue_mutex);
+    }
+
+    queue[rear] = fd;
+    rear = (rear + 1) % QUEUE_SIZE;
+    count++;
+
+    pthread_cond_signal(&not_empty);
+    pthread_mutex_unlock(&queue_mutex);
 }
 
-int  dequeue()  {
-	pthread_mutex_lock(&queue_mutex);
-	while (count  ==  0)  {
-		pthread_cond_wait(&queue_cond,  &queue_mutex);
-	}
-	int  fd  =  queue[front];
-	front  =  (front  +  1)  %  QUEUE_SIZE;
-	count--;
+int dequeue() {
+    pthread_mutex_lock(&queue_mutex);
 
-    pthread_cond_signal(&queue_cond);
-	pthread_mutex_unlock(&queue_mutex);
+    while (count == 0) {
+        pthread_cond_wait(&not_empty, &queue_mutex);
+    }
 
-  return  fd;
+    int fd = queue[front];
+    front = (front + 1) % QUEUE_SIZE;
+    count--;
+
+    pthread_cond_signal(&not_full);
+    pthread_mutex_unlock(&queue_mutex);
+
+    return fd;
 }
 
-void*  worker(void*  arg){
-	(void)arg;
-	while(1)  {
-		int  connection_fd  =  dequeue();
-		handle_client(connection_fd);
-	}
-	return  NULL;
+void* worker(void* arg) {
+    (void)arg;
+
+    while (1) {
+        int connection_fd = dequeue();
+
+        printf("Handling client fd=%d\n", connection_fd);
+
+        handle_client(connection_fd);
+    }
+
+    return NULL;
 }
 
-void  handle_client(int  connection_fd)  {
-	char  buffer[BUFFER_SIZE];
-	while(1)  {
-		size_t  recieved_bytes  =  recv(connection_fd,  buffer,  BUFFER_SIZE  -  1,  0);
-		if(recieved_bytes  >  0)  {
-			printf("%s",  buffer);
-		}
-		if(recieved_bytes  ==  0)  {
-			break;
-		}
-	}
-	close(connection_fd);
+void handle_client(int connection_fd) {
+    char buffer[BUFFER_SIZE];
+
+    while (1) {
+        ssize_t received_bytes =
+            recv(connection_fd, buffer, BUFFER_SIZE - 1, 0);
+
+        if (received_bytes > 0) {
+            buffer[received_bytes] = '\0';
+
+            printf("Client %d: %s", connection_fd, buffer);
+        }
+        else if (received_bytes == 0) {
+            printf("Client disconnected fd=%d\n", connection_fd);
+            break;
+        }
+        else {
+            perror("recv");
+            break;
+        }
+    }
+
+    close(connection_fd);
 }
 
-int  main() {
-	pthread_t  threads[THREAD_COUNT];
-	for  (int  i=0;  i<THREAD_COUNT;  i++)  {
-		pthread_create(&threads[i],  NULL,  worker,  NULL);
-	}
+int main() {
+    pthread_t threads[THREAD_COUNT];
 
-    int  server_fd  =  socket(AF_INET,  SOCK_STREAM,  0);
-	if(server_fd  <  0)  {
-		printf("Error in socket call");
-		exit(-1);
-	}
+    for (int i = 0; i < THREAD_COUNT; i++) {
+        if (pthread_create(&threads[i], NULL, worker, NULL) != 0) {
+            perror("pthread_create");
+            exit(EXIT_FAILURE);
+        }
 
-    struct  sockaddr_in  server_addr;
-	memset(&server_addr,  0,  sizeof(server_addr));
-	server_addr.sin_family =  AF_INET;
-	server_addr.sin_addr.s_addr =  INADDR_ANY;
-	server_addr.sin_port =  htons(PORT);
+        pthread_detach(threads[i]);
+    }
 
-	int  bind_response  =  bind(server_fd,  &server_addr,  sizeof(server_addr));
+    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-	if(bind_response  <  0){
-	    printf("Error in bind call");
-		exit(-1);
-	}
+    if (server_fd < 0) {
+        perror("socket");
+        exit(EXIT_FAILURE);
+    }
 
-    int  listen_response  =  listen(server_fd,  BACKLOG);
-	if(listen_response  <  0){
-		printf("Error in listen call");
-		exit(-1);
-	}
-	
-	while  (1)  {
-		int  connection_fd  =  accept(server_fd,  NULL,  NULL);
-		if(connection_fd  <  0)  {
-			printf("Error in accept system call");
-			exit(-1);
-			continue;
-		}
-		enqueue(connection_fd);
-	}
-	return  0;
+    int opt = 1;
+
+    if (setsockopt(server_fd,
+                   SOL_SOCKET,
+                   SO_REUSEADDR,
+                   &opt,
+                   sizeof(opt)) < 0) {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+
+    struct sockaddr_in server_addr;
+
+    memset(&server_addr, 0, sizeof(server_addr));
+
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    server_addr.sin_port = htons(PORT);
+
+    if (bind(server_fd,
+             (struct sockaddr*)&server_addr,
+             sizeof(server_addr)) < 0) {
+        perror("bind");
+        exit(EXIT_FAILURE);
+    }
+
+    if (listen(server_fd, BACKLOG) < 0) {
+        perror("listen");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Server listening on port %d\n", PORT);
+
+    while (1) {
+        int connection_fd = accept(server_fd, NULL, NULL);
+
+        if (connection_fd < 0) {
+            perror("accept");
+            continue;
+        }
+
+        enqueue(connection_fd);
+    }
+
+    close(server_fd);
+
+    return 0;
 }
 ```
 
