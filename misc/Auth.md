@@ -349,30 +349,19 @@ if __name__ == "__main__":
     app.run(debug=True)
 ```
 
-### OAuth
+### OIDC
 
-This protocol allows one application to access another application's resources without sharing the user's password.
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant C as Client App
-    participant G as Google OAuth Server
-    participant API as Google API
-
-    U->>C: Click "Login with Google"
-
-    C->>G: Redirect user to Google
-
-    U->>G: Login + Consent
-
-    G-->>C: Authorization Code
-
-    C->>G: Exchange code for Access Token
-
-    G-->>C: Access Token
-
-    C->>API: Request user info using token
-
-    API-->>C: User profile data
-```
+- Client sends request to the host (goes via nginx) along with the cookies (contains a session_id for the host)
+- Nginx checks if the session_id is stored in redis.
+- If the session_id is not valid, nginx sends a redirect response 302 with the location as the uri of the identity management url and a redirect_uri. 
+- Browser sends a request to the identity management url
+- identity management fetches the user info (...somehow) and sends a redirect response with the location as the original host url. It also adds a session_id and a one time code to this redirect url
+- Browser recieves this redirect url and sends it to nginx again
+- With the valid code, nginx sends a request to the identity management url
+- identity management returns id_token, access_token and refresh_token
+- Based on the user info in the id_token, LDAP calls can be made to check if the user can access the upstream applicaton. If not "401" Not authorized is returned.
+- The access_token is passed to the upstream app by nginx via Authorization header
+- Upstream apps have middlewares which check the validity of the access token before returning any resource.
+- id_token and access_token server different purposes in terms of authentication and authorization
+- access_token can be refreshed using the refresh token
+- The user does not store any sensitive tokens, which removes the possibility of the token getting stolen. All tokens are stored in redis.
