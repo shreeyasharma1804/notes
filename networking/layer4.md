@@ -568,9 +568,10 @@ int  main() {
 		}
 		else  {
 			printf("Parent process, pid: %d\n",  getpid());
-			while  (1)  pause();
 		}
 	}
+
+	while  (1)  pause();
  
 	close(server_fd);	
 	return  0;
