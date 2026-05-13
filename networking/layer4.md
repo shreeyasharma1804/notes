@@ -576,7 +576,10 @@ int  main() {
 	close(server_fd);	
 	return  0;
 }
-``` 
+```
+
+EPOLL_IN: Add socket to the queue when its ready to read
+EPOLL_OUT: Add socket to the queue when its ready to write
 
 Thread safety:
 
