@@ -365,3 +365,4 @@ if __name__ == "__main__":
 - id_token and access_token server different purposes in terms of authentication and authorization
 - access_token can be refreshed using the refresh token
 - The user does not store any sensitive tokens, which removes the possibility of the token getting stolen. All tokens are stored in redis.
+- PKCE: nginx generates a random string called code_verifier which is a secret. The code_verifier is hashed, called code_challenge. The code_challenge is sent in the authorization request to get the code. Later, when POST requests are sent by nginx to get the tokens, it also sends the code_verifier. This proves that nginx is eligible to get the tokens from the code
