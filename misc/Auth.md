@@ -357,7 +357,7 @@ if __name__ == "__main__":
 4. Browser sends a request to the identity management url.
 5. Identity management authenticates the user and sends a redirect response with the location as the original host url. It also adds a one time `code` and the same `state` to this redirect url.
 6. Browser receives this redirect url and sends it to nginx again. Nginx validates that the `state` in the url matches both the one stored in Redis **and** the `temp_state` cookie on the browser. This prevents CSRF attacks.
-7. With the valid `code`, nginx sends a POST request to the identity management url.
+7. With the valid `code`, nginx sends a POST request to the identity management url along with the code, code_verifier, client_id and client_secret.
 8. Identity management returns `id_token`, `access_token` and `refresh_token`.
 9. Based on the user info in the `id_token`, LDAP calls can be made to check if the user can access the upstream application. If not, `401 Unauthorized` is returned.
 10. Nginx stores the tokens in Redis, creates a new `session_id`, and sets it as a cookie on the browser.
