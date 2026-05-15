@@ -339,6 +339,13 @@ p1.start(); p2.start()
 p1.join(); p2.join()
 ```
 
+### More details
+
+- Traditional locking systemcall require the CPU to switch into kernel mode to acquire a lock
+- Modern locks use futex, which acquire the lock in the user space
+- Switch to kernel space is only required if the kernel has to put a thread to sleep when a lock is already acquired.
+- If a thread tries to acquire a lock which is already held, it goes to sleep and placed in a waiting queue by the kernel (similar to the wait and notify mechanism in rw lock)
+
 ### Debugging
 
 Print the thread id:
