@@ -13,3 +13,14 @@
 | timers                        | No          | Yes           |
 | buffering                     | Minimal     | Sophisticated |
 | graceful reload               | No          | Yes           |
+
+
+```
+# Turn of sendfile
+sendfile off
+
+# Turn on sendfile
+sendfile on
+
+# This makes serving large files faster
+```
