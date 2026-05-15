@@ -387,3 +387,9 @@ user host = (runas) command
 - `read`: Read a fd
 - `futex`: Faster locking in user space
 - `sendfile`: Send a file from file descriptor to socket directly from the kernel buffer instead of read + send. This reduces the overhead of copying data twice and 2 system call.
+
+```bash
+# Instead of Disk -> page cache -> User buffer(read) -> Kernel socket buffer(write) -> NIC
+
+Disk -> kernel buffer -> socket buffer -> NIC
+```
