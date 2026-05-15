@@ -110,3 +110,22 @@ Client                                Server
 
 - TLS 1.3 supports forward secrecy (if the private keys are compromised, then any past records cannot be decrypted) by removing all ciphers which do not support ephemeral keys.
 - The certificates are also encrypted in TLS 1.3
+
+
+### KTLS
+
+Perform TLS handshake, encryption, decryption in the kernel space
+
+- TLS_SW: CPU handles the cryptography
+- TLS_HW: IC handles crypto on a packet by packet basis,
+
+Check the mode being used:
+
+```bash
+cat /proc/net/tls_stat
+
+TlsCurrTxSw              10
+TlsCurrRxSw               5
+TlsCurrTxDevice           2
+TlsCurrRxDevice           0
+```
