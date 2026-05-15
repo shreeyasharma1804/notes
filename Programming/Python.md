@@ -222,6 +222,58 @@ In this example, 2 threads are coordinating reads and writes using 2 binary sema
 
 The performance of mutexes and reader-writer locks degrades equally as the number of threads increase
 
+```python
+import threading
+
+        # ---------------------------------------------------------------------------
+        # |    Think of a condition as a wait queue of sleeping threads              |
+        # |                                                                          | 
+        # |    When a thread calls self.condition.wait(),                            | 
+        # |     it is put to sleep state and added to the wait queue                 | 
+        # |                                                                          |
+        # |    When a thread calls self.condition.notify_all(),                      |
+        # |    all sleeping threads wake up and check the while loop                 |
+        # |                                                                          |
+        # |    Waking up multiple writers together in this case is fine because,     |
+        # |    the threads need to acquire self.lock again                           |
+        # |    Note: notify()  wakes up one thread from the wait queue               |	  
+        # ---------------------------------------------------------------------------- 
+
+class ReaderWriter:
+
+    def __init__(self) -> None:
+        self.readers = 0
+        self.writers = 0
+        self.lock = threading.Lock()
+        self.condition = threading.Condition(self.lock) # If a thread is sleeping on self.condition, self.lock is unlocked
+
+    def acquireReader(self):
+        with self.lock:
+            while(self.writers != 0):
+                self.condition.wait()
+            self.readers += 1
+
+    def releaseReader(self):
+        with self.lock:
+            self.readers -= 1
+
+            if(self.readers == 0):
+                self.condition.notify_all()
+
+    def acquireWriter(self):
+        with self.lock:
+            while(self.readers > 0 or self.writers > 0):
+                self.condition.wait()
+            self.writers += 1
+
+    def releaseWriter(self):
+        with self.lock:
+            self.writers -= 1
+
+            if(self.writers == 0):
+                self.condition.notify_all()
+```
+
 ### Thread local storage
 
 - Each thread gets its own instance of a variable
