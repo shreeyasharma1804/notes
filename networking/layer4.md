@@ -16,7 +16,7 @@ In TCP, both client and server send acknowledgements
 1. `socket`: Creates a socket and returns a socket file descriptor
 2. `bind`: Attach the socket file descriptor to a port and IP
 3. `listen`: Mark the socket as a listener socket. Internally, the kernel maintains a queue of the client connections, no more than the BACK_LOG.
-4. `accept`: Fetch client connection data from kernel queue and move it to a connection file descriptor. One accept call per TCP client. It's a blocking call.
+4. `accept`: Fetch client connection data from kernel queue and move it to a connection file descriptor. One accept call per TCP client. It's a blocking call. The connections in the accept queue are the ones who have completed the TCP handshake
 5. `recv`: Get the data from the connection file descriptor and copy it to the program buffer
 6. `close`: Close a connection
 
