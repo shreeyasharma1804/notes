@@ -14,6 +14,7 @@
 | buffering                     | Minimal     | Sophisticated |
 | graceful reload               | No          | Yes           |
 
+### Sendfile
 
 ```
 # Turn of sendfile
@@ -23,4 +24,17 @@ sendfile off
 sendfile on
 
 # This makes serving large files faster
+```
+
+### kTLS
+
+- Nginx uses openssl for TLS.
+- To check if nginx is using kTLS:
+    - Check: `cat /proc/net/tls_stat`
+
+
+```
+ps aux | grep nginx
+sudo strace -f -e trace=setsockopt -p <worker_pid>
+setsockopt(45, SOL_TLS, TLS_TX, ...) # If kTLS is enabled
 ```
