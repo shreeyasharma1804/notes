@@ -1,4 +1,5 @@
 Concurrency: Achieved via context switching
+
 Parallelism: Achieved via multiple cores
 
 ### Create and Join Threads
