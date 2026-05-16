@@ -59,5 +59,3 @@ def execute(callback):
 
 execute(greet)
 ```
-
-### Webhooks
