@@ -22,17 +22,16 @@ scalene run <python file>   # Scalene profiles the code line by line to show the
 
 ### Decoraters
 
+Middlewares can be implemented using decoraters
+
 ```python
 import time
 
 def timer(func):
     def wrapper():
         start = time.time()
-
         func()
-
         end = time.time()
-
         print(f"Took {end-start:.2f}s")
 
     return wrapper
