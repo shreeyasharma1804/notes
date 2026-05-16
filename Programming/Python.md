@@ -43,3 +43,19 @@ def work():
 
 work()
 ```
+
+### Callbacks
+
+A callback is a function passed as an argument to another function to be called later
+
+```python
+def greet():
+    print("Hello")
+
+def execute(callback):
+    print("Starting...")
+    callback()
+    print("Done")
+
+execute(greet)
+```
