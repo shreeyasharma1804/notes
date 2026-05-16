@@ -354,4 +354,8 @@ Print the thread id:
 print(threading.get_native_id())
 ```
 
-### Load testing
+```bash
+py-spy dump --pid <pid>      # Shows the processes with high CPU usage
+py-spy dump --native --locals --pid <pid>  # If a function is at the same code after multiple dumps, it indicates lock contention deadlock etc
+py-spy record -o profile.json --format speedscope --pid <pid>  # Shows the call trace and the amount of CPU time
+```
