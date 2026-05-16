@@ -19,3 +19,28 @@ py-spy record -o profile.json --format speedscope --pid <pid>  # Shows the call 
 ```
 scalene run <python file>   # Scalene profiles the code line by line to show the exact time the line ran for during the profiling and the memory used by it
 ```
+
+### Decoraters
+
+```python
+import time
+
+def timer(func):
+    def wrapper():
+        start = time.time()
+
+        func()
+
+        end = time.time()
+
+        print(f"Took {end-start:.2f}s")
+
+    return wrapper
+
+
+@timer
+def work():
+    time.sleep(2)
+
+work()
+```
