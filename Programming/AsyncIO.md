@@ -1,3 +1,7 @@
+async: Convert a function to a coroutine
+
+await: Await the results of the called fucntion and yield the control back to the event loop to run other executables
+
 This code would execuete like a synchronous code
 
 ```python
