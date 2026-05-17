@@ -82,17 +82,17 @@ async def main():
     result2 = await task2
     print(f"Task 1 and 2 awaited results: {[result1, result2]}")
 
-    # Gather Coroutines
+    # Gather Coroutines, the coroutines will be scheduled only after await is called on them
     coroutines = [fetch_data(i) for i in range(1, 3)]
     results = await asyncio.gather(*coroutines, return_exceptions=True)
     print(f"Coroutine Results: {results}")
 
-    # Gather Tasks
+    # Gather Tasks, all the tasks will be scheduled together. If one fails, other tasks continue
     tasks = [asyncio.create_task(fetch_data(i)) for i in range(1, 3)]
     results = await asyncio.gather(*tasks)
     print(f"Task Results: {results}")
 
-    # Task Group
+    # Task Group, all the tasks will be scheduled together. If one fails, all other tasks are also cancelled
     async with asyncio.TaskGroup() as tg:
         results = [tg.create_task(fetch_data(i)) for i in range(1, 3)]
         # All tasks are awaited when the context manager exits.
