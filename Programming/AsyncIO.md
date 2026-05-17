@@ -113,3 +113,28 @@ print(results)
 t2 = time.perf_counter()
 print(f"Finished in {t2 - t1:.2f} seconds")
 ```
+
+Run a thread as a coroutine
+
+```python
+import asyncio
+import time
+from concurrent.futures import ProcessPoolExecutor
+
+
+def fetch_data(param):
+    print(f"Do something with {param}...", flush=True)
+    time.sleep(param)
+    print(f"Done with {param}", flush=True)
+    return f"Result of {param}"
+
+
+async def main():
+    # Run in Threads
+    task1 = asyncio.create_task(asyncio.to_thread(fetch_data, 1))
+    task2 = asyncio.create_task(asyncio.to_thread(fetch_data, 2))
+    result1 = await task1
+    print("Thread 1 fully completed")
+    result2 = await task2
+    print("Thread 2 fully completed")
+```
