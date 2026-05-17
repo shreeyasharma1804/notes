@@ -1,3 +1,5 @@
+This code would execuete like a synchronous code
+
 ```python
 import asyncio
 import time
