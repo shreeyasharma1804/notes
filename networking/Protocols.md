@@ -18,8 +18,8 @@ clients = {}
 
 # A host runs the read and send coroutines for all the clients which connected to it.
 # The read coroutine only consumes cpu when the websocket.recv() buffer is readable.
-# The send function subscribes to a resid queue and sends data to the correct websocket(based on cache).
-
+# The send function subscribes to a redis queue and sends data to the correct websocket(based on cache).
+# Redis only holds client: host mapping. websocket objects are not cached and are local to the host which created it
 async def send_to_client(client_id):
 
     # Await on something like a redis queue, if data found, send to the client
