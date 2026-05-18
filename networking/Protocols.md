@@ -10,57 +10,52 @@ Configure webhook in git which sends a POST call to a server when a push event o
 
 ### Websockets
 
-```
-# server.py
+```python
 import asyncio
 import websockets
-from datetime import datetime
+
+clients = {}
+
+# A host runs the read and send coroutines for all the clients which nonnected to it.
+# The read coroutine only consumes cpu when the websocket.recv() buffer is readable.
+# The send function subscribes to a resid queue and sends data to the correct websocket(based on cache).
+
+async def send_to_client(client_id):
+
+    # Await on something like a redis queue, if data found, send to the client
+
+    websocket = clients.get(client_id)
+
+    if websocket:
+        await websocket.send("Hello from server")
+    else:
+        print("Client not found")
 
 
-async def receive_messages(websocket):
-    try:
-        async for message in websocket:
-            print("Client:", message)
+async def read_from_client(client_id):
 
-    except websockets.ConnectionClosed:
-        print("Receive loop ended")
+    websocket = clients.get(client_id)
 
-
-async def send_messages(websocket):
-    try:
-        while True:
-            current_time = datetime.now().strftime("%H:%M:%S")
-
-            await websocket.send(
-                f"Server time: {current_time}"
-            )
-
-            await asyncio.sleep(3)
-
-    except websockets.ConnectionClosed:
-        print("Send loop ended")
+    async for message in websocket:
+        print(f"{client_id}: {message}")
 
 
 async def handle_connection(websocket):
-    print("Client connected")
 
-    await asyncio.gather(
-        receive_messages(websocket),
-        send_messages(websocket)
-    )
+    client_id = websocket.request.headers.get("user")
+
+    clients[client_id] = websocket
+
+    read_data = asyncio.create_task(read_from_client(client_id))
+    send_data = asyncio.create_task(send_to_client(client_id))
+
+    await read_data
+    await send_data
 
 
 async def main():
-    server = await websockets.serve(
-        handle_connection,
-        "localhost",
-        8765
-    )
-
-    print("Running on ws://localhost:8765")
-
+    server = await websockets.serve(handle_connection, "localhost", 8765)
     await server.wait_closed()
-
 
 asyncio.run(main())
 ```
