@@ -16,7 +16,7 @@ import websockets
 
 clients = {}
 
-# A host runs the read and send coroutines for all the clients which nonnected to it.
+# A host runs the read and send coroutines for all the clients which connected to it.
 # The read coroutine only consumes cpu when the websocket.recv() buffer is readable.
 # The send function subscribes to a resid queue and sends data to the correct websocket(based on cache).
 
