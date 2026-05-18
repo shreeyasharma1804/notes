@@ -68,6 +68,21 @@ t2 = time.perf_counter()
 print(f"Finished in {t2 - t1:.2f} seconds")
 ```
 
+Gather coroutines is similar to:
+
+```python
+tasks = [
+    asyncio.create_task(c)
+    for c in coroutines
+]
+
+results = []
+
+for task in tasks:
+    result = await task
+    results.append(result)
+```
+
 ```python
 import asyncio
 import time
