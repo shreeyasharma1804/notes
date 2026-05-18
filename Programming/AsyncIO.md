@@ -195,3 +195,11 @@ if __name__ == "__main__":
     t2 = time.perf_counter()
     print(f"Finished in {t2 - t1:.2f} seconds")
 ```
+
+- Every function declared with async is a coroutine, i.e. it becomes schedulable on the event loop
+- await places the coroutine in the waiting queue.
+- Actions which can be run on the event loop are essentially in different queues like runnable, waiting etc.
+- Timers: Create a thread which runs the native sleep function. Update the future when the timer completes
+- Read a file: Create a seperate thread which can read the file. Once the reading is complete, the thread updates the future. Coroutines subscribe to a future. future.set_result() notifies all the threads which is then placed in the runnable queue.
+- Networking: Similar to epoll like design.
+- to_thread: Threads subsribe to futures which notify the event loop.
