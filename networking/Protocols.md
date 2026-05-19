@@ -19,7 +19,7 @@ def serve_get_request():
 
 Is basically:
 
-```
+```python
 def get(connection_object, server_get_request):
 
     async for message in connection_object:
@@ -46,7 +46,7 @@ def get(connection_object, server_get_request):
 Initial headers:
 
 Request:
-```
+```http
 GET /chat HTTP/1.1
 Host: localhost:8000
 Upgrade: websocket
@@ -56,7 +56,7 @@ Sec-WebSocket-Version: 13
 ```
 
 Response:
-```
+```http
 HTTP/1.1 101 Switching Protocols
 Upgrade: websocket
 Connection: Upgrade
@@ -111,4 +111,32 @@ async def main():
     await server.wait_closed()
 
 asyncio.run(main())
+```
+
+### SSE
+
+Generic HTTP streaming:
+
+```http
+GET /stream HTTP/1.1
+Host: localhost
+
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Transfer-Encoding: chunked
+```
+
+The data is sent in the response body and needs to be handled at the client specifically
+
+SSS is a subset of streaming with browser support
+
+```http
+GET /events HTTP/1.1
+Host: localhost
+Accept: text/event-stream
+
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+Cache-Control: no-cache
+Connection: keep-alive
 ```
