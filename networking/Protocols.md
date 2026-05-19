@@ -18,6 +18,7 @@ Configure webhook in git which sends a POST call to a server when a push event o
 - The read coroutine runs connection_fd.recv() which returns EAGAIN if the socket is not readable. The connection_fd is added to the websocket queue when the socket is readabale. This allows the server to read the socket asyncronously.
 - In case if I can add a return statement based on some logic, the read coroutine exits and the server behaves similar to SSE
 - The write corotuine is also asynchronous, it can waiton something like asyncio.queue and trigger if any data is available.
+- The redis library has support for async pub-sub functions
 
 ```python
 import asyncio
