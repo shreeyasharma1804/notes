@@ -23,7 +23,7 @@ Is basically:
 def get(connection_object, server_get_request):
 
     async for message in connection_object:
-        # await Read utnil HTTP request is complete
+        # await Read utnil HTTP request is complete or connection_object.recv()
 
     return_obj = server_get_request()
 
