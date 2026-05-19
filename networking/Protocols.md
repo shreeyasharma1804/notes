@@ -128,7 +128,7 @@ Transfer-Encoding: chunked
 
 The data is sent in the response body and needs to be handled at the client specifically
 
-SSS is a subset of streaming with browser support
+SSS is a subset of HTTP streaming with browser support
 
 ```http
 GET /events HTTP/1.1
