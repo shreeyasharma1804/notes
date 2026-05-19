@@ -8,6 +8,29 @@ Usage in git:
 Configure webhook in git which sends a POST call to a server when a push event occurs -> Server registers the CI job based on the POST call data
 ```
 
+### Simple REST
+
+```python
+@get
+def serve_get_request():
+    # Process
+    # return
+```
+
+Is basically:
+
+```
+def get(connection_object, server_get_request):
+
+    async for message in connection_object:
+        # await Read utnil HTTP request is complete
+
+    return_obj = server_get_request()
+
+    await connection_object.send(return_obj)
+
+```
+
 ### Websockets
 
 - Websockets require additional headers in nginx like 101 Upgrade connection.
