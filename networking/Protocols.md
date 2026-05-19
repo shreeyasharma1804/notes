@@ -10,6 +10,15 @@ Configure webhook in git which sends a POST call to a server when a push event o
 
 ### Websockets
 
+- Websockets require additional headers in nginx like 101 Upgrade connection.
+- Every time a new connection comes, the websockets server calls handle_connection with the connection object (Similar to accept returing the connection fd).
+- Since websocket objects are local to a host, they are stored in a local cache with the mapping <client-identifier> -> websocket object
+- The read and write coroutine runs for every client connected to the host
+- The handle_connection function is responsible for adding the websocket to the cache and scheduling the read and write coroutines
+- The read coroutine runs connection_fd.recv() which returns EAGAIN if the socket is not readable. The connection_fd is added to the websocket queue when the socket is readabale. This allows the server to read the socket asyncronously.
+- In case if I can add a return statement based on some logic, the read coroutine exits and the server behaves similar to SSE
+- The write corotuine is also asynchronous, it can waiton something like asyncio.queue and trigger if any data is available.
+
 ```python
 import asyncio
 import websockets
