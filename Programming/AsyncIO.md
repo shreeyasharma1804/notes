@@ -203,3 +203,4 @@ if __name__ == "__main__":
 - Read a file: Create a seperate thread which can read the file. Once the reading is complete, the thread updates the future. Coroutines subscribe to a future. future.set_result() notifies all the threads which is then placed in the runnable queue.
 - Networking: Similar to epoll like design.
 - to_thread: Threads subsribe to futures which notify the event loop.
+- A return inside a coroutine ends that coroutine's execution immediately
