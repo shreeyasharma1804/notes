@@ -43,6 +43,26 @@ def get(connection_object, server_get_request):
 - The write corotuine is also asynchronous, it can waiton something like asyncio.queue and trigger if any data is available.
 - The redis library has support for async pub-sub functions
 
+Initial headers:
+
+Request:
+```
+GET /chat HTTP/1.1
+Host: localhost:8000
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==
+Sec-WebSocket-Version: 13
+```
+
+Response:
+```
+HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: HSmrc0sMlYUkAGmm5OPpG2HaGWk=
+```
+
 ```python
 import asyncio
 import websockets
