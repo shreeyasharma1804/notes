@@ -372,6 +372,11 @@ user host = (runas) command
 - Check if the user belongs to the sudo group.
 - Use NOPASSWD to allow executing a command without sudo password
 
+### umask
+
+- The default permissions of a file are 666 for owner, group and other.
+- Check the umask value: `umask`
+- The umask value is deleted from 666 to get the file permissions of a new file
 
 ### Misc
 
