@@ -86,6 +86,15 @@ http {
 }
 ```
 
+### Commands
+
+nginx -s signal
+
+-  `stop` — fast shutdown
+-  `quit` — graceful shutdown
+-  `reload` — reloading the configuration file
+-  `reopen` — reopening the log files
+
 
 | Component                     | Your Server | Nginx         |
 | ----------------------------- | ----------- | ------------- |
