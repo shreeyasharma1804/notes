@@ -239,7 +239,7 @@ server {
 }
 ```
 
-### SSL Bridge
+SSL Bridge
 
 ```nginx
 server {
