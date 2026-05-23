@@ -239,6 +239,23 @@ server {
 }
 ```
 
+### SSL Bridge
+
+```nginx
+server {
+    listen 443 ssl;
+
+    ssl_certificate /etc/nginx/server.crt;
+    ssl_certificate_key /etc/nginx/server.key;
+
+    location / {
+        proxy_pass https://backend;
+
+        proxy_ssl_verify on;
+        proxy_ssl_trusted_certificate /etc/nginx/backend-ca.crt;
+    }
+}
+```
 
 HTTP Code: 408 request timeout
 
