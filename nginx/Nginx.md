@@ -132,6 +132,9 @@ http {
 - Loadbalancing algorithms used are round robin, ip hashin (sticky sessions) etc.
 - If a client closes a connection due to timeout where the response was not sent, the recv() call returns 0 and nginx silently writes 499 to the logs.
 - zone: Ceates a 64 KB shared memory area named backend that all Nginx worker processes can access to store and synchronize upstream state. Since Nginx workers are separate processes with separate memory, without a zone each worker would maintain its own independent view of backend information such as active connection counts, failures, and load-balancing state, which could make features like max_conns inaccurate across workers.
+- default:
+
+### Routing
 
 
 ### Client timeouts
