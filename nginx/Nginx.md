@@ -193,6 +193,8 @@ server {
 }
 ```
 
+### SSL Termination
+
 HTTP Code: 408 request timeout
 
 | Component                     | Your Server | Nginx         |
