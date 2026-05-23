@@ -154,6 +154,24 @@ The evaluation order is:
 5. Fall back to prefix
 
 
+- Difference in /login and /login/
+
+```
+/login:
+
+/login
+/login/
+/login/user
+/login123
+/loginABC
+
+/login/ would only match:
+
+/login/
+/login/user
+/login/profile/edit
+```
+
 ### Client timeouts
 
 ```nginx
