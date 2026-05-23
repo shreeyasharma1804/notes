@@ -262,6 +262,7 @@ server {
     client_body_timeout 30s;           # For POST requests
     keepalive_timeout 65s;
     send_timeout 30s;                  # Client socket not writable
+`	keepalive_requests 1000;           # Maximum number of requests that can be sent on one connection
 }
 ```
 
