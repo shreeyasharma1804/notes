@@ -81,8 +81,8 @@ http {
 	# Virtual Host Configs
 	##
 
-	include /etc/nginx/conf.d/*.conf;
-	include /etc/nginx/sites-enabled/*;
+	include /etc/nginx/conf.d/*.conf; 
+	include /etc/nginx/sites-enabled/*;        All files in sites-enabled are simlinks to sites-available
 }
 ```
 
