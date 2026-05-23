@@ -182,17 +182,6 @@ The evaluation order is:
 | `proxy_pass http://backend/v1/;` | `/api/test` |    `/v1/test` |
 
 
-### Client timeouts
-
-```nginx
-server {
-    client_header_timeout 10s;
-    client_body_timeout 30s;           # For POST requests
-    keepalive_timeout 65s;
-    send_timeout 30s;                  # Client socket not writable
-}
-```
-
 ### SSL
 
 To enable SSL:
@@ -263,6 +252,20 @@ mTLS (nginx to upstream )
     proxy_ssl_certificate     /etc/nginx/nginx-client.crt;
     proxy_ssl_certificate_key /etc/nginx/nginx-client.key;
 ```
+
+
+### Client timeouts
+
+```nginx
+server {
+    client_header_timeout 10s;
+    client_body_timeout 30s;           # For POST requests
+    keepalive_timeout 65s;
+    send_timeout 30s;                  # Client socket not writable
+}
+```
+
+
 
 HTTP Code: 408 request timeout
 
