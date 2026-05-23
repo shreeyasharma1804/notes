@@ -96,6 +96,32 @@ nginx -s signal
 -  `reopen` — reopening the log files
 
 
+### Load Balancing
+
+http {
+
+    upstream app_backend {
+        server 10.0.0.11:8080;
+        server 10.0.0.12:8080;
+        server 10.0.0.13:8080;
+    }
+
+    server {
+        listen 80;
+        server_name example.com;                                          # This block executes only if the host sent by the client is equal to server_name
+
+        location / {
+            proxy_pass http://app_backend;
+
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}
+
+
 | Component                     | Your Server | Nginx         |
 | ----------------------------- | ----------- | ------------- |
 | Multi-worker                  | Yes         | Yes           |
@@ -111,6 +137,8 @@ nginx -s signal
 | timers                        | No          | Yes           |
 | buffering                     | Minimal     | Sophisticated |
 | graceful reload               | No          | Yes           |
+
+## Optimizations
 
 ### Sendfile
 
