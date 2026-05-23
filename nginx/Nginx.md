@@ -121,6 +121,7 @@ http {
             proxy_set_header X-Real-IP $remote_addr;                         # remote_addr contains the client that directly connected to nginx
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;     # Add $remote_addr to the X-Forwarded-For list
             proxy_set_header X-Forwarded-Proto $scheme;
+			proxy_connect_timeout: 30s;										 # Upstream connect timeout                                       
         }
     }
 }
