@@ -115,8 +115,8 @@ http {
             proxy_pass http://app_backend;
 
             proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;                         # remote_addr contains the client ip
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;     # 
+            proxy_set_header X-Real-IP $remote_addr;                         # remote_addr contains the client that directly connected to nginx
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;     # Add $remote_addr to the X-Forwarded-For list
             proxy_set_header X-Forwarded-Proto $scheme;
         }
     }
