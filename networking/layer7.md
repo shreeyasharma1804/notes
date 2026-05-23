@@ -212,7 +212,8 @@ Origin: https://app.com
 
 #### X-Forwarded-For
 
-Original client IP
+Comma seperated list
+
 ```http
 X-Forwarded-For: 1.2.3.4
 ```
