@@ -125,9 +125,7 @@ http {
 }
 ```
 
-- weight: Weight defines the traffic distribution to the upstream server. Here, 60% of the traffic lands on 10.0.0.11:8080
-- max_conn: Maximum number of connections to the upstream servers
-- queue: The connected client with HTTP parsed are kept in this queue before the request is sent to the upstream server
+- `max_conns` in an upstream server tells Nginx the maximum number of **active upstream requests** it should allow to a backend at a time. An active connection means a request has been assigned to that backend and is still in progress (Nginx is waiting for the upstream response to complete); idle keepalive connections do not count. When a client request arrives, Nginx accepts it (`accept`), reads and parses the HTTP request, selects an upstream server, and checks whether that server's active connection count is below `max_conns`. If capacity exists, Nginx creates or reuses an upstream socket and forwards the request. If all backend servers have reached their `max_conns` limit, Nginx does **not** try to connect and then fail at the socket level; instead it places the already-parsed request into the configured upstream `queue`, which is an in-memory Nginx queue of waiting HTTP requests. Requests stay there until an active upstream request finishes (at which point the active count decreases), or until the queue timeout expires, in which case Nginx typically returns `503 Service Unavailable`.
 - timeout: a request in the queue can wait for 30 seconds before it timesout and a 503 response code is sent
 - keepalive: The maximum number or idle connections one worker can keep cached to all the upstream servers combined.
 - Loadbalancing algorithms used are round robin, ip hashin (sticky sessions) etc
