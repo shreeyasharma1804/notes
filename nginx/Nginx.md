@@ -140,6 +140,7 @@ http {
 - Strict match:
 
 `location = /login`: Matches only /login and not /login/*
+
 `location = /login/`: Matches only /login/ and not /login
 
 - ~: Case sensitive regex matching
@@ -171,6 +172,15 @@ The evaluation order is:
 /login/user
 /login/profile/edit
 ```
+
+- Trailing / difference in proxy pass for /api:
+
+| Config                           |     Request | Sent upstream |
+| -------------------------------- | ----------: | ------------: |
+| `proxy_pass http://backend;`     | `/api/test` |   `/api/test` |
+| `proxy_pass http://backend/;`    | `/api/test` |       `/test` |
+| `proxy_pass http://backend/v1/;` | `/api/test` |    `/v1/test` |
+
 
 ### Client timeouts
 
