@@ -212,7 +212,7 @@ Origin: https://app.com
 
 #### X-Forwarded-For
 
-Comma seperated list
+Comma seperated list of all the IPs
 
 ```http
 X-Forwarded-For: 1.2.3.4
