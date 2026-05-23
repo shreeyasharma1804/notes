@@ -102,9 +102,10 @@ nginx -s signal
 http {
 
     upstream app_backend {
-        server 10.0.0.11:8080;
+        server 10.0.0.11:8080 weight 3 max_conn 10;
         server 10.0.0.12:8080;
         server 10.0.0.13:8080;
+		queue 100 timeout 30;
     }
 
     server {
@@ -122,6 +123,11 @@ http {
     }
 }
 ```
+
+- weight: Weight defines the traffic distribution to the upstream server. Here, 60% of the traffic lands on 10.0.0.11:8080
+- max_conn: Maximum number of connections to the upstream servers
+- queue: The connected client with HTTP parsed are kept in this queue before the request is sent to the upstream server
+- timeout: a request in the queue can wait for 30 seconds before it timesout and a 503 response code is sent
 
 | Component                     | Your Server | Nginx         |
 | ----------------------------- | ----------- | ------------- |
