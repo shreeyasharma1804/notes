@@ -193,7 +193,52 @@ server {
 }
 ```
 
-### SSL Termination
+### SSL
+
+To enable SSL:
+
+```nginx
+listen 443 ssl;
+```
+
+SSL Termination:
+
+```nginx
+server {
+	listen  4000  ssl;
+	ssl_certificate /etc/nginx/certificate.crt;
+	ssl_certificate_key /etc/nginx/private.key;
+	location / {
+		proxy_pass  http://backend/;     # Notice http and not https
+	}
+}
+```
+
+mTLS
+
+```nginx
+server {
+    listen 443 ssl;
+
+    # Server identity
+    ssl_certificate     /etc/nginx/server.crt;
+    ssl_certificate_key /etc/nginx/server.key;
+
+    # Trusted CA for client certificates
+    ssl_client_certificate /etc/nginx/client-ca.crt;
+
+    # Require client certificate
+    ssl_verify_client on;
+
+    location / {
+        proxy_pass http://backend;
+
+        proxy_set_header X-Client-Verify $ssl_client_verify;        # Certificate verification output
+        proxy_set_header X-Client-DN $ssl_client_s_dn;              # Client certificate subject
+    }
+}
+```
+
 
 HTTP Code: 408 request timeout
 
