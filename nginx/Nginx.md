@@ -55,8 +55,8 @@ http {
 	# SSL Settings
 	##
 
-	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
-	ssl_prefer_server_ciphers on;
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE 
+	ssl_prefer_server_ciphers on;            # The server chooses the cipher type
 
 	##
 	# Logging Settings
