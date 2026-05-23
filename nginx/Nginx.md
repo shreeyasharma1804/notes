@@ -214,7 +214,7 @@ server {
 }
 ```
 
-mTLS
+mTLS (Client to nginx)
 
 ```nginx
 server {
@@ -255,6 +255,13 @@ server {
         proxy_ssl_trusted_certificate /etc/nginx/backend-ca.crt;
     }
 }
+```
+
+mTLS (nginx to upstream )
+
+```nginx
+    proxy_ssl_certificate     /etc/nginx/nginx-client.crt;
+    proxy_ssl_certificate_key /etc/nginx/nginx-client.key;
 ```
 
 HTTP Code: 408 request timeout
