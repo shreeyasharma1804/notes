@@ -166,7 +166,7 @@ HTTP/1.1 204 No Content
 Host: api.example.com
 ```
 
-#### Content Type
+#### Content Type (Res)
 
 ```http
 Content-Type: application/json
