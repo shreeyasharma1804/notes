@@ -45,11 +45,11 @@ http {
 	##
 
 	sendfile off;
-	tcp_nopush on;                  # TCP Buffering, wait and send larger packets 
-	types_hash_max_size 2048;
+	tcp_nopush on;                           # TCP Buffering, wait and send larger packets 
+	types_hash_max_size 2048;                # Hashmap size of the mime type hashtable
 
-	include /etc/nginx/mime.types;
-	default_type application/octet-stream;
+	include /etc/nginx/mime.types;           # If nginx has to serve the files manually, the content-type is fetched from the mime type
+	default_type application/octet-stream;   # Default content-type
 
 	##
 	# SSL Settings
