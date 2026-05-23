@@ -27,14 +27,14 @@ drwxr-xr-x   2 root root  4096 May 14 21:41 snippets
 ```bash
 # nginx.conf
 
-user www-data;
-worker_processes auto;
+user www-data;                      # nginx.conf worker processes run as www-data user
+worker_processes auto;              # Number of worker processes is equa to the number of CPU cores
 pid /run/nginx.pid;
 error_log /var/log/nginx/error.log;
 include /etc/nginx/modules-enabled/*.conf;
 
 events {
-	worker_connections 768;
+	worker_connections 768;         # The maximumum number of processes a worker process can handle
 	# multi_accept on;
 }
 
@@ -45,12 +45,8 @@ http {
 	##
 
 	sendfile off;
-	tcp_nopush on;
+	tcp_nopush on;                  # TCP Buffering, wait and send larger packets 
 	types_hash_max_size 2048;
-	# server_tokens off;
-
-	# server_names_hash_bucket_size 64;
-	# server_name_in_redirect off;
 
 	include /etc/nginx/mime.types;
 	default_type application/octet-stream;
