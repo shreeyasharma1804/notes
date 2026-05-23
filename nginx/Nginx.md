@@ -106,6 +106,7 @@ http {
         server 10.0.0.12:8080;
         server 10.0.0.13:8080;
 		queue 100 timeout 30;
+		keepalive 32;
     }
 
     server {
@@ -128,6 +129,8 @@ http {
 - max_conn: Maximum number of connections to the upstream servers
 - queue: The connected client with HTTP parsed are kept in this queue before the request is sent to the upstream server
 - timeout: a request in the queue can wait for 30 seconds before it timesout and a 503 response code is sent
+- keepalive: The maximum number or idle connections one worker can keep cached to all the upstream servers combined.
+- Loadbalancing algorithms used are round robin, ip hashin (sticky sessions) etc
 
 | Component                     | Your Server | Nginx         |
 | ----------------------------- | ----------- | ------------- |
