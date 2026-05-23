@@ -137,6 +137,22 @@ http {
 
 ### Routing
 
+- Strict match:
+
+`location = /login`: Matches only /login and not /login/*
+`location = /login/`: Matches only /login/ and not /login
+
+- ~: Case sensitive regex matching
+- ~*: Case insensitive regex matching
+
+The evaluation order is:
+
+1. Check exact matches (=)
+2. Find longest prefix (All paths that do not start with ~)
+3. Check ^~ rule (Used in prefix mathcing, if the prefix matches, stop here, if not, any matching regex can override)
+4. Check regexes in order (The order of the location block matters, the 1st match is selected)
+5. Fall back to prefix
+
 
 ### Client timeouts
 
