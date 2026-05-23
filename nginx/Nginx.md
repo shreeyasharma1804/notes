@@ -102,6 +102,7 @@ nginx -s signal
 http {
 
     upstream app_backend {
+		zone backend 64k;
         server 10.0.0.11:8080 weight 3 max_conn 10;
         server 10.0.0.12:8080;
         server 10.0.0.13:8080;
@@ -129,7 +130,9 @@ http {
 - timeout: a request in the queue can wait for 30 seconds before it timesout and a 503 response code is sent
 - keepalive: The maximum number or idle connections one worker can keep cached to all the upstream servers combined.
 - Loadbalancing algorithms used are round robin, ip hashin (sticky sessions) etc.
-- If a client closes a connection due to timeout where the response was not sent, the recv() call returns 0 and nginx silently writes 499 to the logs
+- If a client closes a connection due to timeout where the response was not sent, the recv() call returns 0 and nginx silently writes 499 to the logs.
+- zone: Ceates a 64 KB shared memory area named backend that all Nginx worker processes can access to store and synchronize upstream state. Since Nginx workers are separate processes with separate memory, without a zone each worker would maintain its own independent view of backend information such as active connection counts, failures, and load-balancing state, which could make features like max_conns inaccurate across workers.
+
 
 ### Client timeouts
 
