@@ -131,6 +131,19 @@ http {
 - Loadbalancing algorithms used are round robin, ip hashin (sticky sessions) etc.
 - If a client closes a connection due to timeout where the response was not sent, the recv() call returns 0 and nginx silently writes 499 to the logs
 
+### Client timeouts
+
+```nginx
+server {
+    client_header_timeout 10s;
+    client_body_timeout 30s;           # For POST requests
+    keepalive_timeout 65s;
+    send_timeout 30s;                  # Client socket not writable
+}
+```
+
+HTTP Code: 408 request timeout
+
 | Component                     | Your Server | Nginx         |
 | ----------------------------- | ----------- | ------------- |
 | Multi-worker                  | Yes         | Yes           |
