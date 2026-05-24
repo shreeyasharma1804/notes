@@ -288,7 +288,7 @@ Request buffering:
 
 ```nginx
 client_header_buffer_size 1k;
-large_client_header_buffers 4 8k;      # Large headers spill across 4 units of extra 8kB storage
+large_client_header_buffers 4 8k;      # Large headers spill across 4 units of extra 8kB storage, used to avpid 400 response code due to huge cookies
 
 client_body_buffer_size 8k;
 client_body_temp_path                  # If the client body size exceeds, it is stored in this temp location
