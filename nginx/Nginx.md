@@ -304,6 +304,11 @@ proxy_buffer_size 2k;
 proxy_buffers 16 4k;                   #  Large responses spill across 16 units of extra 4kB storage
 ```
 
+### WAF
+
+### Rate Limiting
+
+### Health Checks
 
 ### HTTP codes
 
