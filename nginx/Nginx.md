@@ -284,7 +284,7 @@ server {
 
 ### Buffering
 
-Client buffering:
+Request buffering:
 
 ```nginx
 client_header_buffer_size 1k;
@@ -296,6 +296,14 @@ client_body_temp_path                  # If the client body size exceeds, it is 
 proxy_request_buffering on;            # Enable buffering
 proxy_request_buffering off;           # Enable Streaming
 ```
+
+Resposne buffering
+
+```nginx
+proxy_buffer_size 2k;                  
+proxy_buffers 16 4k;                   #  Large responses spill across 16 units of extra 4kB storage
+```
+
 
 ### HTTP codes
 
