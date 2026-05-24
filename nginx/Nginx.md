@@ -254,15 +254,22 @@ mTLS (nginx to upstream )
 ```
 
 
-### Client timeouts
+### Timeouts
+
 
 ```nginx
 server {
-    client_header_timeout 10s;
+    client_header_timeout 10s;         # Maximum time to get client headers
     client_body_timeout 30s;           # For POST requests
-    keepalive_timeout 65s;
+    keepalive_timeout 65s;             
     send_timeout 30s;                  # Client socket not writable
 `	keepalive_requests 1000;           # Maximum number of requests that can be sent on one connection
+
+
+	location / {
+		proxy_connect_timeout 5s;      # Maximum time to establish connection with upstream server
+		proxy_send_timeout 30s;        # Maximum time to write to upstream server socket
+	}
 }
 ```
 
