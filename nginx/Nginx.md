@@ -268,7 +268,8 @@ server {
 
 	location / {
 		proxy_connect_timeout 5s;      # Maximum time to establish connection with upstream server
-		proxy_send_timeout 30s;        # Maximum time to write to upstream server socket
+		proxy_send_timeout 30s;        # Maximum time to write to upstream server socket (i.e. Time to send request to upstream)
+		proxy_read_timeout 60s;        # Maximum time to read the upstream server socket (i.e. Time to revieve response from upstream)
 	}
 }
 ```
