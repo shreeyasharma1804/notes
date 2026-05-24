@@ -253,6 +253,14 @@ mTLS (nginx to upstream )
     proxy_ssl_certificate_key /etc/nginx/nginx-client.key;
 ```
 
+Caching
+
+Store the session ids for faster tls handshake
+
+```nginx
+ssl_session_cache   shared:SSL:10m; 10MB cache size
+ssl_session_timeout 10m;
+```
 
 ### Timeouts
 
