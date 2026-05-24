@@ -282,6 +282,21 @@ server {
 }
 ```
 
+### Buffering
+
+Client buffering:
+
+```nginx
+client_header_buffer_size 1k;
+large_client_header_buffers 4 8k;      # Large headers spill across 4 units of extra 8kB storage
+
+client_body_buffer_size 8k;
+client_body_temp_path                  # If the client body size exceeds, it is stored in this temp location
+
+proxy_request_buffering on;            # Enable buffering
+proxy_request_buffering off;           # Enable Streaming
+```
+
 ### HTTP codes
 
 | HTTP Code                                      |                                    Typical NGINX Condition | Relevant Directive(s)                                               |
