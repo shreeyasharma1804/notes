@@ -274,6 +274,28 @@ server {
 }
 ```
 
+### HTTP codes
+
+| HTTP Code                                      |                                    Typical NGINX Condition | Relevant Directive(s)                                               |
+| ---------------------------------------------- | ---------------------------------------------------------: | ------------------------------------------------------------------- |
+| `301 Moved Permanently`                        |                                         Permanent redirect | `return 301`, `rewrite`                                             |
+| `302 Found`                                    |                                         Temporary redirect | `return 302`, `rewrite`                                             |
+| `400 Bad Request`                              | Malformed request, invalid headers, invalid request syntax | `ignore_invalid_headers`, `large_client_header_buffers`             |
+| `401 Unauthorized`                             |                                    Authentication required | `auth_basic`, `auth_basic_user_file`                                |
+| `403 Forbidden`                                |                                              Access denied | `deny`, `allow`, `limit_except`, `autoindex`                        |
+| `404 Not Found`                                |                            Requested file/resource missing | `root`, `alias`, `try_files`                                        |
+| `405 Method Not Allowed`                       |                                     Request method blocked | `limit_except`                                                      |
+| `408 Request Timeout`                          |                            Client too slow sending request | `client_header_timeout`, `client_body_timeout`                      |
+| `413 Payload Too Large`                        |                                 Request body exceeds limit | `client_max_body_size`                                              |
+| `414 URI Too Long`                             |                                 Request URI exceeds limits | `large_client_header_buffers`                                       |
+| `431 Request Header Fields Too Large`          |                                  Request headers too large | `large_client_header_buffers`                                       |
+| `429 Too Many Requests`                        |           Rate limit exceeded *(if configured explicitly)* | `limit_req`, `limit_req_zone`                                       |
+| `500 Internal Server Error`                    |                              Internal config/runtime issue | `rewrite`, `error_page`, FastCGI/script errors                      |
+| `502 Bad Gateway`                              |                   Upstream unreachable or invalid response | `proxy_pass`, `upstream`, `proxy_next_upstream`                     |
+| `503 Service Unavailable`                      |      Upstream unavailable / request limiting / maintenance | `limit_req`, `limit_conn`, `error_page`                             |
+| `504 Gateway Timeout`                          |                                           Backend too slow | `proxy_connect_timeout`, `proxy_read_timeout`, `proxy_send_timeout` |
+| `499 Client Closed Request` *(NGINX-specific)* |                      Client disconnected before completion | No direct directive; visible in logs                                |
+
 
 
 HTTP Code: 408 request timeout
