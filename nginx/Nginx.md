@@ -34,7 +34,7 @@ error_log /var/log/nginx/error.log;
 include /etc/nginx/modules-enabled/*.conf;
 
 events {
-	worker_connections 768;         # The maximumum number of processes a worker process can handle
+	worker_connections 768;         # The maximumum number of client connections a worker process can handle
 	# multi_accept on;
 }
 
