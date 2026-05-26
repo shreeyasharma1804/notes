@@ -308,6 +308,33 @@ proxy_buffers 16 4k;                   #  Large responses spill across 16 units 
 
 ### Rate Limiting
 
+- Zone defination:
+
+```nginx
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=5r/s;
+```
+
+This defination creates a zone of size 10MB which stores remote_addr and allows 5 requests per second
+
+
+- Limit the requests:
+
+```nginx
+limit_req zone=api_limit burst=10;
+```
+
+A request is recieved by nginx only if
+
+```bash
+new_excess = max(0, old_excess - leak) + 1 < burst
+leak = elapsed_time/slot_time
+```
+
+For 5 r/s, A new slot opens up after every 200ms.
+
+Without `nodelay`: Nginx sends one request to the upstream every 200ms (smooth out traffic to upstream)
+Withnodelay: The burst is calculated in a similar way, but the requests are sent immediately (low latency)
+
 ### Health Checks
 
 ### HTTP codes
