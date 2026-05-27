@@ -22,3 +22,4 @@ metadata:
   namespace: metallb-system
 ```
 
+In this example, MetalLB picks up one IP from the available list, and broadcasts it using ARP(Layer 2)/ BGP(Layer 3)
