@@ -23,3 +23,9 @@ metadata:
 ```
 
 In this example, MetalLB picks up one IP from the available list, and broadcasts it using ARP(Layer 2)/ BGP(Layer 3)
+
+Created LB:
+
+```bash
+kube-system      traefik                   LoadBalancer   10.43.251.160   192.168.1.20   80:32231/TCP,443:30560/TCP   141m
+```
