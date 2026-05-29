@@ -1,0 +1,342 @@
+# ============================================================
+# Namespace
+# ============================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: webapp
+---
+# ============================================================
+# IngressClass — points to the MetalLB-backed nginx controller
+# ============================================================
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: nginx
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
+spec:
+  controller: k8s.io/ingress-nginx
+---
+# ============================================================
+# Secret — CA cert used to VERIFY client certificates (mTLS)
+#
+# Generate with:
+#   openssl req -x509 -newkey rsa:4096 -keyout ca.key -out ca.crt \
+#     -days 3650 -nodes -subj "/CN=webapp-ca"
+#   kubectl create secret generic client-ca-secret \
+#     --from-file=ca.crt=ca.crt -n webapp
+# ============================================================
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: client-ca-secret
+#   namespace: webapp
+# type: Opaque
+# data:
+#   ca.crt: <base64-encoded CA cert>   # ← uncomment and fill
+---
+# ============================================================
+# Secret — CA cert nginx uses to VERIFY the upstream backend's
+# TLS certificate (egress mTLS server-side verification).
+#
+# If your upstream certs are signed by the same CA as client
+# certs, reuse that CA:
+#   kubectl create secret generic upstream-ca-secret \
+#     --from-file=ca.crt=ca.crt -n webapp
+#
+# If upstreams use a different CA (e.g. a separate server PKI):
+#   kubectl create secret generic upstream-ca-secret \
+#     --from-file=ca.crt=upstream-ca.crt -n webapp
+# ============================================================
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: upstream-ca-secret
+#   namespace: webapp
+# type: Opaque
+# data:
+#   ca.crt: <base64-encoded upstream CA cert>   # ← uncomment and fill
+---
+#
+# Generate with:
+#   openssl req -newkey rsa:4096 -keyout nginx-client.key \
+#     -out nginx-client.csr -nodes -subj "/CN=ingress-proxy"
+#   openssl x509 -req -in nginx-client.csr -CA ca.crt \
+#     -CAkey ca.key -CAcreateserial -out nginx-client.crt -days 365
+#   kubectl create secret generic nginx-client-mtls \
+#     --from-file=tls.crt=nginx-client.crt \
+#     --from-file=tls.key=nginx-client.key \
+#     --from-file=ca.crt=ca.crt -n webapp
+# ============================================================
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: nginx-client-mtls
+#   namespace: webapp
+# type: kubernetes.io/tls
+# data:
+#   tls.crt: <base64>   # ← uncomment and fill
+#   tls.key: <base64>
+#   ca.crt:  <base64>
+---
+# ============================================================
+# Secret — nginx's SERVER certificate presented to the CLIENT
+# during the inbound TLS handshake.
+#
+# This is what the client validates. It is completely separate from:
+#   - client-ca-secret  (CA nginx uses to VERIFY the client cert)
+#   - nginx-client-mtls (cert nginx presents TO the upstream)
+#
+# Generate signed by your internal CA:
+#   openssl req -newkey rsa:4096 -keyout server.key \
+#     -out server.csr -nodes -subj "/CN=webapp.example.com"
+#   openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key \
+#     -CAcreateserial -out server.crt -days 365 \
+#     -extfile <(printf "subjectAltName=DNS:webapp.example.com")
+#   kubectl create secret tls nginx-server-tls \
+#     --cert=server.crt --key=server.key -n webapp
+# ============================================================
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: nginx-server-tls
+#   namespace: webapp
+# type: kubernetes.io/tls
+# data:
+#   tls.crt: <base64-encoded server cert>   # ← uncomment and fill
+#   tls.key: <base64-encoded server key>
+---
+# ============================================================
+# ConfigMap — global nginx controller tuning
+# ============================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+data:
+  # ── Real-IP forwarding through MetalLB ────────────────────
+  use-forwarded-headers: "true"
+  compute-full-forwarded-for: "true"
+  use-proxy-protocol: "false"
+
+  # ── Client header / body timeouts ────────────────────────
+  # Maps to: client_header_timeout, client_body_timeout
+  client-header-timeout: "10"          # seconds
+  client-body-timeout: "30"            # seconds
+
+  # ── Keep-alive ───────────────────────────────────────────
+  # Maps to: keepalive_timeout, keepalive_requests
+  keep-alive: "65"
+  keep-alive-requests: "1000"
+
+  # ── Send timeout (client socket not writable) ────────────
+  # send_timeout has no native ConfigMap key in ingress-nginx.
+  # Injected globally here via server-snippet — applies to every
+  # vhost on this controller. The per-Ingress server-snippet below
+  # is redundant once this is set but kept for explicitness.
+  server-snippet: |
+    send_timeout 30s;
+
+  # ── Upstream keepalive pool ──────────────────────────────
+  upstream-keepalive-connections: "320"
+  upstream-keepalive-time: "1h"
+  upstream-keepalive-timeout: "60"
+
+  # ── Client header buffers ────────────────────────────────
+  # Maps to: client_header_buffer_size, large_client_header_buffers
+  client-header-buffer-size: "1k"
+  large-client-header-buffers: "4 8k"
+
+  # ── Client body buffers ──────────────────────────────────
+  # Maps to: client_body_buffer_size
+  client-body-buffer-size: "8k"
+  # client_body_temp_path is managed by the controller itself
+  # (/tmp/nginx/client-body); override via extraVolumes if needed
+
+  # ── Proxy request buffering (streaming vs buffered) ──────
+  # Maps to: proxy_request_buffering
+  # "on"  = buffer full request body before forwarding (safer for upstreams)
+  # "off" = stream directly (lower latency for large uploads)
+  proxy-request-buffering: "on"
+
+  # ── Proxy response buffers ───────────────────────────────
+  # Maps to: proxy_buffer_size, proxy_buffers
+  proxy-buffer-size: "2k"
+  proxy-buffers-number: "16"           # 16 × 4k = 64 kB response buffer per conn
+
+  # ── Proxy & upstream timeouts ────────────────────────────
+  proxy-connect-timeout: "5"
+  proxy-send-timeout: "30"
+  proxy-read-timeout: "60"
+
+  # ── Request / body size ──────────────────────────────────
+  proxy-body-size: "8m"
+
+  # ── Rate limiting ────────────────────────────────────────
+  limit-req-status-code: "429"
+
+  # ── Security ─────────────────────────────────────────────
+  hide-headers: "Server,X-Powered-By"
+  server-tokens: "false"
+
+  # ── Structured JSON access log ───────────────────────────
+  log-format-upstream: >
+    {"time":"$time_iso8601","request_id":"$req_id",
+     "remote_addr":"$remote_addr","method":"$request_method",
+     "uri":"$request_uri","status":$status,
+     "bytes_sent":$bytes_sent,"request_time":$request_time,
+     "upstream_addr":"$upstream_addr","upstream_status":"$upstream_status",
+     "ssl_client_verify":"$ssl_client_verify",
+     "ssl_client_s_dn":"$ssl_client_s_dn"}
+---
+# ============================================================
+# Ingress resource
+# ============================================================
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webapp-ingress
+  namespace: webapp
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+
+    # ── mTLS — inbound (client → nginx) ──────────────────────
+    # nginx verifies the client cert against client-ca-secret.
+    # Remove the next two lines to make client certs optional.
+    nginx.ingress.kubernetes.io/auth-tls-secret: "webapp/client-ca-secret"
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"          # on | optional | off
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "2"
+    # Forward the verified client DN to the upstream as a header
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+
+    # ── mTLS — outbound (nginx → upstream backend) ───────────
+    # nginx presents nginx-client-mtls cert to the backend and
+    # verifies the backend's cert against the upstream CA bundle.
+    #
+    # proxy-ssl-secret      → nginx's OWN client cert+key (proves identity to upstream)
+    # proxy-ssl-trusted-certificate → CA cert nginx uses to VERIFY the upstream's cert
+    #
+    # These can be the same CA if you have a single internal CA signing
+    # both client and server certs, or different CAs for separate PKIs.
+    nginx.ingress.kubernetes.io/proxy-ssl-secret: "webapp/nginx-client-mtls"
+    nginx.ingress.kubernetes.io/proxy-ssl-trusted-certificate: "webapp/upstream-ca-secret"
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
+    nginx.ingress.kubernetes.io/proxy-ssl-verify-depth: "2"
+    # Tell nginx the backend speaks HTTPS
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+
+    # ── Rate limiting ─────────────────────────────────────────
+    nginx.ingress.kubernetes.io/limit-rps: "20"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "2"
+    nginx.ingress.kubernetes.io/limit-connections: "20"
+
+    # ── CORS ──────────────────────────────────────────────────
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"        # tighten to your domain
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization, Content-Type, Accept, X-Request-ID"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "X-Request-ID"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "false"
+    nginx.ingress.kubernetes.io/cors-max-age: "86400"
+
+    # ── Routing ───────────────────────────────────────────────
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+    # ── Proxy timeouts (per-location overrides) ───────────────
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "5"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-body-size: "8m"
+    nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-tries: "2"
+
+    # ── Server-level + location-level nginx snippets ──────────
+    nginx.ingress.kubernetes.io/server-snippet: |
+      # send_timeout — abort if client isn't reading the response
+      send_timeout 30s;
+
+      # client_body_temp_path — spill large request bodies here
+      client_body_temp_path /tmp/nginx-client-body 1 2;
+
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Proxy response buffering
+      proxy_buffer_size        2k;
+      proxy_buffers            16 4k;
+      proxy_request_buffering  on;   # flip to off for streaming/large uploads
+
+      # Forward verified client certificate DN to upstream
+      proxy_set_header X-SSL-Client-DN   $ssl_client_s_dn;
+      proxy_set_header X-SSL-Client-Cert $ssl_client_escaped_cert;
+
+      # Security response headers
+      add_header X-Content-Type-Options  "nosniff"       always;
+      add_header X-Frame-Options         "SAMEORIGIN"    always;
+      add_header Referrer-Policy         "strict-origin" always;
+      add_header X-Request-ID            $req_id         always;
+
+spec:
+  tls:
+    - hosts:
+        - webapp.example.com      # ← must match spec.rules[].host exactly
+      secretName: nginx-server-tls  # nginx presents this cert to the client
+  ingressClassName: nginx
+  rules:
+    - host: webapp.example.com      # ← replace with your hostname
+      http:
+        paths:
+          # /hi → hi-service  (backend must serve HTTPS for mTLS)
+          - path: /hi(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: hi-service
+                port:
+                  number: 443
+
+          # /by → by-service
+          - path: /by(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: by-service
+                port:
+                  number: 443
+---
+# ============================================================
+# PodDisruptionBudget
+# ============================================================
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: ingress-nginx-pdb
+  namespace: ingress-nginx
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ingress-nginx
+---
+# ============================================================
+# HorizontalPodAutoscaler
+# ============================================================
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ingress-nginx-controller
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
