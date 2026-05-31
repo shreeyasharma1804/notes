@@ -8,3 +8,5 @@ securityContext:
   runAsGroup: 1000
   runAsUser: 1000
 ```
+
+- If a PVC directory has permissions such that the runAsUser UID cannot access it, the mount cannot be read/written to
