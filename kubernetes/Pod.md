@@ -26,3 +26,9 @@ securityContext:
 ```
 
 Allows a pod to run with all linux capabilities.
+
+### Pod Metrics
+
+```bash
+kubectl top pods
+```
