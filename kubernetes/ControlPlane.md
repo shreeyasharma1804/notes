@@ -2,7 +2,7 @@ All control plane components run as static pods under /etc/kubernetes/manifests
 
 ### Kube-Api Server
 
-```
+```yml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -20,8 +20,8 @@ spec:
     - --advertise-address=172.16.0.2                    # Address used by other kubelets to connect to the API server             
     - --allow-privileged=true                           # Allows the privileged: true setting in pods. Misuse is avoided through admission hooks
     - --authorization-mode=Node,RBAC
-    - --client-ca-file=/etc/kubernetes/pki/ca.crt
-    - --enable-admission-plugins=NodeRestriction
+    - --client-ca-file=/etc/kubernetes/pki/ca.crt       # cacerts for authorizing the clients
+    - --enable-admission-plugins=NodeRestriction        
     - --enable-bootstrap-token-auth=true
     - --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt
     - --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt
@@ -128,5 +128,6 @@ spec:
       type: DirectoryOrCreate
     name: usr-share-ca-certificates
 status: {}
-
 ```
+
+Node Authorization: This is applicable when a kubelet tries to access resources. The node authorizer ensures that the kubelet can only access the resources which are scheduled on it/ refernced by a resource scheduled on it.
