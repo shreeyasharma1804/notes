@@ -137,3 +137,5 @@ status: {}
 - --enable-bootstrap-token-auth=true allows new kubelets to authenticate to the API server using a bootstrap token before they have their own client certificate.
 
 - kubelet-preferred-address-types: Each node defines the InternalIP, ExternalIP and HostName which the kube-api server can use to call it.
+
+- proxy-client-cert-file: Sent by the kube-api server when it acts as a proxy. Example, when a user runs top, kube-api server forwars this request to the metrics server and authenticates itself using this certificate and key.
