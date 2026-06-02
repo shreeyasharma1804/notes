@@ -23,7 +23,7 @@ spec:
     - --client-ca-file=/etc/kubernetes/pki/ca.crt       # cacerts for authorizing the clients
     - --enable-admission-plugins=NodeRestriction        
     - --enable-bootstrap-token-auth=true
-    - --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt
+    - --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt     # etcd root certificate must belong to this trust store
     - --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt  # certificate and private key that the API server presents to etcd during the TLS handshake for mutual TLS
     - --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key
     - --etcd-servers=https://127.0.0.1:2379
