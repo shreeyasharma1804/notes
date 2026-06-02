@@ -24,10 +24,10 @@ spec:
     - --enable-admission-plugins=NodeRestriction        
     - --enable-bootstrap-token-auth=true
     - --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt
-    - --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt
+    - --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt  # certificate and private key that the API server presents to etcd during the TLS handshake for mutual TLS
     - --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key
     - --etcd-servers=https://127.0.0.1:2379
-    - --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt
+    - --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt    # certificate and private key that the API server presents to kubelets during the TLS handshake for mutual TLS
     - --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key
     - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
     - --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt
@@ -130,4 +130,8 @@ spec:
 status: {}
 ```
 
-Node Authorization: This is applicable when a kubelet tries to access resources. The node authorizer ensures that the kubelet can only access the resources which are scheduled on it/ refernced by a resource scheduled on it.
+- Node Authorization: This is applicable when a kubelet tries to access resources. The node authorizer ensures that the kubelet can only access the resources which are scheduled on it/ refernced by a resource scheduled on it.
+
+- NodeRestriction is an admission plugin that restricts what authenticated kubelets (system:node:<node-name>) are allowed to create, update, or delete.
+
+- --enable-bootstrap-token-auth=true allows new kubelets to authenticate to the API server using a bootstrap token before they have their own client certificate.
