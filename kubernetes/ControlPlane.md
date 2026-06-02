@@ -135,3 +135,5 @@ status: {}
 - NodeRestriction is an admission plugin that restricts what authenticated kubelets (system:node:<node-name>) are allowed to create, update, or delete.
 
 - --enable-bootstrap-token-auth=true allows new kubelets to authenticate to the API server using a bootstrap token before they have their own client certificate.
+
+- kubelet-preferred-address-types: Each node defines the InternalIP, ExternalIP and HostName which the kube-api server can use to call it.
