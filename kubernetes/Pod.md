@@ -15,3 +15,14 @@ kubeletctl -s <nodes> pods
 A mirror pod is created for a static pod by the API server which can be identified through unique annotations. The mirror pod support get, cat and not edit, delete
 
 Failure in creating mirror pod does not affect the static pod
+
+### Privilaged mode
+
+The container setting:
+
+```yaml
+securityContext:
+  privileged: true
+```
+
+Allows a pod to run with all linux capabilities.
