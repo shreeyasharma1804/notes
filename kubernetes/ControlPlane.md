@@ -140,6 +140,29 @@ status: {}
 
 - proxy-client-cert-file: Sent by the kube-api server when it acts as a proxy. Example, when a user runs top, kube-api server forwars this request to the metrics server and authenticates itself using this certificate and key.
 
+
+| Property | Usage |
+|----------|--------|
+| advertise-address | The API server address used by the other components |
+| secure-port | The port on which the API server listens |
+| tls-cert-file and tls-cert-key | The certs and the keys used for TLS when connecting to API server |
+| client-ca-file | The ca certs which API server trusts |
+| service-cluster-ip-range | The range of IPs from where the cluster IP can be defined |
+| kubernetes-service-node-port | The allowed port to be used in node port|
+| allow-privileged | Allows the privileged: true setting in pods |
+| etcd-servers | etcd server locations |
+| etcd-certfile and etcd-keyfile | The certs which API server uses to prove its identity to etcd server |
+| etcd-cafile | The certificate presented by etcd should be in this truststore |
+| kubelet-client-certificate and kubelet-client-certificate | The certs which API server uses to prove its identity to kubelets |
+| proxy-client-cert-file and proxy-client-key-file | The certs which API server uses to prove its identity to metrics server |
+| requestheader-allowed-names | Not sent as a header, the allowed CNs of the cert sent by a 3rd party server like metrics server |
+| requestheader-client-ca-file | The trust store to be used to authenticate 3rd party servers like metrics server |
+| requestheader-username-headers and requestheader-group-headers | The user and group name sent in the headers from API server to 3rd party servers |
+| service-account-issuer | The issuer field of JWT tokens |
+| service-account-signing-key-file and service-account-key-file | The public and private keys used to issue and verify JWT tokens |
+
+
+
 ### Kube controller manager
 
 ```yaml
