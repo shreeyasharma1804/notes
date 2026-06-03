@@ -162,7 +162,7 @@ spec:
     - --client-ca-file=/etc/kubernetes/pki/ca.crt   # The ca file used to authenticate the clients connecting to it.
     - --cluster-cidr=10.244.0.0/16          # This should not overalp with the cluster-service-ip range
     - --cluster-name=kubernetes
-    - --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt
+    - --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt       # The cert used to sign all the certs for the cluster
     - --cluster-signing-key-file=/etc/kubernetes/pki/ca.key
     - --controllers=*,bootstrapsigner,tokencleaner
     - --kubeconfig=/etc/kubernetes/controller-manager.conf
