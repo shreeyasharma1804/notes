@@ -155,12 +155,12 @@ spec:
   containers:
   - command:
     - kube-controller-manager
-    - --allocate-node-cidrs=true
+    - --allocate-node-cidrs=true            # The controller assigns a pod cidr range to a node from the cluster-cidr range
     - --authentication-kubeconfig=/etc/kubernetes/controller-manager.conf
     - --authorization-kubeconfig=/etc/kubernetes/controller-manager.conf
-    - --bind-address=127.0.0.1
-    - --client-ca-file=/etc/kubernetes/pki/ca.crt
-    - --cluster-cidr=10.244.0.0/16
+    - --bind-address=127.0.0.1              # The address of controller manager is often local becuase it is an internal component
+    - --client-ca-file=/etc/kubernetes/pki/ca.crt   # The ca file used to authenticate the clients connecting to it.
+    - --cluster-cidr=10.244.0.0/16          # This should not overalp with the cluster-service-ip range
     - --cluster-name=kubernetes
     - --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt
     - --cluster-signing-key-file=/etc/kubernetes/pki/ca.key
