@@ -192,7 +192,6 @@ spec:
     - --leader-elect=true
     - --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt
     - --root-ca-file=/etc/kubernetes/pki/ca.crt
-    - --service-account-private-key-file=/etc/kubernetes/pki/sa.key
     - --service-cluster-ip-range=10.96.0.0/12
     - --use-service-account-credentials=true
     image: registry.k8s.io/kube-controller-manager:v1.36.1
@@ -277,6 +276,17 @@ spec:
     name: usr-share-ca-certificates
 status: {}
 ```
+
+| Property | Usage |
+|-----------|---------|
+| bind-address | The IP address the controller listens on |
+| cluster-cidr | The cluster CIDR range
+| allocate-node-cidrs | Controller allocates node CIDRs (which decide the pod IPs) from the cluster CIDR range |
+| leader-elect | Leader election for HA setups |
+| cluster-signing-cert-file and cluster-signing-key-file | The CA cert and key which is used to sign all the certificates in the cluster. This is a seperation of concerns, all components connect to the api-server and the api-server verifies the certs. The controller only issues the certs |
+| root-ca-file | The root certificate of the cluster used to imbed in all kubeconfigs |
+| requestheader-client-ca-file | The truststore location for 3rd party connections from controller to 3rd party servers |
+| use-service-account-credentials | Use differnet service tokens for different controllers |
 
 ### Kube Scheduler
 
