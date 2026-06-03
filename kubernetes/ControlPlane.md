@@ -37,10 +37,10 @@ spec:
     - --requestheader-extra-headers-prefix=X-Remote-Extra-
     - --requestheader-group-headers=X-Remote-Group
     - --requestheader-username-headers=X-Remote-User
-    - --secure-port=6443
-    - --service-account-issuer=https://kubernetes.default.svc.cluster.local
+    - --secure-port=6443                                                                # The HTTPS port to listen on
+    - --service-account-issuer=https://kubernetes.default.svc.cluster.local             # Issuer value of JWT tokens
     - --service-account-key-file=/etc/kubernetes/pki/sa.pub
-    - --service-account-signing-key-file=/etc/kubernetes/pki/sa.key
+    - --service-account-signing-key-file=/etc/kubernetes/pki/sa.key                     
     - --service-cluster-ip-range=10.96.0.0/12
     - --tls-cert-file=/etc/kubernetes/pki/apiserver.crt
     - --tls-private-key-file=/etc/kubernetes/pki/apiserver.key
