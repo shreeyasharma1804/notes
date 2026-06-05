@@ -30,3 +30,5 @@ users:
 
 - A role connects a resource(eg, pod) to a permission(eg, get)
 - Permissiosn: `get, list, watch, create, update, patch, delete`. Other actions like describe are a subset of these permissions.
+- `get`: Only gets one particular object, example, `kubectl get pods nginx`
+- `list`: List all resources
