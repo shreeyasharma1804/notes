@@ -32,3 +32,17 @@ users:
 - Permissiosn: `get, list, watch, create, update, patch, delete`. Other actions like describe are a subset of these permissions.
 - `get`: Only gets one particular object, example, `kubectl get pods nginx`
 - `list`: List all resources
+- Roles define a namespace, ClusterRoles are applicable across the cluster(used by control plane components)
+
+```yml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: dev
+
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get","list","watch"]
+```
