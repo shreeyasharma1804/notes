@@ -143,9 +143,15 @@ spec
 - The ingress object is used to define the services where the traffic needs to be routed based on the routing rules.
 - The ingress-pod contains the actual nginx process and generated nginx.conf.
 - The loadbalancer only works on loadbalancing the packets from an external-ip to the ingress-pods.
+- The loadbalancer uses both clusterIP and NodePort
 
 ```bash
 curl -H "Host:hi-bye.local" 192.168.1.21:80/hi
+curl -H "Host:hi-bye.local" 192.168.1.9:30118/hi # Using nodeport
+
+# Basically, 192.168.1.21:80 DNAT to ingress pod
+# 192.168.1.9:30118/hi, also DNAT to ingress pod
+# 10.43.196.118:80/hi, also DNAT to ingress pod
 ```
 
 ```bash
