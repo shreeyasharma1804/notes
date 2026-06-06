@@ -145,9 +145,15 @@ spec
 - The loadbalancer only works on loadbalancing the packets from an external-ip to the ingress-pods.
 
 ```
+
+sudo k3s kubectl get pods -A -o wide | grep ingress
+ingress-nginx    ingress-nginx-controller-7d65c586d6-zwqht   1/1     Running            1 (85m ago)    9d      10.42.0.12    pop-os   <none>           <none>
+
+udo k3s kubectl get svc -A
 NAMESPACE        NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGE
 ingress-nginx    ingress-nginx-controller             LoadBalancer   10.43.196.118   192.168.1.21   80:30118/TCP,443:32263/TCP   9d
 
+sudo k3s kubectl get ingress -A
 NAMESPACE   NAME             CLASS   HOSTS            ADDRESS        PORTS   AGE
 default     hi-bye-ingress   nginx   hi-bye.local     192.168.1.21   80      9d
 ```
