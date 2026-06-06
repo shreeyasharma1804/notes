@@ -120,6 +120,11 @@ Chain KUBE-SEP-AISHG3UCUCO2DWAC (1 references)
     1    60 DNAT       6    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-nodeport */ tcp to:10.42.0.4:8000
 ```
 
+### CoreDNS
+
+- The CorDNS runs as a pod in the kube-system namespace.
+- Every pod has the location of the DNS in the `/etc/resolv.conf` file.
+
 ### MetalLB
 
 MetalLB creates a LoadBalancer in the cluster which answers to external IPs and redirects the traffic to the pods
