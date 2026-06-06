@@ -67,6 +67,17 @@ ip route get 10.42.0.4
 # The cni plugin then forwards the packet to the correct pod
 ```
 
+### Endpoints
+
+All the pod IPs a service can reach
+
+```bash
+sudo k3s kubectl get endpoints hi-bye-service
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME             ENDPOINTS                                      AGE
+hi-bye-service   10.42.0.4:8000,10.42.0.5:8000,10.42.0.6:8000   9d
+```
+
 ### Service: NodePort
 
 ```bash
