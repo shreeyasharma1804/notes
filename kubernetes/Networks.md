@@ -144,8 +144,7 @@ spec
 - The ingress-pod contains the actual nginx process and generated nginx.conf.
 - The loadbalancer only works on loadbalancing the packets from an external-ip to the ingress-pods.
 
-```
-
+```bash
 sudo k3s kubectl get pods -A -o wide | grep ingress
 ingress-nginx    ingress-nginx-controller-7d65c586d6-zwqht   1/1     Running            1 (85m ago)    9d      10.42.0.12    pop-os   <none>           <none>
 
@@ -156,6 +155,27 @@ ingress-nginx    ingress-nginx-controller             LoadBalancer   10.43.196.1
 sudo k3s kubectl get ingress -A
 NAMESPACE   NAME             CLASS   HOSTS            ADDRESS        PORTS   AGE
 default     hi-bye-ingress   nginx   hi-bye.local     192.168.1.21   80      9d
+```
+
+Internals
+
+```bash
+PREROUTING -> KUBE-SERVICES
+
+Chain KUBE-SERVICES (2 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 KUBE-EXT-CG5I4G2RS3ZVWGLK  6    --  *      *       0.0.0.0/0            192.168.1.21         /* ingress-nginx/ingress-nginx-controller:http loadbalancer IP */ tcp dpt:80
+
+Chain KUBE-EXT-CG5I4G2RS3ZVWGLK (3 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 KUBE-SVC-CG5I4G2RS3ZVWGLK  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* route LOCAL traffic for ingress-nginx/ingress-nginx-controller:http external destinations */ ADDRTYPE match src-type LOCAL
+
+# Here, the packet is routed to the ingress pod
+Chain KUBE-SEP-BYLCQHMLJ6HK5HFC (2 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DNAT       6    --  *      *       0.0.0.0/0            0.0.0.0/0            /* ingress-nginx/ingress-nginx-controller:http */ tcp to:10.42.0.12:80
+
+# The pod now routes the packet to the backedn service based on the rules
 ```
 
 ### MetalLB
