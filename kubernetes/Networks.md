@@ -139,7 +139,10 @@ spec
 
 ### External connectivity
 
-- Nginx ingress creates 2 resources: ingress-nginx-controller of type LoadBalancer, and an ingress resource
+- Nginx ingress uses 3 resources: ingress-nginx-controller(LoadBalancer), ingress resource(Ingress), ingress-pod(Type pod)
+- The ingress object is used to define the services where the traffic needs to be routed based on the routing rules.
+- The ingress-pod contains the actual nginx process and generated nginx.conf.
+- The loadbalancer only works on loadbalancing the packets from an external-ip to the ingress-pods.
 
 ```
 NAMESPACE        NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGE
