@@ -1,3 +1,32 @@
+### Inside a pod
+
+### 2 pods on the same node
+
+### 2 pods on different nodes 
+
+### Service: ClusterIP
+
+- A ClusterIP assigns an IP to a set of pods based on the selector from the cluster-ip cidr range.
+- CorDNS resolves the ClusterIP service name to the ClusterIP
+
+| Part            | Meaning                        | Defined where?                        |
+| --------------- | ------------------------------ | ------------------------------------- |
+| `default`       | Namespace                      | Namespace of the Service              |
+| `svc`           | Indicates a Service DNS record | Kubernetes DNS convention             |
+| `cluster.local` | Cluster DNS domain             | DNS configuration (CoreDNS / kubelet) |
+
+
+```bash
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+hi-bye-service   ClusterIP   10.43.82.235   <none>        80/TCP    9d    app=hi-bye-app
+
+# Inside a debug pod
+wget http://10.43.82.235/hi
+wget http://hi-bye-service/hi
+wget http://hi-bye-service.default.svc.cluster.local/hi
+```
+
+
 ### MetalLB
 
 MetalLB creates a LoadBalancer in the cluster which answers to external IPs and redirects the traffic to the pods
