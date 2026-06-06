@@ -137,6 +137,18 @@ spec
 - The CorDNS runs as a pod in the kube-system namespace.
 - Every pod has the location of the DNS in the `/etc/resolv.conf` file.
 
+### External connectivity
+
+- Nginx ingress creates 2 resources: ingress-nginx-controller of type LoadBalancer, and an ingress resource
+
+```
+NAMESPACE        NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGE
+ingress-nginx    ingress-nginx-controller             LoadBalancer   10.43.196.118   192.168.1.21   80:30118/TCP,443:32263/TCP   9d
+
+NAMESPACE   NAME             CLASS   HOSTS            ADDRESS        PORTS   AGE
+default     hi-bye-ingress   nginx   hi-bye.local     192.168.1.21   80      9d
+```
+
 ### MetalLB
 
 MetalLB creates a LoadBalancer in the cluster which answers to external IPs and redirects the traffic to the pods
