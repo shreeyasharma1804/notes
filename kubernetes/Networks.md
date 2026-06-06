@@ -68,7 +68,24 @@ ip route get 10.42.0.4
 ```
 
 ### Service: NodePort
-  
+
+```bash
+hi-bye-nodeport   NodePort    10.43.20.7     <none>        80:30080/TCP   3m27s   app=hi-bye-app
+
+# Working
+NodeIP:30080
+    ↓
+Service ClusterIP:80
+    ↓
+PodIP:8000
+
+# Inside a debug pod
+wget http://10.43.20.7/hi
+
+# On the host
+curl 192.168.1.9:30080/hi
+```
+
 ### MetalLB
 
 MetalLB creates a LoadBalancer in the cluster which answers to external IPs and redirects the traffic to the pods
