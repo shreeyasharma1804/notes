@@ -1,3 +1,5 @@
+Kubeproxy only alters the host's routing tables
+
 ### Inside a pod
 
 ### 2 pods on the same node
@@ -26,7 +28,16 @@ wget http://hi-bye-service/hi
 wget http://hi-bye-service.default.svc.cluster.local/hi
 ```
 
+ Internals:
 
+ - wget http://10.43.82.235/hi
+ - No DNS resolution required here
+ -
+```bash
+ip route
+default via 10.42.0.1 dev eth0
+```
+  
 ### MetalLB
 
 MetalLB creates a LoadBalancer in the cluster which answers to external IPs and redirects the traffic to the pods
