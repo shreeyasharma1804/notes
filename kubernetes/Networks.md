@@ -145,6 +145,10 @@ spec
 - The loadbalancer only works on loadbalancing the packets from an external-ip to the ingress-pods.
 
 ```bash
+curl -H "Host:hi-bye.local" 192.168.1.21:80/hi
+```
+
+```bash
 sudo k3s kubectl get pods -A -o wide | grep ingress
 ingress-nginx    ingress-nginx-controller-7d65c586d6-zwqht   1/1     Running            1 (85m ago)    9d      10.42.0.12    pop-os   <none>           <none>
 
