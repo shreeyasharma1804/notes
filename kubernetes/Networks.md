@@ -120,6 +120,18 @@ Chain KUBE-SEP-AISHG3UCUCO2DWAC (1 references)
     1    60 DNAT       6    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-nodeport */ tcp to:10.42.0.4:8000
 ```
 
+### Service: Headless
+
+- In a headless service:
+
+```yml
+spec
+  clusterIP: None
+```
+
+- Instead of using a virtual IP which is loadbalanced across the Pod IPs by kube-proxy, the pod IP is returned directly by the DNS.
+- This feature is used specifically in stateful applications using daemonsets.
+
 ### CoreDNS
 
 - The CorDNS runs as a pod in the kube-system namespace.
