@@ -32,11 +32,41 @@ wget http://hi-bye-service.default.svc.cluster.local/hi
 
  - wget http://10.43.82.235/hi
  - No DNS resolution required here
- -
 ```bash
 ip route
 default via 10.42.0.1 dev eth0
 ```
+- This IP belongs to the cni interface on the host (the veth interface of the pod and cni interface on the host are connected by a bridge network)
+- PREROUTING rules are applied to this packet
+```bash
+Chain PREROUTING (policy ACCEPT 16 packets, 2322 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+   84  7386 KUBE-SERVICES  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* kubernetes service portals */
+
+Chain KUBE-SERVICES (2 references)
+ pkts bytes target     prot opt in     out     source               destination
+    9   540 KUBE-SVC-LC4RP4AY6E35KNJG  6    --  *      *       0.0.0.0/0            10.43.82.235         /* default/hi-bye-service cluster IP */ tcp dpt:80
+
+# One pod is chosen randomly
+Chain KUBE-SVC-LC4RP4AY6E35KNJG (1 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 KUBE-MARK-MASQ  6    --  *      *      !10.42.0.0/16         10.43.82.235         /* default/hi-bye-service cluster IP */ tcp dpt:80
+    2   120 KUBE-SEP-Z7QH5NTGHAPVKVO6  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-service -> 10.42.0.4:8000 */ statistic mode random probability 0.33333333349
+    3   180 KUBE-SEP-LIGFT5R6A6LUJPH4  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-service -> 10.42.0.5:8000 */ statistic mode random probability 0.50000000000
+    4   240 KUBE-SEP-BM4LI7HKRJOEKMYH  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-service -> 10.42.0.6:8000 */
+
+# DNAT is performed
+Chain KUBE-SEP-Z7QH5NTGHAPVKVO6 (1 references)
+ pkts bytes target     prot opt in     out     source               destination
+    2   120 DNAT       6    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-service */ tcp to:10.42.0.4:8000
+
+# On the host
+ip route get 10.42.0.4
+10.42.0.4 dev cni0 src 10.42.0.1 uid 1000
+
+# The cni plugin then forwards the packet to the correct pod
+```
+
   
 ### MetalLB
 
