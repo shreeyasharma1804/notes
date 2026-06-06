@@ -86,6 +86,29 @@ wget http://10.43.20.7/hi
 curl 192.168.1.9:30080/hi
 ```
 
+Internals
+
+```
+PREROUTING -> KUBE-SERVICES
+
+Chain KUBE-SERVICES (2 references)
+ pkts bytes target     prot opt in     out     source               destination
+    1    60 KUBE-SVC-QYMDJKV4WEDC2IPH  6    --  *      *       0.0.0.0/0            10.43.20.7           /* default/hi-bye-nodeport cluster IP */ tcp dpt:80
+
+Chain KUBE-SVC-QYMDJKV4WEDC2IPH (2 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 KUBE-MARK-MASQ  6    --  *      *      !10.42.0.0/16         10.43.20.7           /* default/hi-bye-nodeport cluster IP */ tcp dpt:80
+    1    60 KUBE-SEP-AISHG3UCUCO2DWAC  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-nodeport -> 10.42.0.4:8000 */ statistic mode random probability 0.33333333349
+    0     0 KUBE-SEP-HBLCQNEKJ4OOHRMF  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-nodeport -> 10.42.0.5:8000 */ statistic mode random probability 0.50000000000
+    2   120 KUBE-SEP-PRS734IZISVHMPCG  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-nodeport -> 10.42.0.6:8000 */
+
+# DNAT
+Chain KUBE-SEP-AISHG3UCUCO2DWAC (1 references)
+ pkts bytes target     prot opt in     out     source               destination
+    1    60 KUBE-MARK-MASQ  0    --  *      *       10.42.0.4            0.0.0.0/0            /* default/hi-bye-nodeport */
+    1    60 DNAT       6    --  *      *       0.0.0.0/0            0.0.0.0/0            /* default/hi-bye-nodeport */ tcp to:10.42.0.4:8000
+```
+
 ### MetalLB
 
 MetalLB creates a LoadBalancer in the cluster which answers to external IPs and redirects the traffic to the pods
