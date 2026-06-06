@@ -67,6 +67,7 @@ ip route get 10.42.0.4
 # The cni plugin then forwards the packet to the correct pod
 ```
 
+### Service: NodePort
   
 ### MetalLB
 
