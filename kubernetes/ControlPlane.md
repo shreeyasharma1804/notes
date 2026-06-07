@@ -1,4 +1,49 @@
-All control plane components run as static pods under /etc/kubernetes/manifests
+- All control plane components run as static pods under /etc/kubernetes/manifests
+- All APIs are declarative
+
+### How does resource conciliation work
+
+```
+Pod created
+    ↓
+API Server stores Pod in etcd
+    ↓
+Scheduler and Controllers receive watch notifications (vai SSE)
+    ↓
+Scheduler chooses a node
+    ↓
+Scheduler updates Pod.spec.nodeName
+    ↓
+API Server stores updated Pod
+    ↓
+Kubelet on that node receives watch notification
+    ↓
+Kubelet creates containers via container runtime
+    ↓
+Kubelet updates Pod status
+```
+
+### What if a node crashes
+
+```
+Node crashes
+    ↓
+Kubelet stops sending heartbeats
+    ↓
+Node Controller notices missing heartbeats
+    ↓
+Node marked NotReady
+    ↓
+Pods on that node become unavailable
+    ↓
+Controllers notice fewer replicas than desired
+    ↓
+Controllers create replacement Pods
+    ↓
+Scheduler schedules replacements
+    ↓
+New kubelets create replacement Pods
+```
 
 ### Kube-Api Server
 
