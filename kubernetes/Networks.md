@@ -144,6 +144,7 @@ spec
 - The ingress-pod contains the actual nginx process and generated nginx.conf.
 - The loadbalancer only works on loadbalancing the packets from an external-ip to the ingress-pods.
 - The loadbalancer uses both clusterIP and NodePort
+- If the ingress pod uses stdout for writing the access and error logs, the logs can be checked using kubectl logs. If the logs are written to a file, it is always better to ingest the logs using a sidecar like splunk since the pods are ephemeral
 
 ```bash
 curl -H "Host:hi-bye.local" 192.168.1.21:80/hi
