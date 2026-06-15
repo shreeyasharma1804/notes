@@ -25,5 +25,5 @@ $$
 <img width="1015" height="576" alt="image" src="https://github.com/user-attachments/assets/2fe6f342-f562-4587-bc85-aae35b39a381" />
 
 - These cells do not go through the vanishing/exploding gradient problem
-- The outputs are the long and short term memory
+- The outputs are the long and short term memory, the last short term memory is the input to a fully connected layer.
 
