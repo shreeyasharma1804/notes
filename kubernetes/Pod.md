@@ -51,6 +51,8 @@ cat /proc/1/status | grep -i cap
 capsh --decode=<capability hex value>
 ```
 
+The capabilities are user namespace scoped
+
 ### Pod Metrics
 
 ```bash
