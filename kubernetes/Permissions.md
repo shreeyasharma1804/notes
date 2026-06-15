@@ -72,3 +72,51 @@ roleRef:
 
 ### User Creation
 
+```bash
+# Create the keys
+openssl genrsa -out shreeya.key 2048
+
+# Create CSr
+openssl req -new \
+  -key shreeya.key \
+  -out shreeya.csr \
+  -subj "/CN=shreeya/O=developers"
+
+# Encode the CSR to base64 format
+ cat shreeya.csr | base64 -w0
+
+# Create CSR object
+
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: shreeya
+spec:
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ2JEQ0NBVlFDQVFBd0p6RVFNQTRHQTFVRUF3d0hjMmh5WldWNVlURVRNQkVHQTFVRUNnd0taR1YyWld4dgpjR1Z5Y3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTGo5ZDdXWUo2OG5LeFkyCkUranpxNkdqM1BRZGFwQ09yeGd4N09IMklyZVJDUHhIT0EvSjJnTjdFcE00cU9yUjB6Q245cTRuZk5DWGg4Y00KVitFVkVuOTFrTC9TVWNtQkE0VnlhWTBWYWNDQW53cUI5TTRzeFF5b3dGTytlNTRVT21QZ2JJa2ZUVXpBT3hLSQpVRzQyR2J0ZCtid25QZDVMekZuMkJicVdWUmF0K05yRkRyUlZHM3VwSk0xbUtudC9SdHp0WWpXQXRLWk9oMWdKCkxONnF1MWZ3aXJ4VDRQOTlEZC9Zb1BEYnRjaGZMaG5kYWpwdlNMb2puUTcyU0wwUWF3RUJVSExqLzZZYWo4djMKS1FMcjl2eG1jR3cxKyt3R1lFZGhTNUI4aHEyMXFCUzFzaCtKYmxwbVVWbWlBaVpBTEJxWVlRWEpGNU84b0xDUQo5T0lHZkJNQ0F3RUFBYUFBTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFCOUcrOHorVWNLWjFZemM4R0d3WkgxCjlmUmFDMWFKQjFwSWprNVFyaGxXa1ZJUXUvVHR0U25tdEVuVFp4TkhQUWg0cURheWlQMGRCQ2gwaEtwbFU3NTUKN0JjL2ZOSHhaNm5zYU1udjdGdDBhdmVTYnkrOG8zd3kyWVNZYlNJRDJMQmkyZkw3TWRLV250OWZyOW51Y3doTgpmWVVVV2h2SWJKaXRJd0o2czRnSFJ6aVEzMHJyRTlDaVhWUlJVc2w2MUFOdUZnRmMzQXVXU0tjeGpTdDFveHU2CmFxaU8yUmgxT0t5dFJzYmdzT3hUblpjQmVCT0I4UjVEWHBrbVRaS1k2MUdNNnNYeXVzeWd2TkEvTkpTOGdzNk8KWXZPQ3NhbW9RaVpkVllLN1o0ekxhMklOR29hbEoyTW4yZUU5MW5EZkR5cXV5Z0xUcnIwNTF0QlQ1a051RXZrZwotLS0tLUVORCBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0K
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+
+kubectl get csr
+
+# Approve request
+kubectl certificate approve shreeya
+
+# Get the signed certificate
+kubectl get csr shreeya -o json
+
+# Create user credentials
+kubectl config set-credentials shreeya \
+  --client-certificate=shreeya.crt \
+  --client-key=shreeya.key
+
+# Create context
+kubectl config set-context shreeya \
+  --cluster=default \
+  --user=shreeya
+
+# Check the context in ~/.kube/config
+
+# Use the new context
+kubectl config use-context shreeya
+```
