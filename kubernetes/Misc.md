@@ -72,3 +72,12 @@ kubectl port-forward svc/goldilocks-dashboard \
 
 Static analysis of pod configs
 
+- kube-capacity
+
+Total requests and limits of all pods on a node:
+
+```bash
+└❯ kubectl resource-capacity
+NODE     CPU REQUESTS   CPU LIMITS    MEMORY REQUESTS   MEMORY LIMITS
+pop-os   545m (4%)      1600m (13%)   2326Mi (15%)      2926Mi (19%)
+```
