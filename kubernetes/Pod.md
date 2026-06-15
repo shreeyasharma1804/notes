@@ -16,9 +16,9 @@ A mirror pod is created for a static pod by the API server which can be identifi
 
 Failure in creating mirror pod does not affect the static pod
 
-### Privilaged mode
+### Security
 
-The container setting:
+- The container setting:
 
 ```yaml
 securityContext:
@@ -26,6 +26,30 @@ securityContext:
 ```
 
 Allows a pod to run with all linux capabilities.
+
+Keep this setting to false, also, use mutating admission hooks to turn it to false if an application requests true
+
+- Capabilities
+
+To set the capabilities of a pod:
+
+```yml
+securityContext:
+  capabilities:
+    add:
+    - NET_ADMIN
+    - SYS_TIME
+    drop:
+    - ALL
+```
+
+To check the capabilities inside a container:
+
+```
+kubectl exec -it <pod-name> -- sh
+cat /proc/1/status | grep -i cap
+capsh --decode=<capability hex value>
+```
 
 ### Pod Metrics
 
