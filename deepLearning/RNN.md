@@ -15,3 +15,6 @@ Here, f is the activation function
 $$
 \hat{o}_t = w_3 y_t + b_2
 $$
+
+- These networks are used for predictions with variable input size
+- These networks also suffer with gradient explode, vanish, since during the last inputs, the {w_2} weight has exponential presence.
