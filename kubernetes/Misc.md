@@ -60,7 +60,13 @@ VPA pods aggregate the metrics data, and in recommendation mode, suggests the re
 
 - Goldilocks
 
-Uses the recommendations from the VPA to suggest the resource usage, automatically creates the VPA pods for the namespaces labelled with the relevant goldilocks label
+Uses the recommendations from the VPA to suggest the resource usage, automatically creates the VPA pods for the namespaces labelled with the relevant goldilocks label.
+Open the dashboard using:
+
+```bash
+kubectl port-forward svc/goldilocks-dashboard \
+  -n goldilocks 8080:80
+```
 
 - Popeye
 
