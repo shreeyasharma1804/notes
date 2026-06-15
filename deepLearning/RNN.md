@@ -4,10 +4,14 @@
 
 A single RNN unit computes:
 
-$y_t = f(w_1 x_t + w_2 y_{t-1} + b_1)$
+$$$
+y_t = f(w_1 x_t + w_2 y_{t-1} + b_1)
+$$$
 
 Here, f is the activation function
 
 Output layer equation:
 
-$\hat{o}_t = w_3 y_t + b_2$
+$$$
+\hat{o}_t = w_3 y_t + b_2
+$$$
