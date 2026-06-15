@@ -87,3 +87,7 @@ pop-os   545m (4%)      1600m (13%)   2326Mi (15%)      2926Mi (19%)
 ```bash
 kubectl get pod hi-bye-app-784587b8b7-fwpgp -o yaml | kubectl neat
 ```
+
+- kubevious
+
+Overall resource dashboard with static analysis
