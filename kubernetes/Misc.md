@@ -81,3 +81,9 @@ Total requests and limits of all pods on a node:
 NODE     CPU REQUESTS   CPU LIMITS    MEMORY REQUESTS   MEMORY LIMITS
 pop-os   545m (4%)      1600m (13%)   2326Mi (15%)      2926Mi (19%)
 ```
+
+- kubectl neat
+
+```bash
+kubectl get pod hi-bye-app-784587b8b7-fwpgp -o yaml | kubectl neat
+```
