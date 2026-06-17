@@ -16,9 +16,12 @@ helm repo list
 NAME         	URL      
 bitnami      	https://charts.bitnami.com/bitnami
 
-# search for a chart
+# search for a chart (This searches the index.yml from the added repos)
 helm search repo <search string>
 helm search repo redis
 NAME                 	CHART VERSION	APP VERSION	DESCRIPTION                                       
 bitnami/redis        	27.0.10      	8.8.0      	Redis(R) is an open source, advanced key-value ...
+
+#  Update the repo
+helm repo update
 ```
