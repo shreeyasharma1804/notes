@@ -24,4 +24,22 @@ bitnami/redis        	27.0.10      	8.8.0      	Redis(R) is an open source, adva
 
 #  Update the repo
 helm repo update
+
+
+#  Check the chart:
+helm show chart bitnami/redis
+
+# Check the values
+helm show values bitnami/redis
+
+# Check everything
+helm show all bitnami/redis
+
+# Render the templates, but do not install anything
+helm template redis bitnami/redis
+
+# Render the template with a custom values file
+helm template redis bitnami/redis -f values.yaml
+
+helm install redis bitnami/redis --dry-run --debug
 ```
