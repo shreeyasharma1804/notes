@@ -12,6 +12,14 @@ securityContext:
 - If a PVC directory has permissions such that the runAsUser UID cannot access it, the mount cannot be read/written to
 
 - debug pod: `kubectl debug -it <target pod> --image=busybox:latest`
+- For issues related to securityContext:
+
+```bash
+kubectl debug -it \
+    --profile baseline \
+    --image ghcr.io/iximiuz/labs/alpine:3 \
+    <target pod>
+```
 
 ### Tools
 
