@@ -27,3 +27,9 @@ $$
 - These cells do not go through the vanishing/exploding gradient problem
 - The outputs are the long and short term memory, the last short term memory is the input to a fully connected layer.
 
+
+### Misc
+
+https://colah.github.io/
+https://karpathy.github.io/
+peterbloem.nl/blog/transformers
