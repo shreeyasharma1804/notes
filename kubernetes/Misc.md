@@ -11,6 +11,8 @@ securityContext:
 
 - If a PVC directory has permissions such that the runAsUser UID cannot access it, the mount cannot be read/written to
 
+- debug pod: `kubectl debug -it <target pod> --image=busybox:latest`
+
 ### Tools
 
 - `kubectl tree deployment  <deployment-name>`: Shows a tree like view of all the objects created as a part of the deployment
