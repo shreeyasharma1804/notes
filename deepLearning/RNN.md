@@ -30,6 +30,6 @@ $$
 
 ### Misc
 
-https://colah.github.io/
-https://karpathy.github.io/
-peterbloem.nl/blog/transformers
+- https://colah.github.io/
+- https://karpathy.github.io/
+- peterbloem.nl/blog/transformers
