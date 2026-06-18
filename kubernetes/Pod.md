@@ -53,7 +53,7 @@ capsh --decode=<capability hex value>
 
 The capabilities are user namespace scoped
 
-### Pod Security Standards (PSS) — Summary
+### Pod Security Standards (PSS)
 
 Kubernetes uses **Pod Security Admission (PSA)** to enforce security rules on pods. The rules are grouped into three levels:
 
@@ -61,6 +61,9 @@ Kubernetes uses **Pod Security Admission (PSA)** to enforce security rules on po
 Privileged  →  Baseline  →  Restricted
 Least Secure             Most Secure
 ```
+
+`privileged: true`: Allows almost all capabilities to the pod
+`runAsRootL true`: The pod can run as uid 0 mapping to the host
 
 1. Privileged
 
