@@ -11,6 +11,16 @@ kubectl debug -it \
     --image ghcr.io/iximiuz/labs/alpine:3 \
     <target pod>
 ```
+
+Create the debug pod within the PID namespace of --target container
+ 
+```bash
+kubectl debug -it \
+    --profile baseline \
+    --image ghcr.io/iximiuz/labs/alpine:3 \
+    --target app \
+    slim
+```
 - exec pod:
 
 ````bash
