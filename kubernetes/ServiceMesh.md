@@ -88,3 +88,22 @@ spec:
 kubectl exec -n frontend frontend -- curl http://backend-svc.backend.svc.cluster.local #Works
 kubectl exec -n frontend frontend -- curl -X POST http://backend-svc.backend.svc.cluster.local #Does not work
 ```
+
+- mTLS
+
+```yml
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mtls:
+    mode: STRICT
+```
+
+Check the certs:
+
+```bash
+istioctl proxy-config secret frontend.frontend
+```
