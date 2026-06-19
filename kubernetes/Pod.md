@@ -18,20 +18,29 @@ Failure in creating mirror pod does not affect the static pod
 
 ### Security
 
-- The container setting:
+Security is evaluated in the order: sudo privilage -> capability
+
+#### runAsUser
+`runAsUser: 0`: Allows the pod to run as UID 0
+If usermapping is enabled, the pod is mapped to higher user on the host, if not, it runs as UID 0 on the host
+
+Check if user mapping is enabled:
+
+```bash
+# Inside the pod
+cat /proc/self/uid_map
+```
+
+#### Capabilities
+
+- The container setting, sllows a pod to run with all linux capabilities.:
 
 ```yaml
 securityContext:
   privileged: true
 ```
 
-Allows a pod to run with all linux capabilities.
-
-Keep this setting to false, also, use mutating admission hooks to turn it to false if an application requests true
-
-- Capabilities
-
-To set the capabilities of a pod:
+- To set the capabilities of a pod:
 
 ```yml
 securityContext:
@@ -43,7 +52,7 @@ securityContext:
     - ALL
 ```
 
-To check the capabilities inside a container:
+- To check the capabilities inside a container:
 
 ```
 kubectl exec -it <pod-name> -- sh
@@ -51,19 +60,14 @@ cat /proc/1/status | grep -i cap
 capsh --decode=<capability hex value>
 ```
 
-The capabilities are user namespace scoped
+#### Pod Security Standards
 
-### Pod Security Standards (PSS)
-
-Kubernetes uses **Pod Security Admission (PSA)** to enforce security rules on pods. The rules are grouped into three levels:
+Kubernetes uses Pod Security Admission (PSA) to enforce security rules on pods. The rules are grouped into three levels:
 
 ```text
 Privileged  →  Baseline  →  Restricted
 Least Secure             Most Secure
 ```
-
-`privileged: true`: Allows almost all capabilities to the pod
-`runAsRootL true`: The pod can run as uid 0 mapping to the host
 
 1. Privileged
 
@@ -194,6 +198,8 @@ Test without enforcing:
 pod-security.kubernetes.io/warn: restricted
 pod-security.kubernetes.io/audit: restricted
 ```
+
+Keep this setting to false, also, use mutating admission hooks to turn it to false if an application requests true
 
 ### Pod Metrics
 
