@@ -65,3 +65,25 @@ Chain ISTIO_REDIRECT (1 references)
     0     0 REDIRECT   6    --  *      *       0.0.0.0/0            0.0.0.0/0            redir ports 15001
 ```
 
+- L7 Policies
+
+```yml
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: backend-allow-get
+  namespace: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  rules:
+  - to:
+    - operation:
+        methods: ["GET"]
+```
+
+```bash
+kubectl exec -n frontend frontend -- curl http://backend-svc.backend.svc.cluster.local #Works
+kubectl exec -n frontend frontend -- curl -X POST http://backend-svc.backend.svc.cluster.local #Does not work
+```
