@@ -143,7 +143,7 @@ pod-security.kubernetes.io/enforce: restricted
 
 #### How enforcement works
 
-Namespace labels determine the policy:
+- Namespace labels:
 
 ```yaml
 metadata:
@@ -163,43 +163,8 @@ Pod Security Admission
 Allow or Reject
 ```
 
-Example rejection:
+- Mutating admission policy
 
-```text
-violates PodSecurity "baseline:latest":
-non-default capabilities (SYS_PTRACE)
-```
-
-#### Important commands
-
-Check namespace policy:
-
-```bash
-kubectl get ns --show-labels
-```
-
-Enable Baseline:
-
-```bash
-kubectl label ns demo \
-  pod-security.kubernetes.io/enforce=baseline
-```
-
-Enable Restricted:
-
-```bash
-kubectl label ns demo \
-  pod-security.kubernetes.io/enforce=restricted
-```
-
-Test without enforcing:
-
-```yaml
-pod-security.kubernetes.io/warn: restricted
-pod-security.kubernetes.io/audit: restricted
-```
-
-Keep this setting to false, also, use mutating admission hooks to turn it to false if an application requests true
 
 ### Pod Metrics
 
