@@ -6,3 +6,4 @@
 - Traffic splitting
 - Gateway API
 - Ingress
+- NetworkPolicy
