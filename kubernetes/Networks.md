@@ -220,3 +220,37 @@ Created LB:
 ```bash
 kube-system      traefik                   LoadBalancer   10.43.251.160   192.168.1.20   80:32231/TCP,443:30560/TCP   141m
 ```
+
+### NetworkPolicy
+
+Decided which pods can connect to which pods both in terms of ingress and egress
+
+```yml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ipblock-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx
+
+  policyTypes:
+  - Ingress
+  - Egress
+
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 10.0.0.0/24
+        except:
+        - 10.0.0.5/32
+
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 172.16.0.0/16
+        except:
+        - 172.16.1.0/24
+```
