@@ -1,18 +1,9 @@
 - Mutating Admission policy: https://kubernetes.io/docs/reference/access-authn-authz/mutating-admission-policy/
 - Validating Admission policy: https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/
 
-
-- Security context: The main process inside the container runs as UID and GID 1000 on the host
-```yml
-securityContext:
-  runAsGroup: 1000
-  runAsUser: 1000
-```
-
 - If a PVC directory has permissions such that the runAsUser UID cannot access it, the mount cannot be read/written to
 
 - debug pod: `kubectl debug -it <target pod> --image=busybox:latest`
-- For issues related to securityContext:
 
 ```bash
 kubectl debug -it \
@@ -20,6 +11,12 @@ kubectl debug -it \
     --image ghcr.io/iximiuz/labs/alpine:3 \
     <target pod>
 ```
+- exec pod:
+
+````bash
+kubectl exec -n <namespace> <pod> -c <container> -- <command>
+```
+
 
 ### Tools
 
