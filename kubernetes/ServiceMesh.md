@@ -19,6 +19,7 @@ sudo nsenter -t <container PID> -n iptables -t nat -L -n -v
 - The IP table
 
 Ingress rules: PREROUTING
+
 Egress rules: OUTPUT
 
 ```bash
