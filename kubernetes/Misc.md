@@ -23,7 +23,7 @@ kubectl debug -it \
 ```
 - exec pod:
 
-````bash
+```bash
 kubectl exec -n <namespace> <pod> -c <container> -- <command>
 ```
 
