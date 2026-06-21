@@ -27,6 +27,10 @@ $$
 - These cells do not go through the vanishing/exploding gradient problem
 - The outputs are the long and short term memory, the last short term memory is the input to a fully connected layer.
 
+### Attention
+
+<img width="985" height="556" alt="image" src="https://github.com/user-attachments/assets/bb1032e7-63d3-49a5-960b-9bd2101ec369" />
+
 
 ### Misc
 
