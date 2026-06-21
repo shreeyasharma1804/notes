@@ -1,5 +1,18 @@
 ### Probes
 
+#### StartupProbe
+
+```
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: 8080
+  periodSeconds: 10
+  failureThreshold: 30
+```
+
+The kubelet executes the command httpGet every periodSeconds and tolerates failureThreshold number of failures. This provides a slow pod some time to start. After the threshold exceeds, the container is restarted
+
 ### Static pods
 
 Static pods are created directly by the kubelet and are not registered with the API server.
