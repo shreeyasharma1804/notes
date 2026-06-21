@@ -1,17 +1,60 @@
 ### Probes
 
-#### StartupProbe
+Probes are defined on a per container basis only.
 
-```
-startupProbe:
-  httpGet:
-    path: /healthz
-    port: 8080
-  periodSeconds: 10
-  failureThreshold: 30
+```yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-probes
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.29
+
+    ports:
+    - containerPort: 80
+
+    startupProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 2
+      failureThreshold: 30
+
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 0
+      periodSeconds: 5
+      timeoutSeconds: 2
+      failureThreshold: 3
+      successThreshold: 1
+
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 0
+      periodSeconds: 10
+      timeoutSeconds: 2
+      failureThreshold: 3
 ```
 
-The kubelet executes the command httpGet every periodSeconds and tolerates failureThreshold number of failures. This provides a slow pod some time to start. After the threshold exceeds, the container is restarted
+#### startupProbe
+
+The kubelet executes the command httpGet after initialDelaySeconds every periodSeconds, waits for the response of the command for timeoutSeconds before timing out and tolerates failureThreshold number of failures. This provides a slow pod some time to start. After the threshold exceeds, the container is restarted
+
+#### livenessProbe
+
+Starts after startupProbe, similar to it and also restarts the container incase of failure
+
+#### readinessProbe
+
+Decides if the point is included in the service endpoint
 
 ### Static pods
 
