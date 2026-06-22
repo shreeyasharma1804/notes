@@ -108,6 +108,55 @@ kubectl drain
 # Taint the node: `kubectl taint nodes <> drain=true:NoExecute`
 ```
 
+#### nodeAffinity
+
+- requiredDuringSchedulingIgnoredDuringExecution: The node label conditions need to meet during scheduling. If the node labels are removed after scheduling, the pod is not evicted.
+- Here, a node with label `((gpu in true) AND (zone in east)) OR (workload in ml)` is eligible for scheduling the pod
+
+```yml
+requiredDuringSchedulingIgnoredDuringExecution:
+  nodeSelectorTerms:
+  - matchExpressions:
+    - key: gpu
+      operator: In
+      values: ["true"]
+    - key: zone
+      operator: In
+      values: ["east"]
+
+  - matchExpressions:
+    - key: workload
+      operator: In
+      values: ["ml"]
+```
+
+preferredDuringSchedulingIgnoredDuringExecution: Each node is given a score based on the `preference`. The pod is scheduled on a node with the highest score, i.e, the weight
+
+```
+preferredDuringSchedulingIgnoredDuringExecution:
+- weight: 80
+  preference:
+    matchExpressions:
+    - key: disktype
+      operator: In
+      values: ["ssd"]
+
+- weight: 20
+  preference:
+    matchExpressions:
+    - key: zone
+      operator: In
+      values: ["east"]
+```
+
+| Node     | SSD? | East? | Score |
+| -------- | ---- | ----- | ----- |
+| worker-1 | Yes  | Yes   | 100   |
+| worker-2 | Yes  | No    | 80    |
+| worker-3 | No   | Yes   | 20    |
+| worker-4 | No   | No    | 0     |
+
+
 ### Probes
 
 Probes are defined on a per container basis only.
