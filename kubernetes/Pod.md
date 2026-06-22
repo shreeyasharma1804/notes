@@ -2,6 +2,7 @@
 - Containers
 - restartPolicy
 - Volumes
+- terminationGracePeriodSeconds
 
 ### QOS (Decides the Pod Eviction during memory/cpu pressure on node)
 
