@@ -59,6 +59,7 @@ nodeSelector:
     disktype: ssd  
     zone: us-east-1a  
 ```
+The label is checked only during scheduling. If the label is removed from the node later, the pod keeps running
 
 - Taints and Tolerations
 
@@ -84,6 +85,13 @@ tolerations:
   operator: "Equal"
   value: "true"
   effect: "NoSchedule"
+```
+
+Example: 
+
+```bash
+kubectl drain
+# Taint the node: `kubectl taint nodes <> drain=true:NoExecute`
 ```
 
 ### Probes
