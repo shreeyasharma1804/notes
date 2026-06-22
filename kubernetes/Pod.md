@@ -4,6 +4,7 @@
 - Volumes
 - terminationGracePeriodSeconds
 - nodeSelector
+- tolerations
 
 ### Container resources
 
@@ -57,6 +58,32 @@ This pod can be scheduled on only the nodes which have the labels disktype: ssd 
 nodeSelector:
     disktype: ssd  
     zone: us-east-1a  
+```
+
+- Taints and Tolerations
+
+Taints repel Pods. Tolerations allow Pods to ignore that repulsion. They don't attract Pods; they only remove a scheduling restriction.
+
+Taint a node:
+
+```
+# Format: key=value:effect  
+kubectl taint nodes node-1 gpu=true:NoSchedule
+```
+
+Effects:
+- PreferNoSchedule: Scheduler tries to avoid placing pods here but will if no other option exists.
+- NoSchedule: New pods without a matching toleration are never scheduled on this node. Already-running pods are not evicted. Only affects future scheduling decisions.
+- NoExecute: Blocks new pods AND evicts already-running pods that don’t tolerate it.
+
+Define tolerations of a pod
+
+```yml
+tolerations:
+- key: "gpu"
+  operator: "Equal"
+  value: "true"
+  effect: "NoSchedule"
 ```
 
 ### Probes
