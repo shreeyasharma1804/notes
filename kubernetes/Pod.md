@@ -156,6 +156,12 @@ preferredDuringSchedulingIgnoredDuringExecution:
 | worker-3 | No   | Yes   | 20    |
 | worker-4 | No   | No    | 0     |
 
+```
+nodeSelectorTerms:
+- ...
+- ...
+behaves like OR
+```
 
 ### Probes
 
