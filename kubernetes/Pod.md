@@ -181,6 +181,27 @@ affinity:
       topologyKey: kubernetes.io/hostname
 ```
 
+#### Soft Affinity
+
+```yml
+affinity:
+  podAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchLabels:
+            app: redis
+        topologyKey: kubernetes.io/hostname
+```
+
+With these affinities, a pod will be scheduled on a node only if it has a pod with label: `app: redis`
+
+#### topologyKey
+
+- `topologyKey: kubernetes.io/hostname`: The pod will only be scheduled on a node with the same hostname as the node meeting the affinity criteria
+- `topologyKey: topology.kubernetes.io/zone`: The pod will only be scheduled on a node with the same zone(eg, east, west etc) as the node meeting the affinity criteria
+
 ### Probes
 
 Probes are defined on a per container basis only.
