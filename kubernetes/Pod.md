@@ -38,6 +38,7 @@ Processes are throttled/scheduled less often
 No eviction
 ```
 
+
 - The kubelet periodically checks node resource pressure (default housekeeping-interval: 10s).
 - Eviction thresholds are configured through evictionSoft and evictionHard settings defined in the kubelet config.
 - If a soft threshold is crossed, the condition must remain true until `eviction-soft-grace-period` before eviction occurs.
