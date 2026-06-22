@@ -4,6 +4,14 @@
 - Volumes
 - terminationGracePeriodSeconds
 
+### Container resources
+
+- Pod scheduling is based on the sum of all container resource requests.
+
+- If the CPU limit is exceeded, the CPU cycles are withheld by the kernel. The container is throttled but not restarted
+
+- If the memory limit is exceeded, the kernel kills the container with an exit code 137. The container is restarted according to the pod restartPolicy.
+
 ### QOS (Decides the Pod Eviction during memory/cpu pressure on node)
 
 - Guaranteed: Every container has CPU and memory requests and limits defined, and request = limit for both resources.
@@ -12,13 +20,30 @@
 
 - BestEffort: No container defines CPU or memory requests or limits.
 
-### Container resources
+### Pod Eviction
 
-- Pod scheduling is based on the sum of all container resource requests.
+```
+Low memory
+    ↓
+Node can become unstable
+    ↓
+Kubelet evicts Pods
+```
 
-- If the CPU limit is exceeded, the CPU cycles are withheld by the kernel. The container is throttled but not restarted
+```
+High CPU usage
+    ↓
+Processes are throttled/scheduled less often
+    ↓
+No eviction
+```
 
-- If the memory limit is exceeded, the kernel kills the container with an exit code 137. The container is restarted according to the pod restartPolicy.
+The kubelet evaluates the free memory in the node at every --`housekeeping-interval (default 10 seconds)`
+
+- Soft eviction zone: Total free memory < 300 MB
+- Hard eviction zone: Total free memory < 100 MB
+
+These values are defined in the kubelet config
 
 
 ### Probes
