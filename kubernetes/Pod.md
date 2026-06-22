@@ -3,6 +3,7 @@
 - restartPolicy
 - Volumes
 - terminationGracePeriodSeconds
+- nodeSelector
 
 ### Container resources
 
