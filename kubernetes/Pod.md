@@ -38,12 +38,10 @@ Processes are throttled/scheduled less often
 No eviction
 ```
 
-The kubelet evaluates the free memory in the node at every --`housekeeping-interval (default 10 seconds)`
-
-- Soft eviction zone: Total free memory < 300 MB
-- Hard eviction zone: Total free memory < 100 MB
-
-These values are defined in the kubelet config
+- The kubelet periodically checks node resource pressure (default housekeeping-interval: 10s).
+- Eviction thresholds are configured through evictionSoft and evictionHard settings defined in the kubelet config.
+- If a soft threshold is crossed, the condition must remain true until `eviction-soft-grace-period` before eviction occurs.
+- If a hard threshold is crossed, kubelet immediately begins evicting Pods. The node is tainted as `MemoryPressure=True`. This prevents the scheduler from assigning new pods to that node. The node must stay out of hard eviction zone for `--eviction-pressure-transition-period` before removing `MemoryPressure` condition.
 
 
 ### Probes
