@@ -6,6 +6,19 @@
 - nodeSelector
 - tolerations
 
+### initContainers
+
+- Init containers are executed strictly in the order they are defined.
+- Init container with `restartPolicy: Always` is a sidecar. This is an exeption to the general rule of restartPolicy only being defined at the pod level
+
+```
+Normal init container:
+    Start → Complete → Next container starts
+
+Native sidecar:
+    Start → Keep running → Next init container starts
+```
+
 ### Container resources
 
 - Pod scheduling is based on the sum of all container resource requests.
