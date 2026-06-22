@@ -5,6 +5,7 @@
 - terminationGracePeriodSeconds
 - nodeSelector
 - tolerations
+- affinity
 
 ### initContainers
 
