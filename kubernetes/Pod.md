@@ -50,7 +50,7 @@ No eviction
 
 The node labelling is managed using Ansible
 
-- nodeSelector
+#### nodeSelector
 
 This pod can be scheduled on only the nodes which have the labels disktype: ssd and zone: us-east-1a:
 
@@ -61,7 +61,7 @@ nodeSelector:
 ```
 The label is checked only during scheduling. If the label is removed from the node later, the pod keeps running
 
-- Taints and Tolerations
+#### Taints and Tolerations
 
 Taints repel Pods. Tolerations allow Pods to ignore that repulsion. They don't attract Pods; they only remove a scheduling restriction.
 
