@@ -163,6 +163,10 @@ nodeSelectorTerms:
 behaves like OR
 ```
 
+### podAffinity
+
+
+
 ### Probes
 
 Probes are defined on a per container basis only.
