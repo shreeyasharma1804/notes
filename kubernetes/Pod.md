@@ -45,6 +45,7 @@ No eviction
 - If a soft threshold is crossed, the condition must remain true until `eviction-soft-grace-period` before eviction occurs.
 - If a hard threshold is crossed, kubelet immediately begins evicting Pods. The node is tainted as `MemoryPressure=True`. This prevents the scheduler from assigning new pods to that node. The node must stay out of hard eviction zone for `--eviction-pressure-transition-period` before removing `MemoryPressure` condition.
 
+### PodScheduling
 
 ### Probes
 
