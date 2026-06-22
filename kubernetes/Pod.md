@@ -132,7 +132,7 @@ requiredDuringSchedulingIgnoredDuringExecution:
 
 - preferredDuringSchedulingIgnoredDuringExecution: Each node is given a score based on the `preference`. The pod is scheduled on a node with the highest score, i.e, the weight
 
-```
+```yml
 preferredDuringSchedulingIgnoredDuringExecution:
 - weight: 80
   preference:
