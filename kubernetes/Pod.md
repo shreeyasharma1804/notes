@@ -130,7 +130,7 @@ requiredDuringSchedulingIgnoredDuringExecution:
       values: ["ml"]
 ```
 
-preferredDuringSchedulingIgnoredDuringExecution: Each node is given a score based on the `preference`. The pod is scheduled on a node with the highest score, i.e, the weight
+- preferredDuringSchedulingIgnoredDuringExecution: Each node is given a score based on the `preference`. The pod is scheduled on a node with the highest score, i.e, the weight
 
 ```
 preferredDuringSchedulingIgnoredDuringExecution:
