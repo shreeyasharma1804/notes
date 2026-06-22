@@ -1,3 +1,19 @@
+### Properties defined at a pod level
+- Containers
+- restartPolicy
+- Volumes
+
+### QOS (Decides the Pod Eviction)
+
+Pod scheduling is based on the sum of all container resource requests.
+
+- Guaranteed: Every container has CPU and memory requests and limits defined, and request = limit for both resources.
+
+- Burstable: At least one container has a request or limit defined, but the Pod is not Guaranteed.
+
+- BestEffort: No container defines CPU or memory requests or limits.
+
+
 ### Probes
 
 Probes are defined on a per container basis only.
