@@ -47,6 +47,8 @@ No eviction
 
 ### PodScheduling
 
+The node labelling is managed using Ansible
+
 - nodeSelector
 
 This pod can be scheduled on only the nodes which have the labels disktype: ssd and zone: us-east-1a:
