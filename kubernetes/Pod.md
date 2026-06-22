@@ -218,7 +218,8 @@ affinity:
         topologyKey: kubernetes.io/hostname
 ```
 
-This rule prefers to not schedule an app on a node which is running the pod with backend label
+- This rule prefers to not schedule an app on a node which is running the pod with backend label
+- Can be used to achieve one pod per node like behaviour
 
 ### Probes
 
