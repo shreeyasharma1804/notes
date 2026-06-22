@@ -47,6 +47,16 @@ No eviction
 
 ### PodScheduling
 
+- nodeSelector
+
+This pod can be scheduled on only the nodes which have the labels disktype: ssd and zone: us-east-1a:
+
+```yml
+nodeSelector:
+    disktype: ssd  
+    zone: us-east-1a  
+```
+
 ### Probes
 
 Probes are defined on a per container basis only.
