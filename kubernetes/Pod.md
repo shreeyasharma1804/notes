@@ -165,7 +165,21 @@ behaves like OR
 
 ### podAffinity
 
+Used for:
+- Keep tightly coupled services together
+- Improve cache locality
 
+#### Hard Affinity
+
+```yml
+affinity:
+  podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchLabels:
+          app: redis
+      topologyKey: kubernetes.io/hostname
+```
 
 ### Probes
 
