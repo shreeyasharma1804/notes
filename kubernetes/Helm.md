@@ -90,3 +90,9 @@ helm diff upgrade redis ./chart
 - Kubernetes only restarts the pods of a deployment if the pod template is changed.
 - Whether a pod has been restarted can be checked with the "AGE" column of pod describe command.
 - Whenever a pod is restarted, a new replicaset is created. The older one is kept for rollback purposes
+- To ensure that the pods are restarted every-time the configmap is changed, add to the pod metadata:
+
+```yml
+annotations:
+  checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+```
