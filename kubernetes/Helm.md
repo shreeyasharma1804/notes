@@ -1,45 +1,86 @@
-- A helm repo a remote git repositry which contains an index containing all the available charts in the repo
-- helm repo list: List all available repos
-- helm repo add sample_repo_1 https://shreeyasharma1804.github.io/helm-charts/ : Add a repo
+### Repository
 
-```
-# Add a repo
-helm repo add <name> <url>
+- A helm repository is a remote git repositry which contains an index.yml file containing all the available charts in the repo, and the tar files of the chart+values+templates
+
+```bash
+# Add a repo (repo_name url)
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
-A remote helm repo contains an index file which contains entries of chart name, chart version and its url location
-
-The tar file contains the template, chart.yml, values.yml
-
-# Show all added repos
+# List all added repos
 helm repo list
-NAME         	URL      
-bitnami      	https://charts.bitnami.com/bitnami
 
-# search for a chart (This searches the index.yml from the added repos)
-helm search repo <search string>
-helm search repo redis
-NAME                 	CHART VERSION	APP VERSION	DESCRIPTION                                       
-bitnami/redis        	27.0.10      	8.8.0      	Redis(R) is an open source, advanced key-value ...
+# Update the repo (fetch remote)
+helm repo update (Only updates the repository index)
 
-#  Update the repo
-helm repo update
+# Search the charts in a repo
+helm search repo <chart name>
+```
 
+### View the data
 
-#  Check the chart:
+```
+# View the chart (repo_name/chart_name)
 helm show chart bitnami/redis
 
-# Check the values
+# View the values
 helm show values bitnami/redis
 
-# Check everything
 helm show all bitnami/redis
+```
 
-# Render the templates, but do not install anything
+### Render and dry runs
+
+```
+# Render the template (release_name repo_name/chart_name)
 helm template redis bitnami/redis
 
-# Render the template with a custom values file
+# Render with custom values
 helm template redis bitnami/redis -f values.yaml
 
+# perform linitng
+helm lint ./chart
+
+# Installation dry-run
 helm install redis bitnami/redis --dry-run --debug
+
+# Upgrade dry-run
+helm upgrade redis bitnami/redis --dry-run --debug
+```
+
+### Release management
+
+```
+# Install a new release (release_name repo/chart_name)
+helm install redis bitnami/redis
+
+# Upgrade a release, this is run after helm repo update to install the new chart versions
+helm upgrade redis bitnami/redis
+
+# Install and upgrade
+helm upgrade --install redis bitnami/redis
+
+# List releases
+helm list
+helm list -A
+
+# Uninstall a release
+helm uninstall redis
+
+# Release status
+helm status redis
+
+# Get the values being used in the current release
+helm get values redis
+
+# Get all the variables of the release
+helm get all redis
+
+# Check the history of the release
+helm history redis
+
+# Rollback release to a previous version
+helm rollback redis 2
+
+# Diff the currently installed release with the values in ./chart
+helm diff upgrade redis ./chart
 ```
