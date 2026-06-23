@@ -27,6 +27,7 @@ kubectl debug -it \
 kubectl exec -n <namespace> <pod> -c <container> -- <command>
 ```
 
+- Annotations store metadata not used for selection by K8s
 
 ### Tools
 
