@@ -96,3 +96,9 @@ helm diff upgrade redis ./chart
 annotations:
   checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 ```
+
+### Blue-green deployments
+
+- Use 2 deployments for the same app, and make the changes to only one of the deployment
+- Keep the service pointed to the older deployment
+- Once the changes are validated, the service can point to the new pods
