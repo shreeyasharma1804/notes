@@ -86,6 +86,12 @@ Taint a node:
 kubectl taint nodes node-1 gpu=true:NoSchedule
 ```
 
+Check the taints of a node:
+
+```bash
+kubectl describe node cplane-01 | grep -i taint
+```
+
 Effects:
 - PreferNoSchedule: Scheduler tries to avoid placing pods here but will if no other option exists.
 - NoSchedule: New pods without a matching toleration are never scheduled on this node. Already-running pods are not evicted. Only affects future scheduling decisions.
