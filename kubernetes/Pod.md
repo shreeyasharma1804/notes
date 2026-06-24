@@ -489,5 +489,3 @@ spec:
 ```bash
 kubectl get LimitRange -n <namespace>
 ```
-
-Limi
