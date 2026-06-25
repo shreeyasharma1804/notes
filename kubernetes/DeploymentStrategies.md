@@ -192,3 +192,5 @@ ReplacementTransformer
 ```
 
 Documentation: https://k8s.info/docs/core/kustomize#5-key-concepts-in-depth
+
+Command: `kubectl kustomize overlays/dev/. `
