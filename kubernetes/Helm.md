@@ -102,3 +102,72 @@ annotations:
 - Use 2 deployments for the same app, and make the changes to only one of the deployment
 - Keep the service pointed to the older deployment
 - Once the changes are validated, the service can point to the new pods
+
+### Canary deployments
+
+- x% pods run using the new image tag whereas 100-x% servers run the old image tag
+
+```yml
+# deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-deployment
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  {{- if .Values.canary.enabled }}
+  replicas: 3
+  {{- else }}
+  replicas: 4
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+        - name: {{ .Values.appName }}-container
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+          - containerPort: 5000
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.appName }}-configmap
+
+# deployment-canary.yml
+{{- if .Values.canary.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-canary-deployment
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+        - name: {{ .Values.appName }}-container
+          image: "{{ .Values.image.repository }}:{{ .Values.image.canaryTag }}"
+          ports:
+          - containerPort: 5000
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.appName }}-configmap
+{{- end }}
+```
+
