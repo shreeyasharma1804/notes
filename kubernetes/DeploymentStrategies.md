@@ -171,3 +171,24 @@ spec:
 {{- end }}
 ```
 
+### Kustomize:
+
+- The kustomization.yml file contains all the customizations which will be applied on the manifests
+- The resources field contains the manifests on which the kustomization will be applied
+- The order is: recursively reach the kustomization file which contains only manifests and not other kustomization files
+- Transformation order: https://github.com/kubernetes-sigs/kustomize/pull/1154/changes#diff-08cc185c76276233438d343b0674803a4f5612b1808688a5d372f6fd14bffbd9
+
+```
+PatchStrategicMergeTransformer
+PatchTransformer (JSON6902 / patches)
+NamespaceTransformer
+PrefixSuffixTransformer
+LabelTransformer
+AnnotationsTransformer
+PatchJson6902Transformer
+ReplicaCountTransformer
+ImageTagTransformer
+ReplacementTransformer
+```
+
+Documentation: https://k8s.info/docs/core/kustomize#5-key-concepts-in-depth
