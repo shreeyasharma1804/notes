@@ -85,3 +85,44 @@ And a PVC can declare the label selection:
 
 #### Local PV
 
+A local PV is a PV bound to a node through node affinity
+
+```yml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-local
+spec:
+  storageClassName: "sc-local-wfc"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /mnt/disks/local
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - cplane-01
+```
+
+A pod which uses a PVC which is bound to this PV will always be scheduled based on the node affinity of the PV
+
+#### StorageClass
+
+Storage classes omit the requirement of manual PV creation through dynamic provisioning
+
+This storage class requires manual provisioning:
+
+```yml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-local-wfc
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+```
