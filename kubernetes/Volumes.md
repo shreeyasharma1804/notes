@@ -30,6 +30,8 @@ PV Phases:
 - Bound - a PVC has claimed it
 - Released - the PVC that claimed it was deleted, but the PV still exists
 
+Each PV is associated with a reclaim policy that decides what happens to the PV if the PVC is deleted
+
 #### Static provisioning
 
 An administrator manually declares the storage availability
@@ -136,3 +138,5 @@ volumeBindingMode: WaitForFirstConsumer
 ```yml
 kubectl get storageclass
 ```
+
+The storage class creates a PV when a pod is created which references the PVC if volumeBindingMode: WaitForFirstConsumer, and creates the PV immediately if volumeBindingMode: Immediate
