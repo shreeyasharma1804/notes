@@ -24,6 +24,12 @@ pv-bidir      500Mi      RWO            Retain           Bound    default/pvc-bi
 
 The actual directory is only created after a pod uses a PVC on the node where the pod is scheduled. This can cause issues such as new pod scheduling on different nodes will create empty directories.
 
+PV Phases:
+
+- Available - no PVC has claimed it
+- Bound - a PVC has claimed it
+- Released - the PVC that claimed it was deleted, but the PV still exists
+
 #### Static provisioning
 
 An administrator manually declares the storage availability
