@@ -126,3 +126,7 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 ```
+
+```yml
+kubectl get storageclass
+```
