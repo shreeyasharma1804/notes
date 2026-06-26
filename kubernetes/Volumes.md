@@ -11,8 +11,8 @@ This volume survives a pod restart but not a pod deletion
 
 ### PV and PVC
 
-PV: An object which declares that a storage is available
-PVC: Declare the requirement of storage by claiming a PV
+PV: An object which declares that a storage is available.
+PVC: Declare the requirement of storage by claiming a PV.
 
 If the storageClassName, capacity and accessModes match, a PVC binds to a PV
 
@@ -31,6 +31,10 @@ PV Phases:
 - Released - the PVC that claimed it was deleted, but the PV still exists
 
 Each PV is associated with a reclaim policy that decides what happens to the PV if the PVC is deleted
+
+- Reclaim: The PV is deleted if the PVC is deleted
+- Retain: After the PVC is deleted, the PV goes to the Released State. The claimRef still points to the deleted PVC and removing it makes the PV in the Available state again which can be bound to another PVC
+
 
 #### Static provisioning
 
