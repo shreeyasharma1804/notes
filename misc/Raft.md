@@ -39,3 +39,16 @@ lastLogTerm = 7
 
 - If 2 followers become candidates at the same time and a vote split occurs, no one becomes the leader in that election and the election times out.
 - Eventuall, a different follower promotes itself to candidate and starts the election again.
+
+#### Index divergence
+
+- Index divergence occurs when a follower has
+
+#### Situation
+
+**Consider A B C D E, with A as the leader. A write request comes to A, only D acknowledges it and now has the latest logIndex but the write has not been acknowledged to the client. Now D becomes the leader because it has the latest logIndex and streams this log to all the followers, but the write was never supposed to be done**
+
+This is allowed in a distributed system. A write may have been acknowledged in the system even after a client timeout. Thats why retries should be idempotent
+
+In case of K8s, the object type+name makes the CREATE request idempotent
+
