@@ -42,7 +42,11 @@ lastLogTerm = 7
 
 #### Index divergence
 
-- Index divergence occurs when a follower has
+- After a new leader is elected, it synchronizes each follower's log using the AppendEntries RPC.
+- The leader first finds the last common log entry (matching both index and term) shared with the follower.
+- If the follower has conflicting entries after that point (same index but different term), those entries and everything after them are deleted.
+- The leader then sends all missing log entries after the common point, and the follower appends them to its log.
+- After synchronization, the follower's log becomes an exact prefix match of the leader's log and eventually an exact copy as all entries are replicated.
 
 #### Situation
 
