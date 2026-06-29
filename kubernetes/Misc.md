@@ -28,6 +28,7 @@ kubectl exec -n <namespace> <pod> -c <container> -- <command>
 ```
 
 - Annotations store metadata not used for selection by K8s
+- Only the latest versions allow editing the resources fields of pods without having to create new pods
 
 ### Tools
 
