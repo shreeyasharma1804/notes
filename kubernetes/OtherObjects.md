@@ -18,6 +18,8 @@ kubectl rollout history deployment/myapp --revision=2
 kubectl rollout restart deployment/myapp
 ```
 
+A automatic rolling restart is performed by a deployment if the pod template is changed. This is possible because a new replicaset is created and the older replicaset is still available
+
 -  Every deployments is annotated with:
 
 ```yml
