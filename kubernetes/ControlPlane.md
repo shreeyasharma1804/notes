@@ -210,6 +210,8 @@ status: {}
 
 ### Kube controller manager
 
+- --controllers: Decides the controllers which can run, - <controller> does not allow the controller to run.
+
 ```yaml
 apiVersion: v1
 kind: Pod
