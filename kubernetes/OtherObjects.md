@@ -24,7 +24,7 @@ kubectl rollout restart deployment/myapp
 Annotations: deployment.kubernetes.io/revision: 1
 ```
 
-This defines the edits which have been made to the deployment
+This defines the edits which have been made to the pod template of the deployment
 
 - The deployment description also contains:
 
@@ -33,4 +33,11 @@ OldReplicaSets:    <none>
 NewReplicaSet:     klustered-5b7c7bfc5 (0/1 replicas created)
 ```
 
-Any changes made to the pod template issue the creation of a new replicaset
+- Any changes made to the pod template issue the creation of a new replicaset
+- A deployment is also associated with:
+
+```yml
+generation: 8
+```
+
+This field is updated when the deployment spec changes
