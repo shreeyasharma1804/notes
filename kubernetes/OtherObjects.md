@@ -44,4 +44,19 @@ generation: 8
 
 This field is updated when the deployment spec changes
 
-- If a pod is created from a deployment, not all changes are allowed on the pod. Also, the changes are not kept if the deployment is restarted
+- If a pod is created from a deployment, not all changes are allowed on the pod. Also, the changes are not kept if the deployment is restarted. Similar to a deployment, if an edit is accepted, the pod generation is updated
+
+### Replicasets
+
+- Change the desired number of replicas
+
+```bash
+kubectl scale deployment <deployment name> --replicas=1
+```
+
+- For a replicaset to reconcile, the replicaset controller should be running
+- For any errors, check the controller logs
+
+```bash
+kubectl -n kube-system logs kube-controller-manager-cplane-01
+```
