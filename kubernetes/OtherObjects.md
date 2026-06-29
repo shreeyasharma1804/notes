@@ -41,3 +41,5 @@ generation: 8
 ```
 
 This field is updated when the deployment spec changes
+
+- If a pod is created from a deployment, not all changes are allowed on the pod. Also, the changes are not kept if the deployment is restarted
