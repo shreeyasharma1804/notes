@@ -66,7 +66,7 @@ kubectl -n kube-system logs kube-controller-manager-cplane-01
 #### Types:
 
 - generic: Generic user data
-- tls: For TLS certificates
+- tls: For TLS certificates (accepts --key and --cert)
 - docker-registry: Docker registry login information
 
 #### Declaration:
@@ -96,6 +96,10 @@ kubectl create secret generic db-secret \
 kubectl create secret generic tls-secret \
     --from-file=tls.crt \
     --from-file=tls.key
+
+kubectl create secret tls tls-secret \
+    --key=tls.crt \
+    --cert=tls.key
 ```
 
 #### Usage
