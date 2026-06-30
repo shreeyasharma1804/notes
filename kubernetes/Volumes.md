@@ -33,7 +33,7 @@ PV Phases:
 Each PV is associated with a reclaim policy that decides what happens to the PV if the PVC is deleted
 
 - Reclaim: The PV is deleted if the PVC is deleted
-- Retain: After the PVC is deleted, the PV goes to the Released State. The claimRef still points to the deleted PVC and removing it makes the PV in the Available state again which can be bound to another PVC
+- Retain: After the PVC is deleted, the PV goes to the Released State. The claimRef still points to the deleted PVC and removing it makes the PV in the Available state again which can be bound to another PVC. The claimRef is removed throug patching
 
 
 #### Static provisioning
@@ -144,3 +144,55 @@ kubectl get storageclass
 ```
 
 The storage class creates a PV when a pod is created which references the PVC if volumeBindingMode: WaitForFirstConsumer, and creates the PV immediately if volumeBindingMode: Immediate
+
+### OpenEBS
+
+- OpenEBS provides dynamic provisioning of storage using LVM.
+- The volumes can be expanded
+- One vg is required, check using `sudo vg`. Other PV can be merged into the existing vg using vgextend
+- If a PVC requested, it is provisioned using `sudo lvcreate`. The partition is then formatted and mounted.
+
+Define the storage class:
+
+```
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+
+metadata:
+  name: openebs-lvm
+
+provisioner: local.csi.openebs.io
+
+allowVolumeExpansion: true
+
+parameters:
+  storage: "lvm"
+  volgroup: "lvmvg" # The name of the initial volume group
+  fsType: ext4
+
+volumeBindingMode: WaitForFirstConsumer
+```
+
+Use in a PVC:
+
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: postgres-pvc
+
+spec:
+  accessModes:
+    - ReadWriteOnce
+
+  storageClassName: openebs-lvm
+
+  resources:
+    requests:
+      storage: 20Gi
+```
+
+After a pod claims the PVC, a PV is created and bound to the PVC
+
+- If volume expansion is true, the storage declared in a PVC can be increased.
