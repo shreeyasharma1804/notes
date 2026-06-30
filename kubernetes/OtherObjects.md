@@ -60,3 +60,53 @@ kubectl scale deployment <deployment name> --replicas=1
 ```bash
 kubectl -n kube-system logs kube-controller-manager-cplane-01
 ```
+
+### OpenEBS
+
+- OpenEBS provides dynamic provisioning of storage using LVM.
+- The volumes can be expanded
+- One vg is required, check using `sudo vg`. Other PV can be merged into the existing vg using vgextend
+- If a PVC requested, it is provisioned using `sudo lvcreate`. The partition is then formatted and mounted.
+
+Define the storage class:
+
+```
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+
+metadata:
+  name: openebs-lvm
+
+provisioner: local.csi.openebs.io
+
+allowVolumeExpansion: true
+
+parameters:
+  storage: "lvm"
+  volgroup: "lvmvg" # The name of the initial volume group
+  fsType: ext4
+
+volumeBindingMode: WaitForFirstConsumer
+```
+
+Use in a PVC:
+
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: postgres-pvc
+
+spec:
+  accessModes:
+    - ReadWriteOnce
+
+  storageClassName: openebs-lvm
+
+  resources:
+    requests:
+      storage: 20Gi
+```
+
+After a pod claims the PVC, a PV is created and bound to the PVC
