@@ -137,3 +137,10 @@ If the secret is updated, kubelet automatically updates the mounted file content
 
 - All secrets are stored in a encrypted format in the etcd server.
 - A kubelet is authorized to retrieve a Secret only if that Secret is referenced by a Pod that has been scheduled to that kubelet's node.
+
+#### External Secrets operators
+
+- Allows to store the secrets in a vault and not in the cluster/yaml files
+- How are the secrets fetched, is a k8s secret object created?
+- How to update the secret in the pod if it has been updated in the vault
+- Secret rotation
