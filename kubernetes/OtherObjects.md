@@ -137,14 +137,57 @@ containers:
     name: secret-volume
 ```
 
-If the secret is updated, kubelet automatically updates the mounted file contents. No restart is required
+If the secret is updated, kubelet automatically updates the mounted file contents at kubelet sync time. No restart is required
 
 - All secrets are stored in a encrypted format in the etcd server.
 - A kubelet is authorized to retrieve a Secret only if that Secret is referenced by a Pod that has been scheduled to that kubelet's node.
 
+If a secret is static: Use env variable
+
+If a secret can be modified: Use files
+
+### Dynamic secret refresh (External vault)
+
+- This allows to store the secrets in a vault and not in the cluster/yaml files
+
+Approach1: Use cert-manager to create a certificate with a particular CA, CN, SAN etc(The format should be such that the cert is allowed to access sevrets from the vault). Create a sidecar which loads this certificate from the secret and fetches the secrets at the rate of refreshInterval. Here, every pod is responsible for managing its secrets and the k8s secret object is not used.
+
+Approach2: Use ESO, which updates the k8s secret and all pods mountiung the secret as a file get the renewed cert at kubelet sync interval
+
 #### External Secrets operators
 
-- Allows to store the secrets in a vault and not in the cluster/yaml files
-- How are the secrets fetched, is a k8s secret object created?
-- How to update the secret in the pod if it has been updated in the vault
-- Secret rotation
+SecretStore: Define how to connect to the secret store with authentication
+
+```yml
+apiVersion: external-secrets.io/v1
+kind: SecretStore
+metadata:
+  name: vault-store
+spec:
+  provider:
+    vault:
+      server: https://vault.example.com
+```
+
+ESO: Creates a kube secret named database-secret with value fetch from vault secret production/database
+
+```yml
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: db-secret
+spec:
+  refreshInterval: 1h
+
+  secretStoreRef:
+    name: vault-store
+
+  target:
+    name: database-secret
+
+  data:
+    - secretKey: password
+      remoteRef:
+        key: production/database
+        property: password
+```
