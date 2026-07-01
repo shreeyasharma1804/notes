@@ -148,11 +148,11 @@ If a secret can be modified: Use files
 
 ### Dynamic secret refresh (External vault)
 
-- This allows to store the secrets in a vault and not in the cluster/yaml files
+This allows to store the secrets in a vault and not in the cluster/yaml files
 
-Approach1: Use cert-manager to create a certificate with a particular CA, CN, SAN etc(The format should be such that the cert is allowed to access sevrets from the vault). Create a sidecar which loads this certificate from the secret and fetches the secrets at the rate of refreshInterval. Here, every pod is responsible for managing its secrets and the k8s secret object is not used.
+- Approach1: Use cert-manager to create a certificate with a particular CA, CN, SAN etc(The format should be such that the cert is allowed to access sevrets from the vault). Create a sidecar which loads this certificate from the secret and fetches the secrets at the rate of refreshInterval. Here, every pod is responsible for managing its secrets and the k8s secret object is not used.
 
-Approach2: Use ESO, which updates the k8s secret and all pods mountiung the secret as a file get the renewed cert at kubelet sync interval
+- Approach2: Use ESO, which updates the k8s secret and all pods mountiung the secret as a file get the renewed cert at kubelet sync interval. In both these approaches, the application should handle the file data update, maybe through inotify and update it's in memory cache.
 
 #### External Secrets operators
 
@@ -191,3 +191,4 @@ spec:
         key: production/database
         property: password
 ```
+
