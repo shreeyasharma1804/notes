@@ -154,6 +154,11 @@ This allows to store the secrets in a vault and not in the cluster/yaml files
 
 - Approach2: Use ESO, which updates the k8s secret and all pods mountiung the secret as a file get the renewed cert at kubelet sync interval. In both these approaches, the application should handle the file data update, maybe through inotify and update it's in memory cache.
 
+- Approach3:
+    - Vault with a webhook(The secret should be configured with a namepsace) that calls an endpoint on the cluster.
+    - The API updates the k8s secret.
+    - The secret update in the vault is acknowledged only after the k8s secret is updated.
+
 #### External Secrets operators
 
 SecretStore: Define how to connect to the secret store with authentication
