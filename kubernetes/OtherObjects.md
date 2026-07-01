@@ -197,3 +197,54 @@ spec:
         property: password
 ```
 
+### ConfigMap
+
+Store environment variables, if the variables are static, mount them as environment variables, else, mount them as files
+
+#### Defination:
+
+```yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+
+data:
+  DATABASE_HOST: postgres
+  DATABASE_PORT: "5432"
+  LOG_LEVEL: info
+```
+
+#### Usage:
+
+- Load as environment variables
+
+```yml
+env:
+- name: DB_HOST
+  valueFrom:
+    configMapKeyRef:
+      name: app-config
+      key: DATABASE_HOST
+
+- name: DB_PORT
+  valueFrom:
+    configMapKeyRef:
+      name: app-config
+      key: DATABASE_PORT
+```
+
+- Mount as a file
+
+```yml
+volumes:
+- name: config
+  configMap:
+    name: app-config
+
+volumeMounts:
+- name: config
+  mountPath: /etc/config
+```
+
+#### Generators and automatic pod restart
