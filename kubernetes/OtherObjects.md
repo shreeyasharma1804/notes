@@ -287,3 +287,37 @@ spec:
   duration: 2160h      # 90 days
   renewBefore: 360h    # renew 15 days before expiry
 ```
+
+### LimitRange
+
+LimitRange is an admission policy managed by a controller (can be disabled in the kube-apiserver.yaml ). It defines the min,max and default resources a pod can request.
+
+When a Pod is created, the kube-apiserver passes it through a chain of admission controllers before persisting it to etcd. The LimitRanger admission controller is the one responsible for reading the LimitRange in the namespace and injecting the default values into the Pod spec. If this controller is disabled, the LimitRange object exists but is completely ignored — Pods are admitted as-is with no defaults applied.
+
+This is a creation-time mechanism. LimitRange does not patch existing Pods retroactively. Once you re-enable the admission controller, you must restart the Deployment so new Pods go through admission and pick up the defaults.
+
+```yml
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: resource-limits
+spec:
+  limits:
+  - type: Container
+    min:
+      cpu: "100m"
+      memory: "128Mi"
+    max:
+      cpu: "2"
+      memory: "4Gi"
+    default:
+      cpu: "500m"
+      memory: "512Mi"
+    defaultRequest:
+      cpu: "250m"
+      memory: "256Mi"
+```
+
+```bash
+kubectl get LimitRange -n <namespace>
+```
