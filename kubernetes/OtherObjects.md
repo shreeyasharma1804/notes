@@ -248,3 +248,42 @@ volumeMounts:
 ```
 
 #### Generators and automatic pod restart
+
+### cert-manager
+
+#### Issuer
+
+```yml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned
+spec:
+  selfSigned: {}
+```
+
+#### Certificate
+
+- Create a tls secret named api-server-tls, with issuer defined in issuerRef, other details and expiry time
+
+```yml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: api-cert
+  namespace: default
+spec:
+  secretName: api-server-tls
+
+  issuerRef:
+    name: selfsigned
+    kind: Issuer
+
+  commonName: api.example.com
+
+  dnsNames:
+    - api.example.com
+
+  duration: 2160h      # 90 days
+  renewBefore: 360h    # renew 15 days before expiry
+```
