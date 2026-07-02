@@ -321,3 +321,18 @@ spec:
 ```bash
 kubectl get LimitRange -n <namespace>
 ```
+
+### ResourceQuata
+
+Defines the hard limits of the overall resouces that a namespace can use
+
+```yml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: ns-quota
+spec:
+  hard:
+    requests.cpu: "500m"
+    requests.memory: "256Mi"
+```
