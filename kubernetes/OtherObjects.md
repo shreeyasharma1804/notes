@@ -343,7 +343,27 @@ If a resource(example CPU) is in the hard limit, but there is no limit range def
 
 ### HPA
 
-
+```yml
+apiVersion: autoscaling/v2  
+kind: HorizontalPodAutoscaler  
+metadata:  
+	name: api-hpa  
+	namespace: production  
+spec:  
+	scaleTargetRef: # what to scale  
+		apiVersion: apps/v1  
+		kind: Deployment  
+		name: api  
+	minReplicas: 2  # never go below this  
+	maxReplicas: 20  # never go above this  
+metrics:  
+	- type: Resource  
+		resource:  
+			name: cpu                                # This is the CPU limits
+			target:  
+				type: Utilization  
+				averageUtilization: 60
+```
 
 
 Test using load generator pod for a deployment exposed with a service
