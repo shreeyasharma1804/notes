@@ -333,8 +333,24 @@ metadata:
   name: ns-quota
 spec:
   hard:
-    requests.cpu: "500m"
-    requests.memory: "256Mi"
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
 ```
 
 If a resource(example CPU) is in the hard limit, but there is no limit range defining the default value, then a pod which does it specify that resource requirement is rejected for creation 
+
+### HPA
+
+
+
+
+Test using load generator pod for a deployment exposed with a service
+
+```yml
+kubectl run load-gen \
+  --image=busybox \
+  --restart=Never \
+  -- sh -c "while true; do wget -q -O- http://web; done"
+```
