@@ -25,6 +25,9 @@ logging.basicConfig(
     ],
 )
 ```
+- the basicConfig is declared once per project and applies to all the loggers returned by getLogger()
+
+### Opentelemetry exporter in python
 
 ### Opentelemtry Collector
 
