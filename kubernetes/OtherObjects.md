@@ -365,6 +365,15 @@ metrics:
 				averageUtilization: 60
 ```
 
+The pods are scaled ccording to the formula:
+
+```
+desiredReplicas = ceil( currentReplicas × ( currentMetricValue ÷ desiredMetricValue ) )
+```
+
+- Here, the currentMetricValue is the avergae CPU utilization of all the pods in the deployment targetted by the HPA.
+- If a pod requests 100m cpu, and the current utilization is 50m, the currentMetricValue is 50%.
+- To use HPA, the deployment needs to define the cpu requests
 
 Test using load generator pod for a deployment exposed with a service
 
