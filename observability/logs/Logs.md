@@ -1,3 +1,31 @@
+### python logger
+
+- Call the logger in each module (useful in exporting the logs)
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+```
+
+- logger support log levels
+- basicConfig:
+
+```
+import logging
+
+# Define the lowest log levels that can be used, enfore formatting
+# handlers define where to flush the logs, stdout, a file or otel
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout),   # Logs to stdout
+        logging.FileHandler("app.log"),      # Logs to app.log
+    ],
+)
+```
+
 ### Opentelemtry Collector
 
 Colector collects logs from the application and processes them before exporting to a ingestion service like splunk. (Similar to splunk daemon for log collection)
