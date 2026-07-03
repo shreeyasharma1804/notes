@@ -196,3 +196,7 @@ spec:
 After a pod claims the PVC, a PV is created and bound to the PVC
 
 - If volume expansion is true, the storage declared in a PVC can be increased.
+
+### NFS
+
+A Storage class with the NFS csi as the provisioner can be used to create a NFS volume. With PVC policy `ReadWriteMany`, multiple pods can write to the same location
