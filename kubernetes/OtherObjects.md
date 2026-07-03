@@ -336,3 +336,5 @@ spec:
     requests.cpu: "500m"
     requests.memory: "256Mi"
 ```
+
+If a resource(example CPU) is in the hard limit, but there is no limit range defining the default value, then a pod which does it specify that resource requirement is rejected for creation 
