@@ -78,7 +78,39 @@ logger = logging.getLogger(__name__)
 
 ### Opentelemtry Collector
 
-Colector collects logs from the application and processes them before exporting to a ingestion service like splunk. (Similar to splunk daemon for log collection)
+- Colector collects logs from the application and processes them before exporting to a ingestion service like splunk. (Similar to splunk daemon for log collection)
+
+- Config file:
+
+```yml
+# Define the endpoint the collector is running on and the protocols it supports
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+# Define the processing to be performed on the logs before exporting to external service
+processors:
+  batch:
+
+# Define the external service, debug means stdout
+exporters:
+  debug:
+    verbosity: detailed
+
+# Define the entire pipeline
+service:
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+```
+
+- Run as a docker image
 
 ```bash
 docker run --rm \
@@ -88,30 +120,3 @@ docker run --rm \
   -v $(pwd)/otel-collector.yaml:/etc/otelcol-contrib/config.yaml \
   otel/opentelemetry-collector-contrib:latest
 ```
-
-Config file:
-
-```yml
-receivers:
-  otlp:
-    protocols:
-      grpc:
-      http:
-
-processors:
-  batch:
-
-exporters:
-  debug:
-
-service:
-  pipelines:
-    logs:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [debug]
-```
-
-- receivers: Enable recieving logs in collector on otlp protocol with grpc and http protocols
-- batch processor: Enable batching before exporting logs
-- exporters: Define the exporter, elasticseaerch etc. debug means stdout
