@@ -120,3 +120,52 @@ docker run --rm \
   -v $(pwd)/otel-collector.yaml:/etc/otelcol-contrib/config.yaml \
   otel/opentelemetry-collector-contrib:latest
 ```
+
+- Log output:
+
+```bash
+Timestamp: 2026-07-03 11:12:01.76553728 +0000 UTC
+SeverityText: INFO
+SeverityNumber: Info(9)
+Body: Str(INFO:__main__:Processing order 15)
+Attributes:
+     -> code.file.path: Str(/home/shreeya/Downloads/opentelemetry/logs/main.py)
+     -> code.function.name: Str(process_order)
+     -> code.line.number: Int(8)
+Trace ID:
+Span ID:
+Flags: 0
+LogRecord #1
+ObservedTimestamp: 2026-07-03 11:12:01.765765864 +0000 UTC
+Timestamp: 2026-07-03 11:12:01.765736192 +0000 UTC
+SeverityText: INFO
+SeverityNumber: Info(9)
+Body: Str(INFO:__main__:Order processed successfully)
+Attributes:
+     -> code.file.path: Str(/home/shreeya/Downloads/opentelemetry/logs/main.py)
+     -> code.function.name: Str(process_order)
+     -> code.line.number: Int(14)
+```
+
+### ElasticSearch and Kibana
+
+```bash
+podman network create elastic-net
+
+podman run -d \
+  --name elasticsearch \
+  --network elastic-net \
+  -p 9200:9200 \
+  -p 9300:9300 \
+  -e discovery.type=single-node \
+  -e xpack.security.enabled=false \
+  -e ES_JAVA_OPTS="-Xms1g -Xmx1g" \
+  docker.io/elasticsearch:9.1.0
+
+ podman run -d \
+  --name kibana \
+  --network elastic-net \
+  -p 5601:5601 \
+  -e ELASTICSEARCH_HOSTS=http://elasticsearch:9200 \
+  docker.io/kibana:9.1.0
+```
