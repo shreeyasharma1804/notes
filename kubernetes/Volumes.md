@@ -154,7 +154,7 @@ The storage class creates a PV when a pod is created which references the PVC if
 
 Define the storage class:
 
-```
+```yml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 
@@ -175,7 +175,7 @@ volumeBindingMode: WaitForFirstConsumer
 
 Use in a PVC:
 
-```
+```yml
 apiVersion: v1
 kind: PersistentVolumeClaim
 
