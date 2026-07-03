@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 - logger support log levels
 - basicConfig:
 
-```
+```python
 import logging
 
 # Define the lowest log levels that can be used, enfore formatting
@@ -28,6 +28,53 @@ logging.basicConfig(
 - the basicConfig is declared once per project and applies to all the loggers returned by getLogger()
 
 ### Opentelemetry exporter in python
+
+```python
+import logging
+
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
+
+
+def configure_logging():
+
+    # Exporter location
+    exporter = OTLPLogExporter(
+        endpoint="http://localhost:4317",
+        insecure=True,
+    )
+
+    # Resource broadly defines the service which is appended to all the logs emitted by the exporter
+    resource = Resource.create({
+        "service.name": "order-service",
+        "service.version": "1.0"
+    })
+
+    # Define log processor
+    processor = BatchLogRecordProcessor(exporter)
+
+    provider = LoggerProvider(resource=resource)
+    provider.add_log_record_processor(processor)
+
+    handler = LoggingHandler(
+        logger_provider=provider
+    )
+
+    # Configure the global logger using basicConfig and define the handler as the  otel provider
+    logging.basicConfig(
+        level=logging.INFO,
+        handlers=[handler]
+    )
+```
+
+- Usage
+
+```python
+configure_logging()
+logger = logging.getLogger(__name__)
+```
 
 ### Opentelemtry Collector
 
