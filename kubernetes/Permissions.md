@@ -120,3 +120,16 @@ kubectl config set-context shreeya \
 # Use the new context
 kubectl config use-context shreeya
 ```
+
+### Service Account
+
+- Service account can be used in role bindings
+- Create:
+
+```yml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: telemetry
+```
