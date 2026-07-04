@@ -383,3 +383,42 @@ kubectl run load-gen \
   --restart=Never \
   -- sh -c "while true; do wget -q -O- http://web; done"
 ```
+
+### VPA
+
+- Generate recommendations for resouces of a deployment.
+- Check the recommendations using: `kubectl describe vpa web-app-vpa -n production`
+- Goldilocks provides a dashboard for this
+
+```yml
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: web-app-vpa
+  namespace: production
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: web-app
+
+  updatePolicy:
+    updateMode: "Off"
+
+  resourcePolicy:
+    containerPolicies:
+    - containerName: main-app
+      mode: "Auto"
+      minAllowed:
+        cpu: 100m
+        memory: 128Mi
+      maxAllowed:
+        cpu: "2"
+        memory: 2Gi
+      controlledResources:
+      - cpu
+      - memory
+      controlledValues: RequestsOnly
+    - containerName: log-sidecar
+      mode: "Off"
+```
