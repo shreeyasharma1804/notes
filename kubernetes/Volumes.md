@@ -205,3 +205,47 @@ A Storage class with the NFS csi as the provisioner can be used to create a NFS 
 
 - How to create volume expansion requests automatically for a PVC
 - How to monitor performance
+
+### Benchmarking using FIO (Flexible I/O)
+
+```
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: storage-check
+  namespace: storage-lab
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+
+      nodeSelector:
+        kubernetes.io/hostname: cplane-01
+
+      containers:
+      - name: fio
+        image: lfedge/eden-fio-tests:1b1b353
+        command:
+          - /bin/sh
+          - -c
+          - >
+            fio --name=randwrite
+            --filename=/data/testfile
+            --size=1G
+            --bs=4k
+            --rw=randwrite
+            --runtime=25
+            --time_based
+            --direct=1
+            --output=/data/fio-result.txt
+            && cat /data/fio-result.txt
+
+        volumeMounts:
+        - name: data-vol
+          mountPath: /data
+
+      volumes:
+      - name: data-vol
+        persistentVolumeClaim:
+          claimName: app-data-pvc
+```
