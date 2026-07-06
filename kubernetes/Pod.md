@@ -455,3 +455,40 @@ Allow or Reject
 ```bash
 kubectl top pods
 ```
+
+### Priority and Preemption
+
+- The Kubernetes scheduler places pods in order of priority. When a high-priority pod cannot be scheduled because resources are exhausted, the scheduler preempts lower-priority pods to make room for it.
+- Creating a priority which can be used by a pod:
+
+```yml
+# Create a priority
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 1000000
+globalDefault: false
+description: "High priority for critical workloads"
+
+# Use it in a pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: critical
+  labels:
+    app: critical
+spec:
+  priorityClassName: high-priority
+  containers:
+  - name: nginx
+    image: nginx:alpine
+    resources:
+      requests:
+        cpu: "300m"
+```
+
+- If a PriorityClass has `preemptionPolicy: Never`, no pods are evicted when trying to schedule it. Its deployed with a high priority once the node pressure is released.
+- By default, the priority of a pod is 0
+- PriorityClass is only used by a scheduler. Eviction occurs based on priority values only when a node is under pressure and a critical pod needs to be deployed.
+- QoS, on the other hand, is used by the kubelet to evict pods purely due to soft/hard resource limit breach
