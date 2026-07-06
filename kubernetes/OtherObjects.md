@@ -422,3 +422,11 @@ spec:
     - containerName: log-sidecar
       mode: "Off"
 ```
+
+### Jobs
+
+- Refer to the FIO Job in Volumes.md
+- Job is like a replicaset for a pod, it ensures that the command in the job runs till completion.
+- Allowed restart policies: OnFailure, Never
+- With restart policy OnFailure: The container in the pod is restarted. There is no limit to the numbe rof restarts and is limited by exponential backoff
+- With restart policy Never: A new pod is created for running the job until backoffLimit is reached
