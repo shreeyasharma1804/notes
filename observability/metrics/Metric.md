@@ -71,8 +71,12 @@ while(True):
 
 ### K8S setup
 
-```
+```bash
 Application -> sends metrics to otel collector -> otel collector exposes the metrics on one port -> prometheus scrapes the port and stores the data in a TSDB
+
+prometheus also scrapes /metrics/cadvisor on every kubelet for container resource usage metrics
+
+Overall node statistics require daemonset of node exporter
 ```
 
 ```yml
