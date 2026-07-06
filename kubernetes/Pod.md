@@ -492,3 +492,4 @@ spec:
 - By default, the priority of a pod is 0
 - PriorityClass is only used by a scheduler. Eviction occurs based on priority values only when a node is under pressure and a critical pod needs to be deployed.
 - QoS, on the other hand, is used by the kubelet to evict pods purely due to soft/hard resource limit breach
+- A pod with Priority = 1,000,000 and QoS = BestEffort, is still much more vulnerable to memory-pressure eviction than a Guaranteed Pod.
