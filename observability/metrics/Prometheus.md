@@ -40,8 +40,32 @@ node_cpu_seconds_total[5m]
 10. log2
 11. log10
 
+### Histograms
 
+- Values are sampled in buckets, each bucket is a seperate time series
+- The sampling rate of a bucket is fixed
+- For every histogram, prometheus stores:
 
+For example, for the latency values:
+
+```
+12
+35
+80
+20
+40
+```
+
+1. Bucket counts: (These counts are cumulative)
+
+http_request_duration_bucket{le="10"}    0
+http_request_duration_bucket{le="25"}    2
+http_request_duration_bucket{le="50"}    4
+http_request_duration_bucket{le="100"}   5
+http_request_duration_bucket{le="+Inf"}  5
+
+2. http_request_duration_sum: The sum of all input data, here 187
+3. http_request_duration_count: Total number of values added to the histogram, here, 5
 
 
 
