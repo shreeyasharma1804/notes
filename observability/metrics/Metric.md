@@ -68,3 +68,91 @@ while(True):
     get_products()
     time.sleep(5)
 ```
+
+### K8S setup
+
+```
+Application -> sends metrics to otel collector -> otel collector exposes the metrics on one port -> prometheus scrapes the port and stores the data in a TSDB
+```
+
+```yml
+# otel-configmap
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-config
+  namespace: metric
+
+data:
+  otel-config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+    exporters:
+      prometheus:
+        endpoint: "0.0.0.0:9464"
+
+      debug:
+        verbosity: detailed
+
+    service:
+      telemetry:
+        logs:
+          level: debug
+
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          exporters: [debug, prometheus]
+
+# prometheus configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: metric
+
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 5s
+
+    scrape_configs:
+
+    - job_name: otel
+
+      static_configs:
+      - targets:
+        - otel-collector:9464
+
+    - job_name: kubelet
+
+      scheme: https
+
+      kubernetes_sd_configs:
+      - role: node
+
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+      tls_config:
+        insecure_skip_verify: true
+
+      relabel_configs:
+
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+
+      - target_label: __address__
+        replacement: kubernetes.default.svc:443
+
+      - source_labels:
+        - __meta_kubernetes_node_name
+        target_label: __metrics_path__
+        replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+```
