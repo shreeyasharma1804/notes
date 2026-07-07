@@ -163,7 +163,7 @@ data:
 
 ### K8S Metrics
 
-#### CPU
+#### CPU (Counter)
 
 - Top 10 CPU consuming containers:
 
@@ -194,6 +194,25 @@ sum by (namespace)((rate(container_cpu_usage_seconds_total[5m])))
 ```bash
 sum by (pod)((rate(container_cpu_usage_seconds_total[5m])))
 ```
+
+#### Memory (guage)
+
+container_memory_working_set_bytes = total_usage - file cache
+
+container_memory_working_set_bytes provides the actual pod RAM Usage. In case if a pod is about to be OOM killed, the kernel first releases the file cache. OOM killing depends on the actual pod memory usage then
+
+- Memory usage of pods
+
+```bash
+sum by (pod, namespace) (container_memory_working_set_bytes)
+```
+
+- Total memory usage:
+
+```
+sum (sum by (pod, namespace) (container_memory_working_set_bytes))
+```
+
 
 - Top 10 CPU Usage per pod and per cluster
 
