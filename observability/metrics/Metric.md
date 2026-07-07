@@ -160,3 +160,33 @@ data:
         target_label: __metrics_path__
         replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
 ```
+
+### K8S Metrics
+
+- Top 10 CPU Usage per pod and per cluster
+
+```
+topk(
+  10,
+  sum by (cluster, pod) (
+    rate(container_cpu_usage_seconds_total{image!=""}[5m])
+  )
+)
+```
+
+- Top 10 memory usage per pod and per cluster
+
+```
+topk(
+  10,
+  sum by (cluster, pod) (
+    rate(container_memory_working_set_bytes{image!=""}[5m])
+  )
+)
+```
+
+- Network I/O
+
+- PVC Monitroing ?
+- CoreDNS
+- ETCD Dashboard
