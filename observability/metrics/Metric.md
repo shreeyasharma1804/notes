@@ -163,6 +163,38 @@ data:
 
 ### K8S Metrics
 
+#### CPU
+
+- Top 10 CPU consuming containers:
+
+```bash
+topk(10, rate(container_cpu_usage_seconds_total[5m]))
+```
+
+- CPU usage of a container
+
+```bash
+rate(container_cpu_usage_seconds_total{container="hi-bye-app"}[5m])
+```
+
+- CPU usage of a namepsace:
+
+```bash
+sum(rate(container_cpu_usage_seconds_total{namespace="default"}[5m]))
+```
+
+- CPU usage of the entire namespace
+
+```bash
+sum by (namespace)((rate(container_cpu_usage_seconds_total[5m])))
+```
+
+- CPU Usage of all pods:
+
+```bash
+sum by (pod)((rate(container_cpu_usage_seconds_total[5m])))
+```
+
 - Top 10 CPU Usage per pod and per cluster
 
 ```
