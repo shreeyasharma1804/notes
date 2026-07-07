@@ -190,3 +190,4 @@ topk(
 - PVC Monitroing ?
 - CoreDNS
 - ETCD Dashboard
+- Control Plane monitoring
