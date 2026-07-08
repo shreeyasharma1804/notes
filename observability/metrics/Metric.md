@@ -236,6 +236,54 @@ topk(
 )
 ```
 
+#### File system usage (Guage)
+
+- `container_fs_usage_bytes`: Total writable layer size, it does not include any directory mounted by a PVC
+- `container_fs_reads_total`: Total number of reads performed by the container, also includes reads in the PVC
+- `container_fs_reads_bytes_total`: Total number of bytes reads by the container, also includes bytes read from the PVC
+
+- Per container
+
+```bash
+container_fs_usage_bytes
+```
+
+- Per pod
+
+```bash
+sum by (pod) (container_fs_usage_bytes)
+```
+
+- Top 10 containers
+
+```bash
+topk(10,(container_fs_usage_bytes))
+```
+
+- Inode usage (To monitor inode exhaution, which prevents creation of new files even if disk space is available)
+
+```bash
+((container_fs_inodes_total-container_fs_inodes_free)/container_fs_inodes_total)*100
+```
+
+- Number of file system reads per second
+
+```bash
+rate(container_fs_reads_total[5m])
+```
+
+- Number of file system writes per second
+
+```bash
+rate(container_fs_writes_total[5m])
+```
+
+- Pod with highest numner of write rate
+
+```bash
+topk(10,(sum by (pod) (rate(container_fs_writes_total[5m]))))
+```
+
 - Network I/O
 
 - PVC Monitroing ?
