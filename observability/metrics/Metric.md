@@ -284,6 +284,24 @@ rate(container_fs_writes_total[5m])
 topk(10,(sum by (pod) (rate(container_fs_writes_total[5m]))))
 ```
 
+- Disk growth trend (use deriv with guages)
+
+```
+deriv(container_fs_usage_bytes[1h])
+```
+
+- Check how much usage increased in the last 1 hour
+
+```
+delta(container_fs_usage_bytes{container!=""}[1h])
+```
+
+- Predict future disk usage
+
+```
+predict_linear(container_fs_usage_bytes[6h], 24 * 3600)
+```
+
 - Network I/O
 
 - PVC Monitroing ?
