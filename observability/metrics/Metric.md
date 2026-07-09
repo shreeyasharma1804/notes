@@ -319,6 +319,23 @@ rate(container_network_receive_bytes_total[5m])
 rate(container_network_transmit_bytes_total[5m])
 ```
 
+#### PVC Monitring
 
-- PVC Monitroing ?
+```bash
+└❯ cd ~ && curl -k --cert admin.crt --key admin.key https://192.168.1.9:10250/metrics > metrics.txt
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 6903k    0 6903k    0     0  52.4M      0 --:--:-- --:--:-- --:--:-- 52.6M
+
+┌💁  shreeya @ 💻  pop-os in 📁  ~
+└❯ cat metrics.txt | grep kubelet_volume_stats_used_bytes
+# HELP kubelet_volume_stats_used_bytes [ALPHA] Number of used bytes in the volume
+# TYPE kubelet_volume_stats_used_bytes gauge
+kubelet_volume_stats_used_bytes{namespace="kubevious",persistentvolumeclaim="data-kubevious-mysql-0"} 2.83065274368e+11
+kubelet_volume_stats_used_bytes{namespace="openebs",persistentvolumeclaim="export-openebs-minio-0"} 2.83063701504e+11
+kubelet_volume_stats_used_bytes{namespace="openebs",persistentvolumeclaim="export-openebs-minio-1"} 2.830646272e+11
+kubelet_volume_stats_used_bytes{namespace="openebs",persistentvolumeclaim="export-openebs-minio-2"} 2.83061936128e+11
+kubelet_volume_stats_used_bytes{namespace="openebs",persistentvolumeclaim="storage-openebs-loki-0"} 2.83034345472e+11
+```
+
 - ETCD Dashboard
