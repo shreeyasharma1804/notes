@@ -163,6 +163,9 @@ data:
 
 ### K8S Metrics
 
+- For control-plane metrics, use: `node_role_kubernetes_io_control_plane="true"`
+- For CoreDNS, use: `rate(container_network_transmit_bytes_total{pod=~"coredns.*"}[5m])`
+
 #### CPU (Counter)
 
 - Top 10 CPU consuming containers:
@@ -302,9 +305,20 @@ delta(container_fs_usage_bytes{container!=""}[1h])
 predict_linear(container_fs_usage_bytes[6h], 24 * 3600)
 ```
 
-- Network I/O
+#### Networks (counters)
+
+- Total bytes recieved in a container
+
+```bash
+rate(container_network_receive_bytes_total[5m])
+```
+
+- Total number of bytes sent by the container
+
+```bash
+rate(container_network_transmit_bytes_total[5m])
+```
+
 
 - PVC Monitroing ?
-- CoreDNS
 - ETCD Dashboard
-- Control Plane monitoring
