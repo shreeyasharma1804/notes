@@ -86,3 +86,53 @@ def inventory():
 
     return {"stock": 25}
 ```
+
+### Data flow
+
+```
++-------------------+
+| Order Service     |
+| OTLP Exporter     |
++-------------------+
+          |
+          | Export to OTLP (4317)
+          |
++-----------------------+
+| OpenTelemetry Collector|
++-----------------------+
+          ^
+          |
+          | Jaeger reads data from configured collector port and displays in UI
+          |
++----------------+
+| Jaeger         |
++----------------+
+          |
+          v
+     Jaeger UI
+```
+
+OTEL Pipeline:
+
+- Application sends data to a collector port, might be a specific REST endpoint which is configured in the receivers section
+- Application scrapes data from a collector port, might be a diffferent specific REST endpoint which is configured in the exporters section
+
+```yml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+exporters:
+  otlp:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp]
+```
