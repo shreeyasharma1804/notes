@@ -142,3 +142,8 @@ service:
       receivers: [otlp]
       exporters: [otlp]
 ```
+
+For one span:
+
+<img width="1912" height="492" alt="image" src="https://github.com/user-attachments/assets/96269ce3-b595-45c1-b619-be4f4567d4f1" />
+
