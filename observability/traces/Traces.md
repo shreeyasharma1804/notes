@@ -143,6 +143,17 @@ service:
       exporters: [otlp]
 ```
 
+Jaeger:
+
+```
+docker run --rm \
+  --name jaeger \
+  -p 16686:16686 \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  cr.jaegertracing.io/jaegertracing/jaeger:latest
+```
+
 For one span:
 
 <img width="1912" height="492" alt="image" src="https://github.com/user-attachments/assets/96269ce3-b595-45c1-b619-be4f4567d4f1" />
