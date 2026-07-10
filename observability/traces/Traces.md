@@ -116,6 +116,12 @@ OTEL Pipeline:
 
 - Application sends data to a collector port, might be a specific REST endpoint which is configured in the receivers section
 - Application scrapes data from a collector port, might be a diffferent specific REST endpoint which is configured in the exporters section
+- It is a good idea to print both the request Id and the span ID:
+
+```
+span = trace.get_current_span()
+print("Trace ID:", format(ctx.trace_id, "032x"))
+```
 
 ```yml
 receivers:
