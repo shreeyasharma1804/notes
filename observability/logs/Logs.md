@@ -1,3 +1,15 @@
+### Overview
+
+- When the handler is configured to send logs to the otel collector,  each logger.<>("message") is treated as a seperate event. No multiline parses are required.
+- When the handler is configured to send logs to a file, which the otel collector later scrapes, multi line parses are required. In production, the logs should be formated such that the multi-line parser regular  expression knows when a new event starts
+
+```
+Recommended format: 2026-07-10T12:30:16.456Z ERROR order-service requestId=abc123 traceId=5b8aa... Failed to process order
+Regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+Z\s+(ERROR|INFO)\s\S+\s(requestId=)\S+\s\S+
+```
+
+- otel sends the log with other data visible with the verbose option.
+
 ### python logger
 
 - Call the logger in each module (useful in exporting the logs)
@@ -26,6 +38,8 @@ logging.basicConfig(
 )
 ```
 - the basicConfig is declared once per project and applies to all the loggers returned by getLogger()
+
+- Production log format: `2026-07-10T12:30:16.456Z ERROR order-service requestId=abc123 traceId=5b8aa... Failed to process order`
 
 ### Opentelemetry exporter in python
 
