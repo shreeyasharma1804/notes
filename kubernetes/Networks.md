@@ -139,12 +139,11 @@ spec
 
 ### External connectivity
 
-- Nginx ingress uses 3 resources: ingress-nginx-controller(LoadBalancer), ingress resource(Ingress), ingress-pod(Type pod)
-- The ingress object is used to define the services where the traffic needs to be routed based on the routing rules.
-- The ingress-pod contains the actual nginx process and generated nginx.conf.
-- The loadbalancer only works on loadbalancing the packets from an external-ip to the ingress-pods.
-- The loadbalancer uses both clusterIP and NodePort
-- If the ingress pod uses stdout for writing the access and error logs, the logs can be checked using kubectl logs. If the logs are written to a file, it is always better to ingest the logs using a sidecar like splunk since the pods are ephemeral
+- Nginx ingress uses 3 resources: ingress(Define the routing rules), ingress-nginx-controller(serivce of type loadbalancer) and ingress-nginx-controller-xxx (The ingress pod)
+- Ingress provides the interface for creating routing rules.
+- The ingress loadbalancer service is a service for the ingress pods. It uses both ClusterIP and NodePort. In case of availability of external loadbalancer like MetalLB, an external IP is assigned to this service.
+- The ingress pod(ingress-nginx-controller-xxx) contains the actual nginx process and generated nginx.conf. Since it is a deployment, it can be scaled and attached with HPA.
+- There is no synchronized state between the ingress pods, they watch the API server for the ingress rules and configmaps(for nginx settings)
 
 ```bash
 curl -H "Host:hi-bye.local" 192.168.1.21:80/hi
