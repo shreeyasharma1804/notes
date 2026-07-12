@@ -191,7 +191,10 @@ Chain KUBE-SEP-BYLCQHMLJ6HK5HFC (2 references)
 
 ### MetalLB
 
-MetalLB creates a LoadBalancer in the cluster which answers to external IPs and redirects the traffic to the pods
+- MetalLB assigns an external IP address to all the services of type LoadBalancer.
+- The IP is assigned to all services of type LoadBalancer irrespective of the namespaces (MetalLB works cluster wide)
+- MetalLB requires L2Advertisement for the IP pool
+- In production, each environment has 2 pools, public and private
 
 ```yml
 apiVersion: metallb.io/v1beta1
