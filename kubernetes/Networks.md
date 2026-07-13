@@ -137,56 +137,6 @@ spec
 - The CorDNS runs as a pod in the kube-system namespace.
 - Every pod has the location of the DNS in the `/etc/resolv.conf` file.
 
-### External connectivity
-
-- Nginx ingress uses 3 resources: ingress(Define the routing rules), ingress-nginx-controller(serivce of type loadbalancer) and ingress-nginx-controller-xxx (The ingress pod)
-- Ingress provides the interface for creating routing rules.
-- The ingress loadbalancer service is a service for the ingress pods. It uses both ClusterIP and NodePort. In case of availability of external loadbalancer like MetalLB, an external IP is assigned to this service.
-- The ingress pod(ingress-nginx-controller-xxx) contains the actual nginx process and generated nginx.conf. Since it is a deployment, it can be scaled and attached with HPA.
-- There is no synchronized state between the ingress pods, they watch the API server for the ingress rules and configmaps(for nginx settings)
-
-```bash
-curl -H "Host:hi-bye.local" 192.168.1.21:80/hi
-curl -H "Host:hi-bye.local" 192.168.1.9:30118/hi # Using nodeport
-
-# Basically, 192.168.1.21:80 DNAT to ingress pod
-# 192.168.1.9:30118/hi, also DNAT to ingress pod
-# 10.43.196.118:80/hi, also DNAT to ingress pod
-```
-
-```bash
-sudo k3s kubectl get pods -A -o wide | grep ingress
-ingress-nginx    ingress-nginx-controller-7d65c586d6-zwqht   1/1     Running            1 (85m ago)    9d      10.42.0.12    pop-os   <none>           <none>
-
-udo k3s kubectl get svc -A
-NAMESPACE        NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGE
-ingress-nginx    ingress-nginx-controller             LoadBalancer   10.43.196.118   192.168.1.21   80:30118/TCP,443:32263/TCP   9d
-
-sudo k3s kubectl get ingress -A
-NAMESPACE   NAME             CLASS   HOSTS            ADDRESS        PORTS   AGE
-default     hi-bye-ingress   nginx   hi-bye.local     192.168.1.21   80      9d
-```
-
-Internals
-
-```bash
-PREROUTING -> KUBE-SERVICES
-
-Chain KUBE-SERVICES (2 references)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 KUBE-EXT-CG5I4G2RS3ZVWGLK  6    --  *      *       0.0.0.0/0            192.168.1.21         /* ingress-nginx/ingress-nginx-controller:http loadbalancer IP */ tcp dpt:80
-
-Chain KUBE-EXT-CG5I4G2RS3ZVWGLK (3 references)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 KUBE-SVC-CG5I4G2RS3ZVWGLK  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* route LOCAL traffic for ingress-nginx/ingress-nginx-controller:http external destinations */ ADDRTYPE match src-type LOCAL
-
-# Here, the packet is routed to the ingress pod
-Chain KUBE-SEP-BYLCQHMLJ6HK5HFC (2 references)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 DNAT       6    --  *      *       0.0.0.0/0            0.0.0.0/0            /* ingress-nginx/ingress-nginx-controller:http */ tcp to:10.42.0.12:80
-
-# The pod now routes the packet to the backedn service based on the rules
-```
 
 ### MetalLB
 
@@ -215,12 +165,75 @@ metadata:
   namespace: metallb-system
 ```
 
-In this example, MetalLB picks up one IP from the available list, and broadcasts it using ARP(Layer 2)/ BGP(Layer 3)
-
-Created LB:
+Check the pools:
 
 ```bash
-kube-system      traefik                   LoadBalancer   10.43.251.160   192.168.1.20   80:32231/TCP,443:30560/TCP   141m
+kubectl get ipaddresspools -n loadbalancer
+```
+
+### Ingress
+
+- Nginx ingress uses 3 resources: ingress(Define the routing rules), ingress-nginx-controller(serivce of type loadbalancer) and ingress-nginx-controller-xxx (The ingress pod)
+- Ingress provides the interface for creating routing rules.
+- The ingress loadbalancer service is a service for the ingress pods. It uses both ClusterIP and NodePort. In case of availability of external loadbalancer like MetalLB, an external IP is assigned to this service.
+- The ingress pod(ingress-nginx-controller-xxx) contains the actual nginx process and generated nginx.conf. Since it is a deployment, it can be scaled and attached with HPA.
+- There is no synchronized state between the ingress pods, they watch the API server for the ingress rules and configmaps(for nginx settings)
+
+```bash
+# Public controller
+helm install ingress-public ingress-nginx/ingress-nginx \
+          --namespace ingress-public \
+          --create-namespace \
+          --set controller.ingressClassResource.name=public \
+          --set controller.ingressClass=public \
+          --set controller.ingressClassResource.controllerValue="k8s.io/public-ingress"
+
+Annotate the public service with: metallb.io/ip-allocated-from-pool: public-pool
+
+# Similar for internal controller
+```
+
+```bash
+curl -H "Host:hi-bye.local" 192.168.1.21:80/hi
+curl -H "Host:hi-bye.local" 192.168.1.9:30118/hi # Using nodeport
+
+# Basically, 192.168.1.21:80 DNAT to ingress pod
+# 192.168.1.9:30118/hi, also DNAT to ingress pod
+# 10.43.196.118:80/hi, also DNAT to ingress pod
+```
+
+```bash
+sudo k3s kubectl get pods -A -o wide | grep ingress
+ingress-nginx    ingress-nginx-controller-7d65c586d6-zwqht   1/1     Running            1 (85m ago)    9d      10.42.0.12    pop-os   <none>           <none>
+
+sudo k3s kubectl get svc -A
+NAMESPACE        NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGE
+ingress-nginx    ingress-nginx-controller             LoadBalancer   10.43.196.118   192.168.1.21   80:30118/TCP,443:32263/TCP   9d
+
+sudo k3s kubectl get ingress -A
+NAMESPACE   NAME             CLASS   HOSTS            ADDRESS        PORTS   AGE
+default     hi-bye-ingress   nginx   hi-bye.local     192.168.1.21   80      9d
+```
+
+Internals
+
+```bash
+PREROUTING -> KUBE-SERVICES
+
+Chain KUBE-SERVICES (2 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 KUBE-EXT-CG5I4G2RS3ZVWGLK  6    --  *      *       0.0.0.0/0            192.168.1.21         /* ingress-nginx/ingress-nginx-controller:http loadbalancer IP */ tcp dpt:80
+
+Chain KUBE-EXT-CG5I4G2RS3ZVWGLK (3 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 KUBE-SVC-CG5I4G2RS3ZVWGLK  0    --  *      *       0.0.0.0/0            0.0.0.0/0            /* route LOCAL traffic for ingress-nginx/ingress-nginx-controller:http external destinations */ ADDRTYPE match src-type LOCAL
+
+# Here, the packet is routed to the ingress pod
+Chain KUBE-SEP-BYLCQHMLJ6HK5HFC (2 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DNAT       6    --  *      *       0.0.0.0/0            0.0.0.0/0            /* ingress-nginx/ingress-nginx-controller:http */ tcp to:10.42.0.12:80
+
+# The pod now routes the packet to the backedn service based on the rules
 ```
 
 ### NetworkPolicy
