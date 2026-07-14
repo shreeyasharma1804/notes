@@ -62,3 +62,11 @@ visible_hostname squid-proxy
 # Administrative settings
 coredump_dir /var/spool/squid
 ```
+
+- configmap for config
+- scalable deployment
+- clusterip for internal cluster usage
+- iptables for snat to public ips
+- pvc for /var/log and /var/spool ?
+- log monitoring
+- performance metrics
