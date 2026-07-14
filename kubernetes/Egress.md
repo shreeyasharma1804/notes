@@ -1,3 +1,5 @@
+### General squid proxy config
+
 ```squid
 
 # The port squid listens on
@@ -42,15 +44,15 @@ acl Safe_ports port 777         # multiling http
 acl CONNECT method CONNECT
 
 http_access deny !Safe_ports               # allow connections to only safe ports
-http_access deny CONNECT !SSL_ports        # CONNECT is used in 
+http_access deny CONNECT !SSL_ports        # allow connect method for SSL only
 http_access allow localhost manager
 http_access deny manager
-http_access allow localnet
-http_access allow localhost
-http_access deny all
+http_access allow localnet                 # allow above source IPs
+http_access allow localhost                # allow localhost 
+http_access deny all                       # deny everything else  
 
 # Logging
-access_log /var/log/squid/access.log squid
+access_log /var/log/squid/access.log squid 
 cache_log /var/log/squid/cache.log
 cache_store_log /var/log/squid/store.log
 
@@ -59,10 +61,4 @@ visible_hostname squid-proxy
 
 # Administrative settings
 coredump_dir /var/spool/squid
-
-# Refresh patterns for caching
-refresh_pattern ^ftp:           1440    20%     10080
-refresh_pattern ^gopher:        1440    0%      1440
-refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
-refresh_pattern .               0       20%     4320
 ```
