@@ -63,10 +63,74 @@ visible_hostname squid-proxy
 coredump_dir /var/spool/squid
 ```
 
-- configmap for config
-- scalable deployment
-- clusterip for internal cluster usage
-- iptables for snat to public ips
-- pvc for /var/log and /var/spool ?
+### Deployment
+
+- The configmap defines the squid configuration
+- Scalable deployment with HPA:
+
+```yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: squid-deployment
+  namespace: egress
+  labels:
+    app: squid
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: squid
+  template:
+    metadata:
+      labels:
+        app: squid
+    spec:
+      containers:
+      - name: squid-container
+        image: ubuntu/squid:7.2-26.04_edge
+        ports:
+        - containerPort: 3128
+        volumeMounts:
+          - name: config
+            mountPath: "/etc/squid"
+      volumes:
+        - name: config
+          configMap:
+            name: egress-config
+```
+
+- ClusterIP
+
+```yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: egress-service
+  namespace: egress
+spec:
+  selector:
+    app: squid
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 3128
+```
+
+- Use PVC for logs and cache storage
+
+- Usage in temporary pod
+
+```bash
+kubectl run curl-test \                                                           
+  --image=curlimages/curl:latest \
+  --restart=Never \
+  -it --rm \
+  -- sh
+
+$ nslookup egress-service.egress.svc.cluster.local
+$ curl -x http://egress-service.egress.svc.cluster.local:443 http://httpbin.org/ip
+```
+
 - log monitoring
 - performance metrics
