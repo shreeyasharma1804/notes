@@ -132,5 +132,6 @@ $ nslookup egress-service.egress.svc.cluster.local
 $ curl -x http://egress-service.egress.svc.cluster.local:443 http://httpbin.org/ip
 ```
 
-- log monitoring
-- performance metrics
+- Metrics:
+  - Log collection with opentelemetry
+  - Metrics collection with prometheus for CPU, RAM and Network I/O
