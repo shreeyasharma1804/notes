@@ -135,3 +135,5 @@ $ curl -x http://egress-service.egress.svc.cluster.local:443 http://httpbin.org/
 - Metrics:
   - Log collection with opentelemetry
   - Metrics collection with prometheus for CPU, RAM and Network I/O
+
+- The egress pods might only be scheduled on nodes which are directly connected to edge routers with NAT enabled so that all egress packets have the same client IP (The routers SNAT address).
