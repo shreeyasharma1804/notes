@@ -129,7 +129,7 @@ kubectl run curl-test \
   -- sh
 
 $ nslookup egress-service.egress.svc.cluster.local
-$ curl -x http://egress-service.egress.svc.cluster.local:443 http://httpbin.org/ip
+$ curl -v -x http://egress-service.egress.svc.cluster.local:443 http://httpbin.org/ip
 ```
 
 - Metrics:
