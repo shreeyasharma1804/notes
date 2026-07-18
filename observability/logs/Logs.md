@@ -52,35 +52,44 @@ containerLogMaxFiles: 5
 - Config file:
 
 ```yml
-# Define the file the collector reads
+extensions:
+  file_storage:
+    directory: /var/lib/otelcol/file_storage
+
 receivers:
   filelog/squid:
     include:
-        - /var/log/pods/egress_squid_deployment*/squid-container/*.log
+      - /var/log/pods/egress_squid_deployment*/squid-container/*.log
+
     start_at: beginning
+
+    storage: file_storage
+
     multiline:
-        line_start_pattern: 
+      line_start_pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+(?:Z|[+-]\d{2}:\d{2})'
 
+    operators:
+      - type: container
 
-# Define the processing to be performed on the logs before exporting to external service
 processors:
   batch:
 
-# Define the external service to which otel exports the logs for persistant storage, like elasticsearch, also, debug means stdout
 exporters:
   debug:
     verbosity: detailed
 
-# Define the entire pipeline
 service:
+  extensions:
+    - file_storage
+
   pipelines:
     logs:
       receivers:
-      - filelog/squid
+        - filelog/squid
       processors:
-       - batch
+        - batch
       exporters:
-       - debug
+        - debug
 ```
 
 - Run as a docker image
