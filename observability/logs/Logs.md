@@ -157,44 +157,17 @@ spec:
             type: Directory
 ```
 
-- Run as a docker image
+### ElasticSearch
 
-```bash
-docker run --rm \
-  --name otel-collector \
-  -p 4317:4317 \
-  -p 4318:4318 \
-  -v $(pwd)/otel-collector.yaml:/etc/otelcol-contrib/config.yaml \
-  otel/opentelemetry-collector-contrib:latest
-```
+- How does opentelemetry send the request to the correct primary shard for the index ?
+- How is successful write response sent to otel
+- Supports clusters
+- Requires leader election for cluster management, raft ?
+- Supports dynamic index creation, default shards and replicas ?
+- Requires StatefulSets and PVCs based on the time logs are retained
+- How is a response returned to kibana ?
 
-- Log output:
-
-```bash
-Timestamp: 2026-07-03 11:12:01.76553728 +0000 UTC
-SeverityText: INFO
-SeverityNumber: Info(9)
-Body: Str(INFO:__main__:Processing order 15)
-Attributes:
-     -> code.file.path: Str(/home/shreeya/Downloads/opentelemetry/logs/main.py)
-     -> code.function.name: Str(process_order)
-     -> code.line.number: Int(8)
-Trace ID:
-Span ID:
-Flags: 0
-LogRecord #1
-ObservedTimestamp: 2026-07-03 11:12:01.765765864 +0000 UTC
-Timestamp: 2026-07-03 11:12:01.765736192 +0000 UTC
-SeverityText: INFO
-SeverityNumber: Info(9)
-Body: Str(INFO:__main__:Order processed successfully)
-Attributes:
-     -> code.file.path: Str(/home/shreeya/Downloads/opentelemetry/logs/main.py)
-     -> code.function.name: Str(process_order)
-     -> code.line.number: Int(14)
-```
-
-### ElasticSearch and Kibana
+### Kibana
 
 ```bash
 podman network create elastic-net
