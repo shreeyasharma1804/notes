@@ -52,44 +52,109 @@ containerLogMaxFiles: 5
 - Config file:
 
 ```yml
-extensions:
-  file_storage:
-    directory: /var/lib/otelcol/file_storage
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-config
+  namespace: metrics
+data:
+  config.yaml: |
+    extensions:
+      file_storage:
+        directory: /tmp/otelcol/file_storage
+        create_directory: true
 
-receivers:
-  filelog/squid:
-    include:
-      - /var/log/pods/egress_squid_deployment*/squid-container/*.log
+    receivers:
+      filelog/squid:
+        include:
+          - /var/log/pods/egress_squid-deployment*/squid-container/*.log
 
-    start_at: beginning
+        start_at: beginning
 
-    storage: file_storage
+        storage: file_storage
 
-    multiline:
-      line_start_pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+(?:Z|[+-]\d{2}:\d{2})'
+        multiline:
+          line_start_pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+(?:Z|[+-]\d{2}:\d{2})'
 
-    operators:
-      - type: container
 
-processors:
-  batch:
+    processors:
+      batch:
 
-exporters:
-  debug:
-    verbosity: detailed
+    exporters:
+      debug:
+        verbosity: detailed
 
-service:
-  extensions:
-    - file_storage
+    service:
+      extensions:
+        - file_storage
+      telemetry:
+        logs:
+          level: debug
 
-  pipelines:
-    logs:
-      receivers:
-        - filelog/squid
-      processors:
-        - batch
-      exporters:
-        - debug
+      pipelines:
+        logs:
+          receivers:
+            - filelog/squid
+          processors:
+            - batch
+          exporters:
+            - debug
+```
+
+- Pod
+
+```yml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: otel-daemonset
+  namespace: metrics
+  labels:
+    app: otel-collector
+spec:
+  selector:
+    matchLabels:
+      app: otel-collector
+
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+
+    spec:
+      containers:
+        - name: otel-collector
+          image: otel/opentelemetry-collector-contrib:0.130.0
+
+          args:
+            - --config=/etc/otelcol-contrib/config.yaml
+
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otelcol-contrib
+              readOnly: true
+
+            - name: storage
+              mountPath: /tmp/otelcol/file_storage
+
+            - name: podlogs
+              mountPath: /var/log/pods
+              readOnly: true
+
+      volumes:
+        - name: config
+          configMap:
+            name: otel-config
+
+        - name: storage
+          hostPath:
+            path: /tmp/otelcol/file_storage
+            type: DirectoryOrCreate
+
+        - name: podlogs
+          hostPath:
+            path: /var/log/pods
+            type: Directory
 ```
 
 - Run as a docker image
