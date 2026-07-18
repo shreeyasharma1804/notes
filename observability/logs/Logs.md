@@ -52,20 +52,21 @@ containerLogMaxFiles: 5
 - Config file:
 
 ```yml
-# Define the endpoint the collector is running on and the protocols it supports
+# Define the file the collector reads
 receivers:
-  otlp:
-    protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
-      http:
-        endpoint: 0.0.0.0:4318
+  filelog/squid:
+    include:
+        - /var/log/pods/egress_squid_deployment*/squid-container/*.log
+    start_at: beginning
+    multiline:
+        line_start_pattern: 
+
 
 # Define the processing to be performed on the logs before exporting to external service
 processors:
   batch:
 
-# Define the external service, debug means stdout
+# Define the external service to which otel exports the logs for persistant storage, like elasticsearch, also, debug means stdout
 exporters:
   debug:
     verbosity: detailed
@@ -74,9 +75,12 @@ exporters:
 service:
   pipelines:
     logs:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [debug]
+      receivers:
+      - filelog/squid
+      processors:
+       - batch
+      exporters:
+       - debug
 ```
 
 - Run as a docker image
