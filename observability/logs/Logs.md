@@ -46,6 +46,8 @@ containerLogMaxFiles: 5
 
 - The files from which the logs are collected and the regex for multi line parsing is defined in the collector config.
 - The collector runs as a daemonset on all the nodes
+- All the daemonsets can refer to the same configmap, since the collector does not fail if a filelog regex is not found
+- By default, the offset which the collector has read is stored in-memory. If the collector restarts, these offsets might be lost, to avoid this, the file_storage extension is used, which tracks this offset in a file
 
 - Config file:
 
