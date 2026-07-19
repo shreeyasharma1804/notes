@@ -157,15 +157,46 @@ spec:
             type: Directory
 ```
 
+- send_queues and rewrites
+
 ### ElasticSearch
 
-- How does opentelemetry send the request to the correct primary shard for the index ?
-- How is successful write response sent to otel
-- Supports clusters
+- Indexes are mandatory when sending data to elasticsearch using the POST request. Define the index in the collector for every file:
+
+```yaml
+exporters:
+  elasticsearch/pebble:
+    endpoints: ["http://elasticsearch:9200"]
+    logs_index: pebble-logs
+
+  elasticsearch/nginx:
+    endpoints: ["http://elasticsearch:9200"]
+    logs_index: nginx-logs
+```
+
+- If the index does not exist already, and auto indexing is enabled, the cluster creates the index automatically
+
+```yml
+action.auto_create_index: true
+```
+
+- The elastic search nodes form a cluster and every node acts as a coordinator to send the write request to the correct shard. The correct shard is chosen based on hash(event)%(number of shards)
+- The default number of shards and replicas for a single and multi node cluster is 1. Create an index with the correct number of shards and replicas:
+
+```bash
+PUT /logs
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 2
+  }
+}
+```
+
+- By default, elasticsearch sends a success resposne for an ingestion query if the data is successfully written to the write-ahead log and the primary shard DB. Replication happens asynchronously.
+
+- ILM, refresh_rate, what does the leader do, wait_for_active_shards
 - Requires leader election for cluster management, raft ?
-- Supports dynamic index creation, default shards and replicas ?
-- Requires StatefulSets and PVCs based on the time logs are retained
-- How is a response returned to kibana ?
 
 ### Kibana
 
