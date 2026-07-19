@@ -35,6 +35,7 @@ spec:
 - Defines the capacity and accessMode.
 - A PV can be created manually (static provisioning) or automatically (dynamic provisioning through storageClassName)
 - Access mode ReadWriteOnce means that the storage is mounted on only one node at a time
+- A PV is not partitioned among multiple PVCs.
 
 - Static PV (uses hostPath)
 
@@ -145,6 +146,24 @@ volumes:
 - Considerations:
   - If the PVC is bound to a hostPath PV, the pod scheduling will not be affected by the availability of the storage on any node. A new directory will be created on the node.
   - If the PVC is bound to a local PV, kubernetes tries to  schedule the pod on the node that has the PV. If this is not possible for a pod, it sits in Pending state
+ 
+#### Usage in a StatefulSet
+
+- Every stateful pod: pod-0 is tied to the same PVC: PVC-0
+- Stateful sets support VolumeClaimTemplates, which automatically create PVCs for each replica with consistent names.
+
+```yml
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: openebs-lvm
+      resources:
+        requests:
+          storage: 20Gi
+```
 
 
 #### StorageClass
