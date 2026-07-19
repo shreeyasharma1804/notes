@@ -36,7 +36,7 @@ spec:
 - A PV can be created manually (static provisioning) or automatically (dynamic provisioning through storageClassName)
 - Access mode ReadWriteOnce means that the storage is mounted on only one node at a time
 
-- Static PV
+- Static PV (uses hostPath)
 
 ```yml
 # Static provisioning (This is not node specific)
@@ -87,6 +87,37 @@ NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM         
 pv-bidir      500Mi      RWO            Retain           Bound    default/pvc-bidir                     <unset>
 ```
 
+- PVs with claimRef only allow a PVC with that name to bind to them
+
+```yml
+claimRef:
+  namespace: default
+  name: pvc-bidir
+```
+
+PVC:
+
+```yml
+volumeName: pv-bidir
+```
+
+- PVs also support labels, and the PVCs can declare a label as a requirement before binding to a PV
+
+```yml
+# PV
+
+metadata:
+  name: pv-selector
+  labels:
+    disk-type: fast
+
+# PVC
+
+  selector:
+    matchLabels:
+      disk-type: fast
+```
+
 ### PVC
 
 - PVC: An object which decalres the requirement of storage
@@ -114,51 +145,9 @@ volumes:
 
 - All the pods use the same PVC
 - Considerations:
+  - If the PVC is bound to a hostPath PV, the pod scheduling will not be affected by the availability of the storage on any node. A new directory will be created on the node.
   - If the PVC is bound to a local PV, kubernetes tries to  schedule the pod on the node that has the PV. If this is not possible for a pod, it sits in Pending state
-  - If the accessMode is ReadWriteOnce, and the replicas are across different nodes, pod sits in Pending state
 
-The actual directory is only created after a pod uses a PVC on the node where the pod is scheduled. This can cause issues such as new pod scheduling on different nodes will create empty directories.
-
-
-
-
-
-#### Claim References
-
-A PV is bound to a PVC based on the volumeName. In the example here, no other PVC can use this PV, unless it has the volumeName = pv-bidir
-
-PV:
-
-```yml
-claimRef:
-  namespace: default
-  name: pvc-bidir
-```
-
-PVC:
-
-```yml
-volumeName: pv-bidir
-```
-
-#### Label based selection
-
-A PV can be associated with labels:
-
-```yml
-metadata:
-  name: pv-selector
-  labels:
-    disk-type: fast
-```
-
-And a PVC can declare the label selection:
-
-```yml
-  selector:
-    matchLabels:
-      disk-type: fast
-```
 
 #### StorageClass
 
