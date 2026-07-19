@@ -29,38 +29,18 @@ spec:
 - The containers ability to read/write to this location depends on its user permissions
 
 
-### PV and PVC
+### PV
 
-PV: An object which declares that a storage is available.
-PVC: Declare the requirement of storage by claiming a PV.
+- PV: An object which declares that a storage is available.
+- Defines the capacity and accessMode.
+- A PV can be created manually (static provisioning) or automatically (dynamic provisioning through storageClassName)
+- Access mode ReadWriteOnce means that the storage is mounted on only one node at a time
 
-If the storageClassName, capacity and accessModes match, a PVC binds to a PV
-
-```bash
-kubectl get pv -A
-NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
-pv-bidir      500Mi      RWO            Retain           Bound    default/pvc-bidir                     <unset>
-```
-
-The actual directory is only created after a pod uses a PVC on the node where the pod is scheduled. This can cause issues such as new pod scheduling on different nodes will create empty directories.
-
-PV Phases:
-
-- Available - no PVC has claimed it
-- Bound - a PVC has claimed it
-- Released - the PVC that claimed it was deleted, but the PV still exists
-
-Each PV is associated with a reclaim policy that decides what happens to the PV if the PVC is deleted
-
-- Reclaim: The PV is deleted if the PVC is deleted
-- Retain: After the PVC is deleted, the PV goes to the Released State. The claimRef still points to the deleted PVC and removing it makes the PV in the Available state again which can be bound to another PVC. The claimRef is removed throug patching
-
-
-#### Static provisioning
-
-An administrator manually declares the storage availability
+- Static PV
 
 ```yml
+# Static provisioning (This is not node specific)
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -76,7 +56,72 @@ spec:
     type: DirectoryOrCreate
 ```
 
-This object declares that 500MB storage is available at /mnt/static/generic. (This is not node specific)
+- Local PV (It is a PV with node affinity, a pod which uses a PVC which is bound to this PV will always be scheduled based on the node affinity of the PV)
+
+```yml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-local
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /mnt/disks/local
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - cplane-01
+```
+
+```bash
+kubectl get pv -A
+NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pv-bidir      500Mi      RWO            Retain           Bound    default/pvc-bidir                     <unset>
+```
+
+### PVC
+
+- PVC: An object which decalres the requirement of storage
+- Defines the storageClassName, required capacity and accessModes mode. If these requirements match the declaration in a PV, the PVC and PV bind
+- A PVC affects the PV state:
+  - Available - no PVC has claimed it
+  - Bound - a PVC has claimed it
+  - Released - the PVC that claimed it was deleted, but the PV still exists
+- The reclaim policy of a PV decided what happens to a PV if its PVC is deleted
+  - Reclaim: The PV is deleted if the PVC is deleted
+  - Retain: After the PVC is deleted, the PV goes to the Released State. The claimRef still points to the deleted PVC and removing it makes the PV in the Available state again which can be bound to another PVC. The claimRef is removed throug patching
+
+
+#### Usage in a deployment (Avoid this)
+
+- Create a PVC
+- Use in a deployment:
+
+```
+volumes:
+- name: data
+  persistentVolumeClaim:
+    claimName: app-data      # The name of the PVC
+```
+
+- All the pods use the same PVC
+- Considerations:
+  - If the PVC is bound to a local PV, kubernetes tries to  schedule the pod on the node that has the PV. If this is not possible for a pod, it sits in Pending state
+  - If the accessMode is ReadWriteOnce, and the replicas are across different nodes, pod sits in Pending state
+
+The actual directory is only created after a pod uses a PVC on the node where the pod is scheduled. This can cause issues such as new pod scheduling on different nodes will create empty directories.
+
+
+
+
 
 #### Claim References
 
@@ -114,35 +159,6 @@ And a PVC can declare the label selection:
     matchLabels:
       disk-type: fast
 ```
-
-#### Local PV
-
-A local PV is a PV bound to a node through node affinity
-
-```yml
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-local
-spec:
-  storageClassName: "sc-local-wfc"
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  local:
-    path: /mnt/disks/local
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - cplane-01
-```
-
-A pod which uses a PVC which is bound to this PV will always be scheduled based on the node affinity of the PV
 
 #### StorageClass
 
