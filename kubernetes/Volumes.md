@@ -1,12 +1,32 @@
 ### K8s managed volume
 
+- A volume is created if a pod/deployment decalres it at the location: `/var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~empty-dir/`
+- If a pod is restarted, the same volume is mounted on it, because the pod has the same uid.
+- If a pod is evicted/deleted, the volume is deleted by the garbage collector and the data is lost
+- In a deployment, all pods get a seperate volumne.
+
 ```yml
-volumes:
-- name: data
-  emptyDir: {}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+spec:
+  containers:
+  - name: writer
+    image: busybox
+    command: ["sh", "-c", "echo Hello > /shared/message && sleep 3600"]
+    volumeMounts:
+    - name: data
+      mountPath: /shared
+  volumes:
+  - name: data
+    emptyDir: {}
 ```
 
-This volume survives a pod restart but not a pod deletion
+### HostPath
+
+- The container mounts the node's directory in its file system
+- The containers ability to read/write to this location depends on its user permissions
 
 
 ### PV and PVC
