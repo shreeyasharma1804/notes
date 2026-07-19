@@ -1,3 +1,5 @@
+- Start the server: sudo k3s server   --write-kubeconfig "$HOME/.kube/config"   --write-kubeconfig-mode 600
+
 - Mutating Admission policy: https://kubernetes.io/docs/reference/access-authn-authz/mutating-admission-policy/
 - Validating Admission policy: https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/
 
