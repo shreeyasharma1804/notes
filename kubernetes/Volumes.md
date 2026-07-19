@@ -28,7 +28,6 @@ spec:
 - The container mounts the node's directory in its file system
 - The containers ability to read/write to this location depends on its user permissions
 
-
 ### PV
 
 - PV: An object which declares that a storage is available.
@@ -36,6 +35,8 @@ spec:
 - A PV can be created manually (static provisioning) or automatically (dynamic provisioning through storageClassName)
 - Access mode ReadWriteOnce means that the storage is mounted on only one node at a time
 - A PV is not partitioned among multiple PVCs.
+- One PV binds to exactly one PVC, so, to use hostPath across 5 nodes, 5 PVs should declare that.
+- If a hostPath volume is only available on specific nodes, use node affinity on the pods which use the volume
 
 - Static PV (uses hostPath)
 
@@ -142,10 +143,10 @@ volumes:
     claimName: app-data      # The name of the PVC
 ```
 
-- All the pods use the same PVC
+- All the replica pods use the same PVC
 - Considerations:
-  - If the PVC is bound to a hostPath PV, the pod scheduling will not be affected by the availability of the storage on any node. A new directory will be created on the node.
-  - If the PVC is bound to a local PV, kubernetes tries to  schedule the pod on the node that has the PV. If this is not possible for a pod, it sits in Pending state
+  - If the pod uses a hostPath PVC, and the storage is only available on specific nodes, then node affinity should be defined on the pods, otherwise the scheduling will fail. If the deployment has multiple replicas and they cannot be scheduled on the same node, and some other node does not have the hostPath directory, the pod will remain in pending state.
+  - If a pod uses a local PV, kubernetes tries to  schedule the pod on the node that has the PV. If this is not possible for a pod or the replicas, it sits in Pending state
  
 #### Usage in a StatefulSet
 
