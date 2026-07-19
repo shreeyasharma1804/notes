@@ -90,14 +90,12 @@ pv-bidir      500Mi      RWO            Retain           Bound    default/pvc-bi
 - PVs with claimRef only allow a PVC with that name to bind to them
 
 ```yml
+# PV
 claimRef:
   namespace: default
   name: pvc-bidir
-```
 
-PVC:
-
-```yml
+# PVC
 volumeName: pv-bidir
 ```
 
