@@ -160,12 +160,11 @@ volumes:
     spec:
       accessModes:
         - ReadWriteOnce
-      storageClassName: openebs-lvm
+      storageClassName: ""
       resources:
         requests:
           storage: 20Gi
 ```
-
 
 #### StorageClass
 
