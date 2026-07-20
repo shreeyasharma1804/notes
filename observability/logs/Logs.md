@@ -172,6 +172,7 @@ PUT logs
   }
 }
 ```
+- Define the refresh_interval and wait_for_active_shards.
 
 - Indexes are mandatory when sending data to elasticsearch using the POST request. Define the index in the collector for every file:
 
