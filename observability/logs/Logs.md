@@ -161,6 +161,18 @@ spec:
 
 ### ElasticSearch
 
+- Create an index with shards and indexes
+
+```
+PUT logs
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1
+  }
+}
+```
+
 - Indexes are mandatory when sending data to elasticsearch using the POST request. Define the index in the collector for every file:
 
 ```yaml
