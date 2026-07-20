@@ -161,17 +161,67 @@ spec:
 
 ### ElasticSearch
 
-- Create an index with shards and indexes
+- Lifecycle Policy
 
 ```
-PUT logs
+# Decide how the logs rollover and deletion
+PUT _ilm/policy/squid_logs_policy
 {
-  "settings": {
-    "number_of_shards": 3,
-    "number_of_replicas": 1
+  "policy": {
+    "phases": {
+      "hot": {
+        "actions": {
+          "rollover": {
+            "max_primary_shard_size": "50gb",
+            "max_age": "1d"
+          }
+        }
+      },
+      "delete": {
+        "min_age": "30d",
+        "actions": {
+          "delete": {}
+        }
+      }
+    }
   }
 }
 ```
+
+- Index template
+
+```
+# Define the number os shards, replicas, alias name and the ilm policy
+PUT _index_template/squid_logs_template
+{
+  "index_patterns": [
+    "squid_logs-*"
+  ],
+  "template": {
+    "settings": {
+      "number_of_shards": 2,
+      "number_of_replicas": 2,
+      "index.codec": "best_compression",  
+      "index.lifecycle.name": "squid_logs_policy",
+      "index.lifecycle.rollover_alias": "squid_logs"
+    }
+  }
+}
+```
+
+- Create the 1st writable index
+
+```
+PUT squid_logs-000001
+{
+  "aliases": {
+    "squid_logs": {
+      "is_write_index": true
+    }
+  }
+}
+```
+
 - Define the refresh_interval and wait_for_active_shards.
 
 - Indexes are mandatory when sending data to elasticsearch using the POST request. Define the index in the collector for every file:
@@ -210,26 +260,3 @@ PUT /logs
 
 - ILM, refresh_rate, what does the leader do, wait_for_active_shards
 - Requires leader election for cluster management, raft ?
-
-### Kibana
-
-```bash
-podman network create elastic-net
-
-podman run -d \
-  --name elasticsearch \
-  --network elastic-net \
-  -p 9200:9200 \
-  -p 9300:9300 \
-  -e discovery.type=single-node \
-  -e xpack.security.enabled=false \
-  -e ES_JAVA_OPTS="-Xms1g -Xmx1g" \
-  docker.io/elasticsearch:9.1.0
-
- podman run -d \
-  --name kibana \
-  --network elastic-net \
-  -p 5601:5601 \
-  -e ELASTICSEARCH_HOSTS=http://elasticsearch:9200 \
-  docker.io/kibana:9.1.0
-```
