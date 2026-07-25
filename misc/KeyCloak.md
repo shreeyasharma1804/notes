@@ -43,3 +43,21 @@ docker run -d \
 ```sql
 SELECT id, name, enabled FROM realm;
 ```
+
+### Create a new admin user
+
+- In Users
+- Role binding: Manage users
+
+### Get the access token for creating a new User in realm-1
+
+```
+curl --location 'https://localhost:8443/realms/realm-1/protocol/openid-connect/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'client_id=admin-cli' \
+--data-urlencode 'username=shreeya-admin' \
+--data-urlencode 'password=.xe7yupy)M=~,XP'
+```
+
+- The JWT access token is issued to client_id.
