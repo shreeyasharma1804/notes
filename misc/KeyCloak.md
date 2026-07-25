@@ -44,15 +44,41 @@ docker run -d \
 SELECT id, name, enabled FROM realm;
 ```
 
-### Create the client with valid redirect URIs
+### Create the client
 
-### Redirect to below for user registration/loging
+- Redirect URIs
+- PKCE
+- Confidential clients
 
-- Enable user registration in realm settings
-- Redirect from app to:
+### User registration/loging
 
-```
+- User registration should be enabled in realm settings
+- If the app needs to authenticate a user, it needs to send a get request as below:
+
+```bash
 https://localhost:8443/realms/realm-1/protocol/openid-connect/auth?client_id=demo_client_id&response_type=code&redirect_uri=http://localhost:5000/callback&scope=openid
+
+realm-1: The realm in which the user exists/ needs to be created
+client_id: The app which is authenticating the user
+code: The code can be used only once to generate the access token
+The redirect URI: should match one of the valid redirect URIs inthe client config in keycloak
+scope: 
 ```
+
 - If signing in, keycloak checks that the password provided by the user is correct
 - If registering, keycloak creates a new user for the realm realm-1
+- After this, keyclock redirects to the provided redirect_uri with a valid code
+- Generate access token from this code:
+
+```bash
+curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/token' \
+      --header 'Content-Type: application/x-www-form-urlencoded' \
+      --data-urlencode 'grant_type=authorization_code' \
+      --data-urlencode 'client_id=demo_client_id' \
+      --data-urlencode 'code=a244e6c5-7488-7e3c-ef1a-7814e8f2edf5.UJhcPUdrTSoSroY_6Vcotd_c.976db4a3-c197-44ab-8513-70911172ac3d' \
+      --data-urlencode 'redirect_uri=http://localhost:5000/callback' \
+      --data-urlencode 'client_secret=zKcnH6czFuB8OzE21xRY6zNlUhGtpy9xJVjhBSbUwx42CRoJ0DxOgfeweaCbd47cM43GEraDsTlIgdqY6Iu7KN'
+{
+
+# client_secret is required only if the client is confidential
+```
