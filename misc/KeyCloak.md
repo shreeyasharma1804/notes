@@ -28,6 +28,6 @@ docker run -d \
     --db-url=jdbc:postgresql://postgres:5432/keycloak \
     --db-username=myuser \
     --db-password=mypassword \
-    --https-certificate-file=/certs/tls.crt \
-    --https-certificate-key-file=/certs/tls.key
+    --https-certificate-file=/certs/certificate.crt \
+    --https-certificate-key-file=/certs/private.key
 ```
