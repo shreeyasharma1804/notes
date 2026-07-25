@@ -82,3 +82,47 @@ curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
 
 # client_secret is required only if the client is confidential
 ```
+
+- Claims in the access token:
+
+```
+{
+  "exp": 1784979362,
+  "iat": 1784979062,
+  "auth_time": 1784978811,
+  "jti": "onrtac:282b0ecc-cd3c-d1d4-f141-9f0e8e3e496b",
+  "iss": "https://localhost:8443/realms/realm-1",
+  "aud": "account",
+  "sub": "7387ac84-6021-4162-b74d-142065a96ee8",
+  "typ": "Bearer",
+  "azp": "demo_client_id",
+  "sid": "UJhcPUdrTSoSroY_6Vcotd_c",
+  "acr": "0",
+  "allowed-origins": [
+    "http://localhost:5000"
+  ],
+  "realm_access": {
+    "roles": [
+      "offline_access",
+      "uma_authorization",
+      "default-roles-realm-1"
+    ]
+  },
+  "resource_access": {
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "openid email profile",
+  "email_verified": false,
+  "name": "Shreeya Shreeya",
+  "preferred_username": "demo-user",
+  "given_name": "Shreeya",
+  "family_name": "Shreeya",
+  "email": "shreeya@gmail.com"
+}
+```
