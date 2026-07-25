@@ -44,24 +44,15 @@ docker run -d \
 SELECT id, name, enabled FROM realm;
 ```
 
-### Create a new admin user
+### Create the client with valid redirect URIs
 
-- In Users
-- Role binding: Manage users
-
-### Get the access token for creating a new User in realm-1
-
-```
-curl --location 'https://localhost:8443/realms/realm-1/protocol/openid-connect/token' \
---header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'grant_type=password' \
---data-urlencode 'client_id=admin-cli' \
---data-urlencode 'username=shreeya-admin' \
---data-urlencode 'password=.xe7yupy)M=~,XP'
-```
-
-- The JWT access token is issued to client_id.
-
-### User registration
+### Redirect to below for user registration/loging
 
 - Enable user registration in realm settings
+- Redirect from app to:
+
+```
+https://localhost:8443/realms/realm-1/protocol/openid-connect/auth?client_id=demo_client_id&response_type=code&redirect_uri=http://localhost:5000/callback&scope=openid
+```
+- If signing in, keycloak checks that the password provided by the user is correct
+- If registering, keycloak creates a new user for the realm realm1
