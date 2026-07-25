@@ -35,3 +35,11 @@ docker run -d \
 ```
 
 ### Create a realm
+
+- Each realm contains users, credentials, roles etc
+- Can be created from a UI
+- Persisted in the DB:
+
+```sql
+SELECT id, name, enabled FROM realm;
+```
