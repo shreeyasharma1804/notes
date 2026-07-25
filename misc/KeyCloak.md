@@ -61,3 +61,7 @@ curl --location 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
 ```
 
 - The JWT access token is issued to client_id.
+
+### User registration
+
+- Enable user registration in realm settings
