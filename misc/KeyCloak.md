@@ -1,3 +1,5 @@
+### Setup
+
 ```
 # Create the network
 docker network create keycloak
@@ -31,3 +33,5 @@ docker run -d \
     --https-certificate-file=/certs/certificate.crt \
     --https-certificate-key-file=/certs/private.key
 ```
+
+### Create a realm
