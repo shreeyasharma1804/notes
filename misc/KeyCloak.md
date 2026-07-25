@@ -68,7 +68,7 @@ scope:
 - If signing in, keycloak checks that the password provided by the user is correct
 - If registering, keycloak creates a new user for the realm realm-1
 - After this, keyclock redirects to the provided redirect_uri with a valid code
-- Generate access token, refresh token etc from this code:
+- Generate access token, refresh token etc from the code:
 
 ```bash
 curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/token' \
