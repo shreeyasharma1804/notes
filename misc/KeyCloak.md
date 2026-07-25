@@ -55,4 +55,4 @@ SELECT id, name, enabled FROM realm;
 https://localhost:8443/realms/realm-1/protocol/openid-connect/auth?client_id=demo_client_id&response_type=code&redirect_uri=http://localhost:5000/callback&scope=openid
 ```
 - If signing in, keycloak checks that the password provided by the user is correct
-- If registering, keycloak creates a new user for the realm realm1
+- If registering, keycloak creates a new user for the realm realm-1
