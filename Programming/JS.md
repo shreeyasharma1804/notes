@@ -26,7 +26,7 @@ def callback():
     print("Promise completed")
 
 async def returns_promise(callback):
-    await asyncio.sleep(1)   # seconds, not milliseconds
+    await asyncio.sleep(1)
     callback()
 
 async def main():
