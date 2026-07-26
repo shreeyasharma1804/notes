@@ -1,4 +1,4 @@
-- Promises
+### Promises
 
 ```js
 function returnsPromise() {
