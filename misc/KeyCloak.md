@@ -100,3 +100,30 @@ curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
 
 #### ID Token
 - Contains all the user info required as per the scope
+
+#### Get access token from refresh token
+
+```
+curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/token' \
+      --header 'Content-Type: application/x-www-form-urlencoded' \
+      --data-urlencode 'grant_type=refresh_token' \
+      --data-urlencode 'client_id=demo_client_id' \
+      --data-urlencode 'refresh_token=eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjODZmMmJmNy1kYTE3LTRhMGQtOTIzYy1kYjNjYzAzYmZiYzUifQ.eyJleHAiOjE3ODUwNzU3MzEsImlhdCI6MTc4NTA3MzkzMSwianRpIjoiOGEwNzJiNzMtZGE4Ni0zN2Y3LTFlNTUtZTdlNjg3M2Q5ZDU3IiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6ODQ0My9yZWFsbXMvcmVhbG0tMSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0Ojg0NDMvcmVhbG1zL3JlYWxtLTEiLCJzdWIiOiI3Mzg3YWM4NC02MDIxLTQxNjItYjc0ZC0xNDIwNjVhOTZlZTgiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoiZGVtb19jbGllbnRfaWQiLCJzaWQiOiJTQWlKWjlxbHc5VzdVQ2RMTmEycWNJUXEiLCJzY29wZSI6Im9wZW5pZCBlbWFpbCBzZXJ2aWNlX2FjY291bnQgd2ViLW9yaWdpbnMgYWNyIHByb2ZpbGUgYmFzaWMgcm9sZXMiLCJhdWRfeCI6ImFjY291bnQiLCJwcm92IjoiZGVmYXVsdCJ9.F0IxmxvwAvarJFSQyGL233KUmxnMNsqZzDtjwDxp7icO8JM8tgnzbvx522E-Lw2QhXhfk16cSMCh-JPuFiGUJA' \
+      --data-urlencode 'client_secret=zKcnH6czFuB8OzE21xRY6zNlUhGtpy9xJVjhBSbUwx42CRoJ0DxOgfeweaCbd47cM43GEraDsTlIgdqY6Iu7KN'
+```
+
+### Authorization
+
+- Create a new role in the client
+- Assign a role to a user
+- The role is defined under resource_access in the access token
+```
+{
+  "demo_client_id": {
+    "roles": [
+      "app_users"
+    ]
+  }
+```
+
+### 
