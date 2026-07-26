@@ -47,8 +47,8 @@ SELECT id, name, enabled FROM realm;
 ### Create the client
 
 - Redirect URIs: The valid URIs which can be sent as reidrect URIs in /auth request. The application should have endpoints listening on these URIs.
-- PKCE
 - Confidential clients: The clients which require a client_secret to generate the access token from the authorization token
+- PKCE: PKCE is used to ensure that only the client_id which request the auth token can use it to generate the access token. If enabled, when redirecting to /auth, the client needs to send a code_verifier, which is a hash of a code_challege (random string). The code_verifier is stored by keycloak as the unique string bound to the authoriztThen when requesting the access token to keycloak, 
 
 ### User registration/loging
 
