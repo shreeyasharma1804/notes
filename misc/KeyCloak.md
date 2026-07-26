@@ -46,9 +46,9 @@ SELECT id, name, enabled FROM realm;
 
 ### Create the client
 
-- Redirect URIs
+- Redirect URIs: The valid URIs which can be sent as reidrect URIs in /auth request. The application should have endpoints listening on these URIs.
 - PKCE
-- Confidential clients
+- Confidential clients: The clients which require a client_secret to generate the access token from the authorization token
 
 ### User registration/loging
 
@@ -62,13 +62,13 @@ realm-1: The realm in which the user exists/ needs to be created
 client_id: The app which is authenticating the user
 code: The code can be used only once to generate the access token
 The redirect URI: should match one of the valid redirect URIs inthe client config in keycloak
-scope: 
+scope: The required user claims
 ```
 
 - If signing in, keycloak checks that the password provided by the user is correct
 - If registering, keycloak creates a new user for the realm realm-1
-- After this, keyclock redirects to the provided redirect_uri with a valid code
-- Generate access token, refresh token etc from the code:
+- After this, keyclock redirects to the provided redirect_uri with a one time authorization code
+- Generate access token, refresh token etc from the authorization code:
 
 ```bash
 curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/token' \
