@@ -112,6 +112,27 @@ curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
       --data-urlencode 'client_secret=zKcnH6czFuB8OzE21xRY6zNlUhGtpy9xJVjhBSbUwx42CRoJ0DxOgfeweaCbd47cM43GEraDsTlIgdqY6Iu7KN'
 ```
 
+### Service accounts
+
+- A service account is automatically created for a client if it is:
+  - Confidential
+  - Service account roles is enabled
+ 
+<img width="830" height="495" alt="image" src="https://github.com/user-attachments/assets/d30ceb85-d46e-405f-9de7-0b3517a43e6c" />
+
+- To get an access token, we just need to call the /token endpoint with the client_id and secret
+- The subject of the token is the system accountuser id
+
+```bash
+curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/token' \
+            --header 'Content-Type: application/x-www-form-urlencoded' \
+            --data-urlencode 'grant_type=client_credentials' \
+            --data-urlencode 'client_id=demo_client_id' \
+            --data-urlencode 'client_secret=zKcnH6czFuB8OzE21xRY6zNlUhGtpy9xJVjhBSbUwx42CRoJ0DxOgfeweaCbd47cM43GEraDsTlIgdqY6Iu7KN'
+```
+
+### Middleware
+
 ### Authorization
 
 - Create a new role in the client
