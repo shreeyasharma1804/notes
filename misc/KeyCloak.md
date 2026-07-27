@@ -134,15 +134,34 @@ curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
 
 ### Multiple Audiences
 
-JWT token validation by an applications checks that whether the token was generated for it through the aud field in the JWT token
+- JWT token validation by an applications checks that whether the token was generated for it through the aud field in the JWT token
 
 ```
 Client -> Client scopes -> <client_id>-dedicated -> Configure new mapper -> Audience
 ```
 
-The audience needs to be mapped to an actual client_id. Then, the mapped client_id will appear in the access tokens generated for this application
+- The audience needs to be mapped to an actual client_id. Then, the mapped client_id will appear in the access tokens generated for this application.
+- This feature is used when an application authenticates a user through JWT, and not via redirectingthe user to keycloak. (Token exchnage)
+
+### RBAC and Groups
+
+- Groups: Add the user to a group, to include in JWT:
+
+```bash
+Clients -> Client Scopes -> <client-id>_dedicated -> Add mapper -> By configuration -> Group membership
+```
+
+- Roles: Clients -> Roles -> Create Role, Users -> Role Mapping -> Assign Role
 
 ### Middleware
+
+- Check if JWT is not expired
+- Verify that the signature is valid
+- Check the user in the sub
+- Check the role
+- Check if the user is mapped to the required groups
+- Check the aud (if token exchange is used)
+
 
 ### Authorization
 
