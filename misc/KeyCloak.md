@@ -67,7 +67,7 @@ scope: The required user claims
 
 - If signing in, keycloak checks that the password provided by the user is correct
 - If registering, keycloak creates a new user for the realm realm-1
-- After this, keyclock redirects to the provided redirect_uri with a one time authorization code
+- After this, keyclock redirects to the provided redirect_uri with a one time authorization code (TTL ~ 60 seconds)
 - Generate access token, refresh token etc from the authorization code:
 
 ```bash
@@ -78,7 +78,6 @@ curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
       --data-urlencode 'code=a244e6c5-7488-7e3c-ef1a-7814e8f2edf5.UJhcPUdrTSoSroY_6Vcotd_c.976db4a3-c197-44ab-8513-70911172ac3d' \
       --data-urlencode 'redirect_uri=http://localhost:5000/callback' \
       --data-urlencode 'client_secret=zKcnH6czFuB8OzE21xRY6zNlUhGtpy9xJVjhBSbUwx42CRoJ0DxOgfeweaCbd47cM43GEraDsTlIgdqY6Iu7KN'
-{
 
 # client_secret is required only if the client is confidential
 ```
@@ -88,6 +87,8 @@ curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
 ```
 {"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJDZkJNb0t3TlV1YjN3UV9yTzlZeU5od1lqTldDeTRLVzZLdFlxWDJqeHhnIn0.eyJleHAiOjE3ODQ5NzkzNjIsImlhdCI6MTc4NDk3OTA2MiwiYXV0aF90aW1lIjoxNzg0OTc4ODExLCJqdGkiOiJvbnJ0YWM6MjgyYjBlY2MtY2QzYy1kMWQ0LWYxNDEtOWYwZThlM2U0OTZiIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6ODQ0My9yZWFsbXMvcmVhbG0tMSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI3Mzg3YWM4NC02MDIxLTQxNjItYjc0ZC0xNDIwNjVhOTZlZTgiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJkZW1vX2NsaWVudF9pZCIsInNpZCI6IlVKaGNQVWRyVFNvU3JvWV82VmNvdGRfYyIsImFjciI6IjAiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo1MDAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1yZWFsbS0xIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6IlNocmVleWEgU2hyZWV5YSIsInByZWZlcnJlZF91c2VybmFtZSI6ImRlbW8tdXNlciIsImdpdmVuX25hbWUiOiJTaHJlZXlhIiwiZmFtaWx5X25hbWUiOiJTaHJlZXlhIiwiZW1haWwiOiJzaHJlZXlhQGdtYWlsLmNvbSJ9.AsxrPhPemqGd2q5AG2fN0K9U8pAkaZ0LPlYiDaeHha07UmI9LRW6RZ26B9Uu4eYgZ_xoaRC1m1NSi1gXgNBm-Zn2In2r-mfwvymKWxbPBaZPbFXSGR56YruaLNY_t23g3VytOxml3m7dqERGtCV8yEmI5eOJ9a8sklBAgZGkMRiG_kWgwNVN--UMnEQWlLFaoZu7Vnc-FSX47sgmJkD_oJ2yDAUS3sg4mLbh-llcpFDo3YpPMy2YeNXmfOWfuzd8Pa97E4PsOrBms5B_VTE8ZHxgROxi6l7YQ7ym6XRsxFKjkmykY7-Q4qbH__mVv20foKenBiJ5G9M47IH0WVSLuQ","expires_in":300,"refresh_expires_in":1800,"refresh_token":"eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjODZmMmJmNy1kYTE3LTRhMGQtOTIzYy1kYjNjYzAzYmZiYzUifQ.eyJleHAiOjE3ODQ5ODA4NjIsImlhdCI6MTc4NDk3OTA2MiwianRpIjoiZmRhMDAyNDAtOWEyMi1lMzlkLTlkN2YtMGRlNWJjODQ4MzY2IiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6ODQ0My9yZWFsbXMvcmVhbG0tMSIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0Ojg0NDMvcmVhbG1zL3JlYWxtLTEiLCJzdWIiOiI3Mzg3YWM4NC02MDIxLTQxNjItYjc0ZC0xNDIwNjVhOTZlZTgiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoiZGVtb19jbGllbnRfaWQiLCJzaWQiOiJVSmhjUFVkclRTb1Nyb1lfNlZjb3RkX2MiLCJzY29wZSI6Im9wZW5pZCBlbWFpbCBzZXJ2aWNlX2FjY291bnQgd2ViLW9yaWdpbnMgYWNyIHByb2ZpbGUgYmFzaWMgcm9sZXMiLCJhdWRfeCI6ImFjY291bnQiLCJwcm92IjoiZGVmYXVsdCJ9.ydAEK6OE3y90Y7teKJY8T6-z37tSvaa2LQeFrq5OSg6JcxVFwLumrjONxZ5kyC4NxW4roP85EsEcoeL1aM8XdQ","token_type":"Bearer","id_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJDZkJNb0t3TlV1YjN3UV9yTzlZeU5od1lqTldDeTRLVzZLdFlxWDJqeHhnIn0.eyJleHAiOjE3ODQ5NzkzNjIsImlhdCI6MTc4NDk3OTA2MiwiYXV0aF90aW1lIjoxNzg0OTc4ODExLCJqdGkiOiIzNTZlNmEwMC0wYTY1LTMwMzEtNGYyZS1mMzNhZWFmOWYwMWQiLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4NDQzL3JlYWxtcy9yZWFsbS0xIiwiYXVkIjoiZGVtb19jbGllbnRfaWQiLCJzdWIiOiI3Mzg3YWM4NC02MDIxLTQxNjItYjc0ZC0xNDIwNjVhOTZlZTgiLCJ0eXAiOiJJRCIsImF6cCI6ImRlbW9fY2xpZW50X2lkIiwic2lkIjoiVUpoY1BVZHJUU29Tcm9ZXzZWY290ZF9jIiwiYXRfaGFzaCI6IlBSdDVsbV9tNGNaNVpIM3B5NmxHMkEiLCJhY3IiOiIwIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiU2hyZWV5YSBTaHJlZXlhIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZGVtby11c2VyIiwiZ2l2ZW5fbmFtZSI6IlNocmVleWEiLCJmYW1pbHlfbmFtZSI6IlNocmVleWEiLCJlbWFpbCI6InNocmVleWFAZ21haWwuY29tIn0.QwXJJDqHdHKKVfBU_UHDZtMoFA9UXvUFnVeZ8HpvWtck5TwTKoePi7xWTdgX9wnr3s8CyycaNoA-Z0g6nhr-AVFihjzZcEa5hU5YT9_PFcjRFBBoUXavvEy8j3DGeJt3ALxqdlLFBRK7RvGkSQbOSudvWfeAJI4W8nh2ZHjEe2e1_qrsUbzxev0bPZqPbbo6YYX4gj4bBN6tJFPFo3VojJ8dO9yNSBL5Of8ZboMoLAwaeWGCHDBqBKDyrMF32H12ooQKAtC7qaBfxppAvkIuQqPW4D6lJVNU29pTgsEWIdXtBhom0gkkfF1W8Kp5DuNrK65wU0gvf6x5S0_uYSCcrQ","not-before-policy":0,"session_state":"UJhcPUdrTSoSroY_6Vcotd_c","scope":"openid email profile"}⏎
 ```
+
+- The TTLs of authorization code, access token and refresh token are configurable via keycloak
 
 #### Access token:
 - iss: https://localhost:8443/realms/realm-1
@@ -130,6 +131,16 @@ curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
             --data-urlencode 'client_id=demo_client_id' \
             --data-urlencode 'client_secret=zKcnH6czFuB8OzE21xRY6zNlUhGtpy9xJVjhBSbUwx42CRoJ0DxOgfeweaCbd47cM43GEraDsTlIgdqY6Iu7KN'
 ```
+
+### Multiple Audiences
+
+JWT token validation by an applications checks that whether the token was generated for it through the aud field in the JWT token
+
+```
+Client -> Client scopes -> <client_id>-dedicated -> Configure new mapper -> Audience
+```
+
+The audience needs to be mapped to an actual client_id. Then, the mapped client_id will appear in the access tokens generated for this application
 
 ### Middleware
 
