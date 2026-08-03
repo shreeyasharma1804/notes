@@ -105,6 +105,16 @@ t2 = time.perf_counter()
 print(t2-t1) # 5 seconds
 ```
 
+### Task Groups
+
+- Schedule tasks using task groups
+- The tasks are automatiaclly awaited
+- If one task fails, the other tasks also fail. Use task groups when this feature is a requirement
+
+```python
+
+```
+
 ### Debugging
 
 Print the thread id:
