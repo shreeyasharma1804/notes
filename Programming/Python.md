@@ -105,10 +105,12 @@ t2 = time.perf_counter()
 print(t2-t1) # 5 seconds
 ```
 
+- Any await-able object(coroutine, task, future) is compatible to be run inside asyncio.gather 
+
 ### Task Groups
 
 - Schedule tasks using task groups
-- The tasks are automatiaclly awaited
+- The tasks are automatically awaited
 - If one task fails, the other tasks also fail. Use task groups when this feature is a requirement
 
 ```python
@@ -159,6 +161,14 @@ t2 = time.perf_counter()
 
 
 print(t2-t1)      # 5 seconds
+```
+
+### Using thread pool executor
+
+- Offload synchronous tasks to a thread from a thread pool
+
+```
+
 ```
 
 ### Debugging
