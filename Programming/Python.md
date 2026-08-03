@@ -1,5 +1,8 @@
 ## Async Programming
 
+- async: Convert the function to a coroutine
+- await: Yield the control back to the event loop
+
 ```python
 import asyncio
 import time
