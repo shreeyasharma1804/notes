@@ -28,6 +28,33 @@ t2 = time.perf_counter()
 print(t2-t1)    # Takes 10 seconds because this code runs synchronously
 ```
 
+### create_task
+
+```python
+import asyncio
+import time
+
+async def foo(seconds):
+    await asyncio.sleep(seconds)
+    return "Timer Completed"
+    
+async def main():
+    coroutine1 = asyncio.create_task(foo(5))   # Schedule the task on the event loop and return a coroutine object   
+    coroutine2 = asyncio.create_task(foo(5))
+    
+    result = await coroutine1         # Wait till coroutine1 is complete
+    await coroutine2         # Wait till coroutine2 is complete
+    
+    print(result)
+    
+t1 = time.perf_counter()
+asyncio.run(main())          # Start the event loop
+t2 = time.perf_counter()
+
+
+print(t2-t1)    # Since both the coroutines are scheduled on the event loop, this program takes 5 seconds to execute
+```
+
 
 ### Debugging
 
