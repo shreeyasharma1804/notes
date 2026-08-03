@@ -78,6 +78,13 @@ t2 = time.perf_counter()
 print(t2-t1) # 5 seconds
 ```
 
+### Gather coroutines
+
+- tasks and coroutines are different objects
+
+```python
+```
+
 ### Debugging
 
 Print the thread id:
