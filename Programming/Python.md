@@ -388,6 +388,8 @@ t2.join()
 print(counter)
 ```
 
+- Locks also might slow down the performance compared to running all the operations in a single thread
+
 ### Debugging
 
 Print the thread id:
