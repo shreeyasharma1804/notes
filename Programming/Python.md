@@ -195,6 +195,34 @@ t2 = time.perf_counter()
 print(t2-t1)      # 5 seconds
 ```
 
+```python
+import asyncio
+import time
+from concurrent.futures import ThreadPoolExecutor
+
+# Create 8 idle threads
+executor = ThreadPoolExecutor(max_workers=2)
+
+# Synchronous function
+def foo(seconds):
+    time.sleep(seconds)
+    return "Timer Completed"
+    
+async def main():
+    
+    loop = asyncio.get_running_loop()    # Get the event loop
+    
+    futures = [loop.run_in_executor(executor, foo, 5) for i in range(5)]     # Offload the synchronous process to a thread from the thread pool, which is awaited by the event loop
+    await asyncio.gather(*futures)
+    
+t1 = time.perf_counter()
+asyncio.run(main())          # Start the event loop
+t2 = time.perf_counter()
+
+
+print(t2-t1)      # 15 seconds (2 threads in parallel + 2 threads in parallel + 1 last execution)
+```
+
 ### Debugging
 
 Print the thread id:
