@@ -133,6 +133,10 @@ t2 = time.perf_counter()
 print(t2-t1)      # 5 seconds
 ```
 
+### to_thread
+
+- Used to offload synchronous code to a thread and then await it using create_task
+
 ### Debugging
 
 Print the thread id:
