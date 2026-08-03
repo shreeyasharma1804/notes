@@ -327,6 +327,40 @@ def  func1(result):
 	result[0] = "Hello from func1"
 ```
 
+### Race Conditions
+
+- If multiple threads access a common variable, race conditions occur.
+- Writes are lost due to dirty reads
+
+```python
+import threading
+import time
+
+shared_state = 0
+
+def foo():
+    global shared_state
+    for i in range(1000000):
+        shared_state += 1
+        
+    
+t1 = threading.Thread(target=foo)
+t2 = threading.Thread(target=foo)
+
+t1.start()
+t2.start()
+
+start = time.perf_counter()
+
+t1.join()
+t2.join()
+
+stop = time.perf_counter()
+
+print(stop-start)
+
+```
+
 ### Debugging
 
 Print the thread id:
