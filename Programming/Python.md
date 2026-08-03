@@ -1,3 +1,31 @@
+## Async Programming
+
+```python
+import asyncio
+import time
+
+async def foo(seconds):
+    await asyncio.sleep(seconds)
+    return "Timer Completed"
+    
+async def main():
+    coroutine1 = foo(5)      # This returns a coroutine object
+    coroutine2 = foo(5)
+    
+    # Coroutine object needs to be awaited in ordert o schedule them on the event loop
+    
+    await coroutine1         # Wait till coroutine1 is complete
+    await coroutine2         # Wait till coroutine2 is complete
+    
+t1 = time.perf_counter()
+asyncio.run(main())          # Start the event loop
+t2 = time.perf_counter()
+
+
+print(t2-t1)    # Takes 10 seconds because this code runs synchronously
+```
+
+
 ### Debugging
 
 Print the thread id:
