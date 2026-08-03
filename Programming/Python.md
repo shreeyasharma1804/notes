@@ -1,6 +1,6 @@
 ## Async Programming
 
-- async: Convert the function to a coroutine
+- async: Convert the function to a coroutine, i.e it becomes schedulable on the event loop
 - await: Yield the control back to the event loop
 
 ```python
