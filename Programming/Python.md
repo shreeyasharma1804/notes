@@ -55,6 +55,28 @@ t2 = time.perf_counter()
 print(t2-t1)    # Since both the coroutines are scheduled on the event loop, this program takes 5 seconds to execute
 ```
 
+### Gather coroutines
+
+```python
+import asyncio
+import time
+
+async def foo(seconds):
+    await asyncio.sleep(seconds)
+    return "Timer Completed"
+    
+async def main():
+    coroutines = [foo(5) for i in range(5)]
+    result = await asyncio.gather(*coroutines, return_exceptions = True) # Schedule all the coroutines on the event loop together and await them, might be using create_task internally
+    print(result[0]) # Prints "Timer Completed"
+    
+t1 = time.perf_counter()
+asyncio.run(main())          # Start the event loop
+t2 = time.perf_counter()
+
+
+print(t2-t1) # 5 seconds
+```
 
 ### Debugging
 
