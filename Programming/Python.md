@@ -359,7 +359,33 @@ t2.join()
 stop = time.perf_counter()
 
 print(stop-start)
+```
 
+### Mutex (Lock for avoiding race conditions on shared global state)
+
+```python
+import threading
+import time
+
+lock  = threading.Lock()
+counter  =  0
+
+def  func1():
+	global  counter
+	for  i  in  range(100000000):
+		with  lock:
+			counter  +=  1 
+
+t1  = threading.Thread(target=func1)
+t2  = threading.Thread(target=func1)
+
+t1.start()
+t2.start()
+
+t1.join()
+t2.join()
+ 
+print(counter)
 ```
 
 ### Debugging
