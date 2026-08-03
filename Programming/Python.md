@@ -30,6 +30,8 @@ print(t2-t1)    # Takes 10 seconds because this code runs synchronously
 
 ### create_task
 
+- tasks and coroutines are different objects
+
 ```python
 import asyncio
 import time
@@ -39,11 +41,11 @@ async def foo(seconds):
     return "Timer Completed"
     
 async def main():
-    coroutine1 = asyncio.create_task(foo(5))   # Schedule the task on the event loop and return a coroutine object   
-    coroutine2 = asyncio.create_task(foo(5))
+    task1 = asyncio.create_task(foo(5))   # Schedule the task on the event loop and return a task object   
+    task2 = asyncio.create_task(foo(5))
     
-    result = await coroutine1         # Wait till coroutine1 is complete
-    await coroutine2         # Wait till coroutine2 is complete
+    result = await task1                  # Wait till task1 is complete
+    await task2                           # Wait till task2 is complete
     
     print(result)
     
@@ -55,7 +57,7 @@ t2 = time.perf_counter()
 print(t2-t1)    # Since both the coroutines are scheduled on the event loop, this program takes 5 seconds to execute
 ```
 
-### Gather coroutines
+### Gather coroutines (await multiple coroutines together)
 
 ```python
 import asyncio
@@ -78,11 +80,27 @@ t2 = time.perf_counter()
 print(t2-t1) # 5 seconds
 ```
 
-### Gather coroutines
-
-- tasks and coroutines are different objects
+### Gather tasks (await multiple tasks together)
 
 ```python
+import asyncio
+import time
+
+async def foo(seconds):
+    await asyncio.sleep(seconds)
+    return "Timer Completed"
+    
+async def main():
+    
+    tasks = [asyncio.create_task(foo(5)) for i in range(5)]
+    result = await asyncio.gather(*tasks, return_exceptions=True)
+    
+t1 = time.perf_counter()
+asyncio.run(main())          # Start the event loop
+t2 = time.perf_counter()
+
+
+print(t2-t1) # 5 seconds
 ```
 
 ### Debugging
