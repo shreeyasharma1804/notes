@@ -254,6 +254,79 @@ if __name__ == "__main__":
     print(f"Elapsed: {t2 - t1:.2f} seconds")
 ```
 
+## Threading
+
+Concurrency: Achieved via context switching
+
+Parallelism: Achieved via multiple cores
+
+### Create and Join Threads
+
+```python
+import threading
+import time
+
+def  func1():
+	for  i  in  range(10):
+		time.sleep(1)
+		print("Hi func1",  i)
+
+def  func2():
+	for  i  in  range(10):
+		time.sleep(2)
+		print("Hi func2",  i)
+
+# Create the thread
+t1  = threading.Thread(target=func1)
+t2  = threading.Thread(target=func2)
+
+# Start the thread
+t1.start()
+t2.start()
+
+# Process completed only after both t1 and t2 are complete
+```
+
+In C, a posix thread which is not waited on, (by `join`), will be killed once the main process exits
+
+In Python, by default, threads are non-daemon. Python's main thread will not exit until all non-daemon threads have finished, regardless of  `join()` called or not.
+
+```python
+t1  = threading.Thread(target=func1,  daemon=True)
+t2  = threading.Thread(target=func2,  daemon=True)
+```
+
+If join is not called on either of the threads, the main process exits immediately and no thread is executed
+
+```python
+t1  = threading.Thread(target=func1,  daemon=True)
+t2  = threading.Thread(target=func2,  daemon=True)
+
+t1.start()
+t2.start()
+
+t1.join() 
+# The process exits immediately after t1 is complete, does not wait for t2
+``` 
+
+### Pass arguments
+
+To pass an argument:
+
+```python
+t1  = threading.Thread(target=func1,  args=("Hi func1",),  daemon=True)
+```
+
+There is no mechanism to get the return value from the thread, so mutable global variables are used.
+
+Example:
+
+```python
+result =  [None]
+def  func1(result):
+	result[0] = "Hello from func1"
+```
+
 ### Debugging
 
 Print the thread id:
