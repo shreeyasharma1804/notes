@@ -112,7 +112,25 @@ print(t2-t1) # 5 seconds
 - If one task fails, the other tasks also fail. Use task groups when this feature is a requirement
 
 ```python
+import asyncio
+import time
 
+async def foo(seconds):
+    await asyncio.sleep(seconds)
+    return "Timer Completed"
+    
+async def main():
+    
+    async with asyncio.TaskGroup() as tg:
+        results = [tg.create_task(foo(5)) for i in range(5)]
+        print(results)        # Prints the created task objects which are in pending state
+    print(results)    # Prints the task object along with the values returned by the function executed by the task
+    
+t1 = time.perf_counter()
+asyncio.run(main())          # Start the event loop
+t2 = time.perf_counter()
+
+print(t2-t1)      # 5 seconds
 ```
 
 ### Debugging
