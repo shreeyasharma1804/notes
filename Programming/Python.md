@@ -223,6 +223,37 @@ t2 = time.perf_counter()
 print(t2-t1)      # 15 seconds (2 threads in parallel + 2 threads in parallel + 1 last execution)
 ```
 
+### Using ProcessPoolExecutor
+
+- Offload to processes, useful for multicore systems the code is doing CPU intensive operations and GIL could be a limitation
+
+```python
+import asyncio
+import time
+from concurrent.futures import ProcessPoolExecutor
+
+# Synchronous function
+def foo(seconds):
+    time.sleep(seconds)
+    return "Timer Completed"
+    
+async def main():
+    
+    loop = asyncio.get_running_loop()    # Get the event loop
+    
+    with ProcessPoolExecutor(max_workers=2) as executor:
+        futures = [loop.run_in_executor(executor, foo, 5) for i in range(5)]
+        await asyncio.gather(*futures)
+    
+if __name__ == "__main__":
+    t1 = time.perf_counter()
+
+    asyncio.run(main())
+
+    t2 = time.perf_counter()
+    print(f"Elapsed: {t2 - t1:.2f} seconds")
+```
+
 ### Debugging
 
 Print the thread id:
