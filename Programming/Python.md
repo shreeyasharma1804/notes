@@ -331,6 +331,7 @@ def  func1(result):
 
 - If multiple threads access a common variable, race conditions occur.
 - Writes are lost due to dirty reads
+- Compared to running the operations in a single thread, these race conditions make the code slower(Even through the operations are split across 2 threads)
 
 ```python
 import threading
