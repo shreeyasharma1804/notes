@@ -82,6 +82,8 @@ print(t2-t1) # 5 seconds
 
 ### Gather tasks (await multiple tasks together)
 
+- If one task fails, other tasks continue
+
 ```python
 import asyncio
 import time
