@@ -137,6 +137,30 @@ print(t2-t1)      # 5 seconds
 
 - Used to offload synchronous code to a thread and then await it using create_task
 
+```python
+import asyncio
+import time
+
+def foo(seconds):
+    time.sleep(seconds)
+    return "Timer Completed"
+    
+async def main():
+    
+    task1 = asyncio.create_task(asyncio.to_thread(foo, 5))
+    task2 = asyncio.create_task(asyncio.to_thread(foo, 5))
+    
+    await task1
+    await task2
+    
+t1 = time.perf_counter()
+asyncio.run(main())          # Start the event loop
+t2 = time.perf_counter()
+
+
+print(t2-t1)      # 5 seconds
+```
+
 ### Debugging
 
 Print the thread id:
