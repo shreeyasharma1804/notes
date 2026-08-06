@@ -433,9 +433,11 @@ py-spy record --pid 1 -o profile.svg         # Show the flame graph
 scalene run <python file>   # Scalene profiles the code line by line to show the exact time the line ran for during the profiling and the memory used by it
 ```
 
+### Context Managers
+
 ### Decoraters
 
-Middlewares can be implemented using decoraters
+Middlewares can be implemented using decoraters (Why does the decorator need to return another function ?)
 
 ```python
 import time
