@@ -459,11 +459,50 @@ main:
 	pid = getpid()
 	if(pid == 0):
 		run(target_function)
+		sys.exit(0)
 	else:
 		waitpid(pid)     # Wait for child process to exit, called via pi1.join()
-
+		
 	# Repeat for p2
 ```
+
+### ProcessPoolExecutor
+
+```python
+from concurrent.futures import ProcessPoolExecutor
+
+def square(x):
+    return x * x
+
+with ProcessPoolExecutor(max_workers=4) as executor:
+    futures = [executor.submit(square, i) for i in range(10)]
+
+    for future in futures:
+        print(future.result())
+```
+
+Similar to
+
+```python
+from multiprocessing import Queue
+
+main:
+	for i in range(max_workers):
+		pid = fork()
+		if(pid == 0):
+			while (1):
+			 	f, arg = q.get()        # Process is sleeping till data is present in the queue
+				f(arg)
+			sys.exit()
+
+	# max_workers processes have been spawned which are waiting for tasks
+	# tasks are received by the processes via a IPC pipe
+
+	q = Queue()           # This queue is synchronized via locks so that only one process gets one task
+	q.put((square, i))
+```
+
+- faster because all the forks are done before hand(fork is expensive)
 
 ### Notes about fork
 
