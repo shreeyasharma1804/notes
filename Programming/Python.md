@@ -528,9 +528,19 @@ IPC Queue implementation
 ```python
 from threading import *
 
+queue = Queue()
 semaphore = Semaphore(0)
+lock = Lock()
+
 def get():
-	
+	semaphore.wait()         # Sleep until data is available in the queue
+	with lock:
+		task = queue.pop()
+
+def put(task):
+	with lock:
+		task = queue.push(task)
+	semaphore.post()
 ```
 
 ### Context Managers
