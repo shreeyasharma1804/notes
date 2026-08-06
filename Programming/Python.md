@@ -392,7 +392,7 @@ print(counter)
 
 ### Debugging
 
-Print the thread id:
+#### Print the thread id
 
 ```python
 print(threading.get_native_id())
@@ -401,9 +401,8 @@ print(threading.get_native_id())
 #### py-spy
 
 ```bash
-py-spy dump --pid <pid>      # Shows the processes with high CPU usage
-py-spy dump --native --locals --pid <pid>  # If a function is at the same code after multiple dumps, it indicates lock contention deadlock etc
-py-spy record -o profile.json --format speedscope --pid <pid>  # Shows the call trace and the amount of CPU time
+py-spy top --pid <pid>                       # Show the CPU and memory usage of functions
+py-spy record --pid 1 -o profile.svg         # Show the flame graph
 ```
 
 #### scalene
