@@ -390,6 +390,28 @@ print(counter)
 
 - Locks also might slow down the performance compared to running all the operations in a single thread
 
+#### Thread local storage
+
+- Each thread gets its own instance of a global variable
+- For intuition: hashmap: threading.get_native_id(): thread_value
+
+```
+import threading
+
+# Create a thread-local storage object
+local_data = threading.local()
+
+def thread_func(value):
+    local_data.number = value  # Each thread sets its own copy
+    print(f"Thread {threading.current_thread().name}: local_data.number = {local_data.number}")
+
+t1 = threading.Thread(target=thread_func, args=(10,), name="T1")
+t2 = threading.Thread(target=thread_func, args=(20,), name="T2")
+
+t1.start(); t2.start()
+t1.join();  t2.join()
+```
+
 ### Debugging
 
 #### Print the thread id
