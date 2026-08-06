@@ -395,7 +395,7 @@ print(counter)
 - Each thread gets its own instance of a global variable
 - For intuition: hashmap: threading.get_native_id(): thread_value
 
-```
+```python
 import threading
 
 # Create a thread-local storage object
