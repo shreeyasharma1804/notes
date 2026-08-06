@@ -433,6 +433,43 @@ py-spy record --pid 1 -o profile.svg         # Show the flame graph
 scalene run <python file>   # Scalene profiles the code line by line to show the exact time the line ran for during the profiling and the memory used by it
 ```
 
+### MultiProcessing
+
+#### Spawn individual processes
+
+```python
+from multiprocessing import Process
+import os
+
+def worker(name):
+    print(f"{name} running on PID {os.getpid()}")
+
+p1 = Process(target=worker, args=("P1",))
+p2 = Process(target=worker, args=("P2",))
+
+p1.start(); p2.start()
+p1.join(); p2.join()
+```
+
+Similar to:
+
+```python
+main:
+	fork()            # p1.start()
+	pid = getpid()
+	if(pid == 0):
+		run(target_function)
+	else:
+		waitpid(pid)     # Wait for child process to exit, called via pi1.join()
+
+	# Repeat for p2
+```
+
+### Notes about fork
+
+- fork() returns the child PID in the parent process, and 0 in the child process
+- Both parent and child start executing the instructions after fork() 
+
 ### Context Managers
 
 ### Decoraters
