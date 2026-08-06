@@ -504,10 +504,13 @@ main:
 
 - faster because all the forks are done before hand(fork is expensive)
 
-### Notes about fork
+### Notes about fork, IPC
 
 - fork() returns the child PID in the parent process, and 0 in the child process
-- Both parent and child start executing the instructions after fork() 
+- Both parent and child start executing the instructions after fork()
+- IPC is implemented via shared memory, messages
+- The Queue implementation uses shared memory
+- When a process calls Queue.get(), the kernel checks the semaphore value, if its 0, the process is put to sleep mode and added to the waiting queue of the Queue. If the semaphore value increases, the kernel wakes up one/all waiting processes.
 
 ### Context Managers
 
