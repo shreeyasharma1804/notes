@@ -454,14 +454,15 @@ p1.join(); p2.join()
 Similar to:
 
 ```python
-main:
-	fork()            # p1.start()
-	pid = getpid()
+import os
+
+def main():
+	pid = os.fork()            # p1.start()
 	if(pid == 0):
-		run(target_function)
+		target_function("P1")
 		sys.exit(0)
 	else:
-		waitpid(pid)     # Wait for child process to exit, called via pi1.join()
+		os.waitpid(pid)        # Wait for child process to exit, called via pi1.join()
 		
 	# Repeat for p2
 ```
@@ -486,9 +487,11 @@ Similar to
 ```python
 from multiprocessing import Queue
 
-main:
+def main():
+	pids = []
 	for i in range(max_workers):
-		pid = fork()
+		pid = os.fork()
+		pids.append(pid)
 		if(pid == 0):
 			while (1):
 			 	f, arg = q.get()        # Process is sleeping till data is present in the queue
@@ -511,6 +514,24 @@ main:
 - IPC is implemented via shared memory, messages
 - The Queue implementation uses shared memory
 - When a process calls Queue.get(), the kernel checks the semaphore value, if its 0, the process is put to sleep mode and added to the waiting queue of the Queue. If the semaphore value increases, the kernel wakes up one/all waiting processes.
+
+### Semaphores
+
+- A semaphore is an unsigned integer synchronization primitive
+- Increments and decrements to the semaphore are atomic
+- We can interact with a semaphore only via wait() and post()
+- wait tries to decrement the semaphore value, if the value is equal to 0, it waits
+- post increments the value of the semaphore and returns
+
+IPC Queue implementation
+
+```python
+from threading import *
+
+semaphore = Semaphore(0)
+def get():
+	
+```
 
 ### Context Managers
 
