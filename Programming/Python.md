@@ -547,8 +547,6 @@ def put(task):
 
 ### Decoraters
 
-Middlewares can be implemented using decoraters (Why does the decorator need to return another function ?)
-
 ```python
 import time
 
@@ -569,6 +567,13 @@ def work():
 work()
 ```
 
+- Middlewares can be implemented using decoraters
+- Decorators need to return a function because they run the equivalent of:
+
+```python
+work = timer(work)      # timer is expected to return a function
+```
+
 ### Callbacks
 
 A callback is a function passed as an argument to another function to be called later
@@ -583,4 +588,29 @@ def execute(callback):
     print("Done")
 
 execute(greet)
+```
+
+### Garbage Collection
+
+- The python stack is similar to c, the only difference is that since everything is an object (including primitives), almost all variables on the stack reference a heap pointer
+- Each reference to an object increases its reference count
+- 2 types of garbage collection works: reference counts and cyclic cleanup
+- If an object's reference count drops to 0, it is cleaned up instantaneously, no code pauses are required
+
+```python
+b = []      # The reference counter of the new list object([]) becomes 1
+a = b       # Increases to 2
+
+a = None    # Drops to 1
+b = None    # Drops to 0, cleaned up
+```
+
+- cyclic references are resolved by stopping the code, start traversing the object graph, detect cycles and if an entire cycle is unreachable, delete it. Since it pauses the code execution, the performance might be affected if there are too many cyclic references, and thus this should be avoided
+
+```python
+# Cyclic reference
+a = b
+b = a
+
+gc.disable()     # Disable cyclic reference cleanup for faster executions
 ```
