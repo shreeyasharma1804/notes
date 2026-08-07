@@ -545,6 +545,33 @@ def put(task):
 
 ### Context Managers
 
+```python
+with MyContext as f:
+    data = f.perform_action()
+```
+
+Converted to:
+
+```python
+class MyContext:
+    def __enter__(self):
+        print("Entering")
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        print("Leaving")
+
+	def perform_action():
+		pass
+
+f = MyContext()
+f.__enter__()
+try:
+	f.perform_action()
+finally:
+	f.__exit__()
+```
+
 ### Decoraters
 
 ```python
