@@ -1,10 +1,12 @@
 ### CLI Commands
 
 ```bash
-flux bootsrap
-flux check
-flux create
-flux reconcile
+# Install the controllers + The flux manifests at cluster
 
---export can be used to run a dry run
+flux bootstrap github \
+  --owner=shreeyasharma1804 \
+  --repository=LocalCluster \
+  --branch=main \
+  --path=cluster/ \
+  --personal
 ```
