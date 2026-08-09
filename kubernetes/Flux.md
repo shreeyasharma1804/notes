@@ -22,14 +22,13 @@ flux version
 # Dry run
 kubectl kustomize cluster
 
-# Show all the GitRepository resources
-flux get sources git
+# Show all the GitRepository resources and describe them
+kubectl get gitrepository -n flux-system
+kubectl describe gitrepository -n flux-system
 
-# Shows all the Flux Kustomization resources
-flux get kustomizations
-
-# Shows the kustomization details, including the reconciliation events
-kubectl describe kustomization flux-system -n flux-system
+# Shows all the Flux Kustomization resources and describe them
+kubectl get kustomization -n flux-system
+kubectl describe kustomization -n flux-system
 
 # Force a git refresh
 flux reconcile source git flux-system
