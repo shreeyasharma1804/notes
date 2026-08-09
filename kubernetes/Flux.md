@@ -31,9 +31,6 @@ flux get kustomizations
 # Shows the kustomization details, including the reconciliation events
 kubectl describe kustomization flux-system -n flux-system
 
-# View the deployment logs
-kubectl logs -n flux-system deployment/kustomize-controller
-
 # Force a git refresh
 flux reconcile source git flux-system
 
