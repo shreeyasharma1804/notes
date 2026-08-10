@@ -13,7 +13,22 @@ helm package helm-app
 # Create index.yaml, which contains chart_name: tar file mapping
 helm repo index .
 
-# Push to git
+# Push to index and package to git, this repo will be used to run commands like helm add repo
+# Also push the chart code itself to git, to maintain the changes made to the boilerplate itslef
+```
+
+- Make changes to repo:
+
+```bash
+# If a general setting is changed
+Make the changes in the chart code, change the chart version, re-package and re-index
+
+# If an application change is made, for example the image itself is changed
+Make the changes in the chart code, change the chart version and the app version, re-package and re-index
+
+Also, both chart versions will be available via index.yaml
+
+helm repo add basically runs GET https://example.com/charts/index.yaml, thus github pages are required so that the GET request returns a valid yaml file
 ```
 
 ```bash
