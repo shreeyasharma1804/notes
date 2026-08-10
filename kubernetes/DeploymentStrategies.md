@@ -1,6 +1,20 @@
 ### Repository
 
-- A helm repository is a remote git repositry which contains an index.yml file containing all the available charts in the repo, and the tar files of the chart+values+templates
+- A helm repository is a remote git repository which contains an index.yml file containing all the available charts in the repo, and the tar files of the chart+values+templates
+- Helm projects are scaffold through:
+
+```bash
+# Create the chart.yml, values.yml and templates
+helm create helm-app
+
+# Compress all the above code into a tar file
+helm package helm-app
+
+# Create index.yaml
+helm repo index .
+
+# Push to git
+```
 
 ```bash
 # Add a repo (repo_name url)
@@ -9,6 +23,8 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 
 # List all added repos
 helm repo list
+NAME          	URL
+reinstall-repo	https://shreeyasharma1804.github.io/helm-charts/
 
 # Update the repo (fetch remote)
 helm repo update (Only updates the repository index)
