@@ -26,6 +26,9 @@ Make the changes in the chart code, change the chart version, re-package and re-
 # If an application change is made, for example the image itself is changed
 Make the changes in the chart code, change the chart version and the app version, re-package and re-index
 
+# perform linting
+helm lint <chart-direcotry>
+
 Also, both chart versions will be available via index.yaml
 
 helm repo add basically runs GET https://example.com/charts/index.yaml, thus github pages are required so that the GET request returns a valid yaml file
@@ -51,10 +54,10 @@ helm search repo <chart name>
 ### View the data
 
 ```
-# View the chart (repo_name/chart_name)
+# View the installed chart version r(epo_name/chart_name)
 helm show chart bitnami/redis
 
-# View the values
+# View the default repo values
 helm show values bitnami/redis
 
 helm show all bitnami/redis
@@ -63,14 +66,11 @@ helm show all bitnami/redis
 ### Render and dry runs
 
 ```
-# Render the template (release_name repo_name/chart_name)
+# Render the K8s objects which will installed from the chart under the release name redis
 helm template redis bitnami/redis
 
 # Render with custom values
 helm template redis bitnami/redis -f values.yaml
-
-# perform linitng
-helm lint ./chart
 
 # Installation dry-run
 helm install redis bitnami/redis --dry-run --debug
@@ -90,6 +90,9 @@ helm upgrade redis bitnami/redis
 
 # Install and upgrade
 helm upgrade --install redis bitnami/redis
+
+# Install with custom values.yaml
+helm install redis bitnami/redis -f cluster-config/production/values.yaml
 
 # List releases
 helm list
