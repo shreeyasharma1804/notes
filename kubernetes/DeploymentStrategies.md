@@ -4,13 +4,13 @@
 - Helm projects are scaffold through:
 
 ```bash
-# Create the chart.yml, values.yml and templates
+# Create the chart.yml, values.yml and templates. Here, the chart name is helm-app
 helm create helm-app
 
 # Compress all the above code into a tar file
 helm package helm-app
 
-# Create index.yaml
+# Create index.yaml, which contains chart_name: tar file mapping
 helm repo index .
 
 # Push to git
