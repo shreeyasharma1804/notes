@@ -4,6 +4,7 @@
 
 ```bash
 # Add a repo (repo_name url)
+# This works by fetching https://charts.bitnami.com/bitnami/index.yml and installing it under the name bintami
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
 # List all added repos
