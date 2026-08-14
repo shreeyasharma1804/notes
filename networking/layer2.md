@@ -63,6 +63,22 @@ Gi0/1                        connected    99         a-full  1000  10/100/1000Ba
 Gi0/2                        connected    99         a-full  1000  10/100/1000BaseTX
 ```
 
+- Check the switch MAC address table
+
+```
+# FLush the table
+clear mac address-table dynamic
+
+# Check the cache
+sw-1# show mac address-table
+          Mac Address Table
+-------------------------------------------
+ 
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+  99    001a.2b25.5ed8    DYNAMIC     Gi0/1
+  99    001a.2b08.5435    DYNAMIC     Gi0/2
+```
 
 ### Layer 2
 
