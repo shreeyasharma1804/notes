@@ -80,6 +80,12 @@ Vlan    Mac Address       Type        Ports
   99    001a.2b08.5435    DYNAMIC     Gi0/2
 ```
 
+- If PC1 wants to connect to PC2, an ARP request is sent which asks: "What is the MAC address of IP <PC2-IP>"
+- Switches cache this information
+- By default, a switch only sends the broadcast ARP request to the interfaces on the same VLANID
+- This reduces the broadcast noise on the network
+
+
 ### Layer 2
 
 - Switch is a Layer 2 Ethernet device with no console and no operating system.
