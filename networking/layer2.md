@@ -1,5 +1,13 @@
 ### Layer 2
 
+- Device: L2 Switch
+- Attributes of an interface: MAC Address, VLANID
+
+
+
+
+### Layer 2
+
 - Switch is a Layer 2 Ethernet device with no console and no operating system.
 
 - Layer 2 networks can be categorized by assigning VLAN IDs to each interface.
