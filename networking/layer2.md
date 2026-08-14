@@ -101,9 +101,14 @@ show cdp neighbors
 - Trunk mode:
           - Supports dot1q encapsulation. All packets are flooded to the trunk port as well. When a packet is leaving a switch, the trunk interface adds a VLAN header to the ethernet packet. The trunk interface on the other switch checks the VLAN packet and floods to all the ports belonging to the VLAN ID
 
-### Switch Virtual Interface
+#### Configuration
 
-
+```
+# Create a trunk port
+interface Gi0/2
+switchport mode trunk
+end
+```
 
 
 ### Layer 2
