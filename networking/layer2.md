@@ -1,20 +1,32 @@
 ## Intra VLAN Routing
 
 - Device: L2 Switch
-- Attributes of an interface: MAC address, VLANID, access/trunk mode
-- Each interface has a unique MAC address
-- How does an L2 switch route: Port -> MAC Address mapping
-- How are MAC Addresses discovered: ARP
+- Identifiers of a L2 packet: MAC address, VLANID
+- Switch interfaces do not have a MAC address.
+- A switch caches the port -> MAC address of device connected to it whenever an ARP request/ response is sent
+- Broadcast MAC address is same irrespective of the VLAN IDs.
 
 
-#### Access mode
+#### Types of switch interfaces:
 
-- A switch interface is of type access by default.
-- This is the normal formwarding mode
+- Access mode:
+          - A switch interface is of type access by default.
+          - This is the normal forwarding mode
 
-#### Same VLAN routing
+- Trunk mode:
 
-- Assign VLANID to an interface:
+#### Routing
+
+- If PC1 at Gi0/1 wants to connect to PC2 at Gi0/2, an ARP request is sent by PC1 which asks: "What is the MAC address of IP <PC2-IP>. Tell <PC1-IP>". Basically, ARP request and response packets are L3 packets
+- Since this is an ARP request, the source MAC is the PC1 MAC Address and destination is the Broadcast MAC address
+- The switch caches the Gi0/1: PC1 MAC address mapping
+- The request is flooded on all the interfaces belonging to VLAN ID (reduced flooding due to interface isolation)
+- PC2 sees that the IP belongs to one of its interfaces
+- It responds by sending an Ethernet packet with source as its IP address and destination as the PC1 MAC address
+
+#### Configuration
+
+- Assign VLAN ID to an interface:
 
 ```
 # Privilege escalation
@@ -23,7 +35,7 @@ enable
 # Enter configuration mode
 configure terminal
 
-# Create a new VLANID and assign a name to it
+# Create a new VLAN ID 99 and assign a name to it
 vlan 99
 name INTER_VLAN_TEST
 end
@@ -41,6 +53,7 @@ switchport access vlan 99
 end
 
 # Check that the interfaces have been added to the VLANID
+show interfaces status
 ```
 
 - show vlan brief command output
@@ -66,7 +79,7 @@ Gi0/2                        connected    99         a-full  1000  10/100/1000Ba
 - Check the switch MAC address table
 
 ```
-# FLush the table
+# Flush the table
 clear mac address-table dynamic
 
 # Check the cache
@@ -79,11 +92,6 @@ Vlan    Mac Address       Type        Ports
   99    001a.2b25.5ed8    DYNAMIC     Gi0/1
   99    001a.2b08.5435    DYNAMIC     Gi0/2
 ```
-
-- If PC1 wants to connect to PC2, an ARP request is sent which asks: "What is the MAC address of IP <PC2-IP>"
-- Switches cache this information
-- By default, a switch only sends the broadcast ARP request to the interfaces on the same VLANID
-- This reduces the broadcast noise on the network
 
 ## Inter VLAN routing
 
