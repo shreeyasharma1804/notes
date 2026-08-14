@@ -84,6 +84,12 @@ Vlan    Mac Address       Type        Ports
   99    001a.2b08.5435    DYNAMIC     Gi0/2
 ```
 
+- Check the devices connected to the switch interfaces
+
+```
+show cdp neighbors
+```
+
 ## Intra VLAN routing across switches
 
 #### Types of switch interfaces:
