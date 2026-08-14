@@ -1,4 +1,4 @@
-### Layer 2
+## Layer 2
 
 - Device: L2 Switch
 - Attributes of an interface: MAC address, VLANID, access/trunk mode
@@ -84,6 +84,12 @@ Vlan    Mac Address       Type        Ports
 - Switches cache this information
 - By default, a switch only sends the broadcast ARP request to the interfaces on the same VLANID
 - This reduces the broadcast noise on the network
+
+## Inter VLAN routing
+
+### Switch Virtual Interface
+
+
 
 
 ### Layer 2
