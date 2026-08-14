@@ -6,15 +6,6 @@
 - A switch caches the port -> MAC address of device connected to it whenever an ARP request/ response is sent
 - Broadcast MAC address is same irrespective of the VLAN IDs.
 
-
-#### Types of switch interfaces:
-
-- Access mode:
-          - A switch interface is of type access by default.
-          - This is the normal forwarding mode
-
-- Trunk mode:
-
 #### Routing
 
 - If PC1 at Gi0/1 wants to connect to PC2 at Gi0/2, an ARP request is sent by PC1 which asks: "What is the MAC address of IP <PC2-IP>. Tell <PC1-IP>". Basically, ARP request and response packets are L3 packets
@@ -93,7 +84,16 @@ Vlan    Mac Address       Type        Ports
   99    001a.2b08.5435    DYNAMIC     Gi0/2
 ```
 
-## Inter VLAN routing
+## Intra VLAN routing across switches
+
+#### Types of switch interfaces:
+
+- Access mode:
+          - A switch interface is of type access by default.
+          - This is the normal forwarding mode
+
+- Trunk mode:
+          - Supports dot1q encapsulation. All packets are flooded to the trunk port as well. When a packet is leaving a switch, the trunk interface adds a VLAN header to the ethernet packet. The trunk interface on the other switch checks the VLAN packet and floods to all the ports belonging to the VLAN ID
 
 ### Switch Virtual Interface
 
