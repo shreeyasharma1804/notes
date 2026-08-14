@@ -1,4 +1,4 @@
-## Layer 2
+## Intra VLAN Routing
 
 - Device: L2 Switch
 - Attributes of an interface: MAC address, VLANID, access/trunk mode
