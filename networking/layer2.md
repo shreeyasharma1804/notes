@@ -110,6 +110,7 @@ switchport mode trunk
 end
 ```
 
+## Inter VLAN routinh (Switch Virtual Interface)
 
 ### Layer 2
 
