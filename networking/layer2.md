@@ -1,9 +1,67 @@
 ### Layer 2
 
 - Device: L2 Switch
-- Attributes of an interface: MAC Address, VLANID
+- Attributes of an interface: MAC address, VLANID, access/trunk mode
+- Each interface has a unique MAC address
+- How does an L2 switch route: Port -> MAC Address mapping
+- How are MAC Addresses discovered: ARP
 
 
+#### Access mode
+
+- A switch interface is of type access by default.
+- This is the normal formwarding mode
+
+#### Same VLAN routing
+
+- Assign VLANID to an interface:
+
+```
+# Privilege escalation
+enable
+
+# Enter configuration mode
+configure terminal
+
+# Create a new VLANID and assign a name to it
+vlan 99
+name INTER_VLAN_TEST
+end
+
+# Check the VLANIDs configured on the switch
+show vlan brief
+
+# Enter configuration mode
+configure terminal
+
+# Configure the interface, Use access mode on the interface and Assign a VLANID to the interface
+interface Gi0/1
+switchport mode access
+switchport access vlan 99
+end
+
+# Check that the interfaces have been added to the VLANID
+```
+
+- show vlan brief command output
+
+```bash
+sw-1# show vlan brief
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    
+10   DEFAULT                          active    
+99   INTER_VLAN_TEST                  active    Gi0/1, Gi0/2
+```
+
+- show interfaces status command output
+
+```bash
+sw-1# show interfaces status
+Port      Name               Status       Vlan       Duplex  Speed Type
+Gi0/1                        connected    99         a-full  1000  10/100/1000BaseTX
+Gi0/2                        connected    99         a-full  1000  10/100/1000BaseTX
+```
 
 
 ### Layer 2
