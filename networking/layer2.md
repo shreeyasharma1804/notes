@@ -145,6 +145,18 @@ end
 
 ## Spanning tree (Per VLAN)
 
+- Information is shared through BPDUs
+
+| Field          | Purpose                                          |
+| -------------- | ------------------------------------------------ |
+| Root Bridge ID | Which switch is believed to be the root          |
+| Root Path Cost | Cost from the sender to the root                 |
+| Bridge ID      | Identity of the sender                           |
+| Port ID        | Which port sent the BPDU                         |
+| Timers         | Hello, Max Age, Forward Delay                    |
+| Flags          | Topology change, proposal/agreement (RSTP), etc. |
+
+
 - How to check the MAC address and priority of the switch
 - How to check which switch is the root
 - How to check designated and blocked port status
