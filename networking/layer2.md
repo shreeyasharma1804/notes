@@ -159,7 +159,7 @@ end
 | Flags          | Topology change, proposal/agreement (RSTP), etc. |
 
 - Initially, all switches assume that they are the root bridge and start sending BPDUs
-- If the received root bridge ID is less than the switch's bridge ID, the switch updates its root bridge ID, since it is not the root anymore, it does not send any BPDU
+- If the received root bridge ID is less than the switch's bridge ID, the switch updates its root bridge ID, since it is not the root anymore, it does not send any BPDU. A switch also does not forward a BPDU if its birdge ID is greater than that switch.
 - Eventually, this converges and only the root keeps sending the BPDU
 - High level flow:
 
@@ -183,14 +183,25 @@ while True {
     update_port_states();
 }
 ```
+- recompute_tree essentially means to update the switch's root, designated and blocked ports accordingly
 
-
-- How to check the MAC address and priority of the switch
-- How to check which switch is the root
-- How to check designated and blocked port status
-- How does the switch calculate the minimum distance to the root
-- Are all the othe ports which can reach the root marked designated/blocked
-- How is a blocked port unblocked
+```
+switch-2# show spanning-tree
+VLAN0001
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32769
+             Address     001a.2b60.a354
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+ 
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     001a.2bc5.2266
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+ 
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Gi0/1               Root FWD 4         128.1    P2p
+```
 
 ### Layer 2
 
