@@ -113,7 +113,8 @@ end
 ## Inter VLAN routing (Switch Virtual Interface) on same switch
 
 - Each VLAN has its own SVI
-- SVI is a layer 3 interface(available on L3 switches) with a MAC address and a port
+- SVI is a layer 3 interface(available on L3 switches) with a MAC an IP address
+- Each port/ virtual interface has a MAC address. But this becomes useful only if is needs to receive packets. Example, if a PC's gateway address is an SVI MAC address. the SVI MAC address becomes relevant
 
 ### Layer 2
 
