@@ -161,6 +161,28 @@ end
 - Initially, all switches assume that they are the root bridge and start sending BPDUs
 - If the received root bridge ID is less than the switch's bridge ID, the switch updates its root bridge ID, since it is not the root anymore, it does not send any BPDU
 - Eventually, this converges and only the root keeps sending the BPDU
+- High level flow:
+
+
+```python
+# Root switch
+send_periodic_bpdus();
+```
+
+```python
+# Other switches
+while True {
+    bpdu = receive_bpdu();
+
+    # If the root has changed      
+    if (bpdu.root_id < current_root) {
+        update_root(bpdu);
+        recompute_tree();
+    }
+
+    update_port_states();
+}
+```
 
 
 - How to check the MAC address and priority of the switch
