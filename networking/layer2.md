@@ -116,6 +116,31 @@ end
 - SVI is a layer 3 interface(available on L3 switches) with a MAC an IP address
 - Each port/ virtual interface has a MAC address. But this becomes useful only if is needs to receive packets. Example, if a PC's gateway address is an SVI MAC address. the SVI MAC address becomes relevant
 
+#### Routing
+
+- Create VLAN10 and VLAN20
+- Create interfaces for these VLANs and assign IP address to them
+- Routing table is created automatically (to move packets between SVIs)
+- Attach PC1 to a switch interface, assign VLAN1 to that interface. Assign PC1 gateway address as the VLAN10 SVI IP address and an IP address within the mask range
+- Attach PC2 to a switch interface, assign VLAN2 to that interface. Assign PC2 gateway address as the VLAN20 SVI IP address and an IP address within the mask range
+
+
+#### Configuration
+
+```
+enable
+configure terminal
+
+vlan 10
+ name SUBNET1
+
+interface vlan 10
+ ip address 10.0.10.1 255.255.255.0
+ no shutdown
+
+end
+```
+
 ### Layer 2
 
 - Switch is a Layer 2 Ethernet device with no console and no operating system.
