@@ -141,6 +141,17 @@ interface vlan 10
 end
 ```
 
+## Inter VLAN routing (Router on a stick) across switch
+
+## Spanning tree (Per VLAN)
+
+- How to check the MAC address and priority of the switch
+- How to check which switch is the root
+- How to check designated and blocked port status
+- How does the switch calculate the minimum distance to the root
+- Are all the othe ports which can reach the root marked designated/blocked
+- How is a blocked port unblocked
+
 ### Layer 2
 
 - Switch is a Layer 2 Ethernet device with no console and no operating system.
