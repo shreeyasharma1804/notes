@@ -110,7 +110,10 @@ switchport mode trunk
 end
 ```
 
-## Inter VLAN routinh (Switch Virtual Interface)
+## Inter VLAN routing (Switch Virtual Interface) on same switch
+
+- Each VLAN has its own SVI
+- SVI is a layer 3 interface(available on L3 switches) with a MAC address and a port
 
 ### Layer 2
 
