@@ -145,7 +145,9 @@ end
 
 ## Spanning tree (Per VLAN)
 
-- Information is shared through BPDUs
+
+- Bridge ID: MAC Address + Priority + VLAN ID
+- Information is shared through a packet BPDU
 
 | Field          | Purpose                                          |
 | -------------- | ------------------------------------------------ |
@@ -155,6 +157,10 @@ end
 | Port ID        | Which port sent the BPDU                         |
 | Timers         | Hello, Max Age, Forward Delay                    |
 | Flags          | Topology change, proposal/agreement (RSTP), etc. |
+
+- Initially, all switches assume that they are the root bridge and start sending BPDUs
+- If the received root bridge ID is less than the switch's bridge ID, the switch updates its root bridge ID, since it is not the root anymore, it does not send any BPDU
+- Eventually, this converges and only the root keeps sending the BPDU
 
 
 - How to check the MAC address and priority of the switch
