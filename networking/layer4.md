@@ -7,6 +7,12 @@
 ```
 - It is a stateful, duplex and streaming protocol
 
+### Debugging
+
+- tcpdump
+- nc
+- netstat: The systems sockets
+
 ### TCP (Client)
 
 - When a client calls connect(), a TCP object is created in the kernel. The connect() method does not wait for the TCP Handshake to complete. Just the kernel object is initialized and then the handshake happens asynchronously.
