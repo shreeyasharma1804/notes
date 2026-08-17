@@ -1,15 +1,24 @@
+### General
 
-### TCP
-
-In TCP, each connection is identified by the tuple:
+- In TCP, each connection is identified by the tuple:
 
 ```
 (source IP, source port, destination IP, destination port)
 ```
+- It is a stateful, duplex and streaming protocol
 
-Socket ~= fd
+### TCP (Client)
 
-In TCP, both client and server send acknowledgements
+- When a client calls connect(), a TCP object is created in the kernel. The connect() method does not wait for the TCP Handshake to complete. Just the kernel object is initialized and then the handshake happens asynchronously.
+- The TCP object stores the sequence and acknowledgement number.
+- When a TCP handshake starts, the client sends a random number as the initial sequence number.
+- The server sends its own sequence number and the acknowledgement number is the client sequence number + number of bytes received by the server(It is 1 initially)
+- The client sends acknowledge number which is the server sequence number + 1
+- This follows throughout the connection, the acknowledgement number sent by the server becomes the client's sequence number as it represents the total number of bytes successfully sent to the server
+- The server's sequence number becomes the client's acknowledgement number, it represents the total number of bytes received from the server.
+- n bytes in the socket send buffer are assumed to be read only after the server sends an acknowledgement of n bytes
+- If I call recv() on n bytes, the client sends an acknowledgement of n bytes to the server.
+
 
 #### System Calls
 
