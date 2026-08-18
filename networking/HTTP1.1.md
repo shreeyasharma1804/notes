@@ -11,7 +11,7 @@
 - When a server closes a connection, it sends FIN and the client sends ACK as soon as the FIN reaches it.
 - Calling socket.close() sends FIN from the client, which the server acknowledges. This completes the 4-way connection closing handshake.
 - A client can call send() after a connection has been closed by remote, because, because TCP is duplex, reads and writes are simultaneous. The server will respond with a RST because application has called close() on that socket.
-- If the client sends data after the server has sent FIN, the server sends RST which is visible as ConnectionResetError in Python
+- Requests to a closed TCP connection fail silently if RST is not used by remote server
 
 ```python
 import socket
