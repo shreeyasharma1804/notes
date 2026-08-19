@@ -54,3 +54,66 @@ while 1:
 
 tls_sock.close()
 ```
+
+### Server
+
+```python
+import socket
+import select
+
+epoll = select.epoll()
+
+server = socket.socket()
+
+server.bind(("0.0.0.0", 9999))
+server.listen(50)
+
+server.setblocking(False)
+
+epoll.register(server.fileno(), select.EPOLLIN)
+
+client_fd_mapping = {}
+
+request_buffers = {}
+
+def get(request):
+    # Parse headers from the request
+    # Create a future which holds the response
+    # yeild wherever required
+    # Complete the future
+    # Add the response to the response buffer
+    # modify the connection_socket to trigger on EPOLLOUT
+    # Write data to the socket buffer
+    # If Connection: close, close the connection_socket()
+    # If Connection: keep-alive, start a timer, and if the timer expires, close the connection_socket()
+    pass
+
+while True:
+    events = epoll.poll()
+
+    for fd, event in events:
+        if(fd == server.fileno()):
+            connection_socket, _ = server.accept()
+            connection_socket.setblocking(False)
+            epoll.register(connection_socket.fileno(), select.EPOLLIN)
+            request_buffers[connection_socket.fileno()] = ""
+            client_fd_mapping[connection_socket.fileno()] = connection_socket
+        else:
+            connection_socket = client_fd_mapping[fd]
+            request_data = connection_socket.recv(64)
+            print(request_data)
+            request_buffers[connection_socket.fileno()] = request_buffers[connection_socket.fileno()] + request_data.decode("utf-8")
+
+            if(b"\r\n\r\n" in request_data):
+                print("Request recieved")
+
+                # get is a coroutine which has to be added to the event loop
+                get(request_buffers[connection_socket.fileno()])
+
+            # If the client closes the connection while sending the request
+            if(request_data == b""):
+                print("Connection closed")
+                epoll.unregister(connection_socket.fileno())
+                connection_socket.close()
+
+```
