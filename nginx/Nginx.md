@@ -385,6 +385,7 @@ HTTP Code: 408 request timeout
 ### Streaming
 
 - Standard streaming does not require any special configuration. For low latency streaming, disable proxy_buffering (proxy_buffering off)
+- Similar for SSE
 
 ### Stateful sessions
 
@@ -402,6 +403,38 @@ sendfile off
 sendfile on
 
 # This makes serving large files faster
+```
+
+Without sendfile: fd1 -> user space memory -> fd2
+
+```python
+data = None
+with open("file1.txt", "r") as f:
+	data = f.read()
+
+with open("file2.txt", "w") as f:
+	f.write(data)
+```
+
+With sendfile
+
+```python
+import os
+import socket
+
+file_fd = os.open("huge_file.txt", os.O_RDONLY)
+
+server_socket = socket.socket(...)
+client_socket = ...
+
+# os.sendfile(out_fd, in_fd, offset, count)
+# Performing client_socket.fileno().send()
+sent = os.sendfile(
+    client_socket.fileno(),
+    file_fd,
+    0,
+    64 * 1024
+)
 ```
 
 ### kTLS
