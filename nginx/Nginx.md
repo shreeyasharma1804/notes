@@ -381,6 +381,15 @@ HTTP Code: 408 request timeout
 | buffering                     | Minimal     | Sophisticated |
 | graceful reload               | No          | Yes           |
 
+
+### Streaming
+
+- Standard streaming does not require any special configuration. For low latency streaming, disable proxy_buffering (proxy_buffering off)
+
+### Stateful sessions
+
+- Use cookies instead of IP
+
 ## Optimizations
 
 ### Sendfile
