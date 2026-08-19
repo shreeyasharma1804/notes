@@ -117,3 +117,7 @@ while True:
                 connection_socket.close()
 
 ```
+
+### Streaming
+
+What can a get endpoint which stream a file look like ?
