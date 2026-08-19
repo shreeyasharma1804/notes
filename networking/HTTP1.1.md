@@ -134,7 +134,7 @@ import time
             break  # EOF
 
     The kernel creates a new file descriptor for every process which may be opening the same file
-    It trackst the offset till which the file has been read
+    It tracks the offset till which the file has been read
     When multiple read calls are issued, the starting offset is maintained by the kernel and advanced accordingly
 '''
 
@@ -163,4 +163,39 @@ except StopIteration:
 # When EPOLLOUT triggers on the socket file descriptor, write to the socket fd
 # sent = socket.send(response_buffer).
 # Remove send number of bytes from the buffer to indicate that the data has been sent
+```
+
+### SSE
+
+- Unlike streaming, where the server sends chunks of data because the processing is not complete, also, maybe because the response size is larger than the socket write buffer size, SSEs send event data, where every chunk is a separate event (not a chunk, a complete set of data for one event).
+- The seperator between 2 events is \n\n
+
+Server:
+
+```python
+from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
+import asyncio
+
+app = FastAPI()
+
+
+async def event_generator():
+    counter = 0
+
+    while True:
+        # Add some useful processing here
+        counter += 1
+
+        yield f"data: Message {counter}\n\n"
+
+        await asyncio.sleep(1)
+
+
+@app.get("/events")
+async def events():
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream"
+    )
 ```
