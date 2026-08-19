@@ -184,6 +184,8 @@ The evaluation order is:
 
 ### SSL
 
+Only SSL Termination/ SSL Bridge is supported, not SSL pass-through because SSL encrypts both request + response. Thus, parsing the URI requires SSL decryption
+
 To enable SSL:
 
 ```nginx
