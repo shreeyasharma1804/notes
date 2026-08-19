@@ -167,8 +167,10 @@ except StopIteration:
 
 ### SSE
 
+General consideration: At the server end, how to reduce EPOLLOUT triggers when there is no data in the response buffer. Add data to the buffer and then modify for the trigger ?
+
 - Unlike streaming, where the server sends chunks of data because the processing is not complete, also, maybe because the response size is larger than the socket write buffer size, SSEs send event data, where every chunk is a separate event (not a chunk, a complete set of data for one event).
-- The seperator between 2 events is \n\n
+- The separator between 2 events is \n\n
 
 Server:
 
@@ -199,3 +201,7 @@ async def events():
         media_type="text/event-stream"
     )
 ```
+
+Client: Upon receiver data, call a callback function ?
+
+### WebSockets
