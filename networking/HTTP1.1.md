@@ -120,4 +120,47 @@ while True:
 
 ### Streaming
 
-What can a get endpoint which stream a file look like ?
+What can a get endpoint which streams a file look like ?
+
+
+```python
+import time
+'''
+    Practical scenario:
+    while True:
+        data = os.read(fd, 64 * 1024)  # Read only 64 KB at a time
+
+        if data == b"":
+            break  # EOF
+
+    The kernel creates a new file descriptor for every process which may be opening the same file
+    It trackst the offset till which the file has been read
+    When multiple read calls are issued, the starting offset is maintained by the kernel and advanced accordingly
+'''
+
+
+file_data = "This is a very huge file which needs to be streamed rather than letting the os fully read it before "
+
+def stream_data_endpoint():
+    # In response headers, set Transfer-Encoding: chunked
+    # Return 2 letters per chunk
+    for i in range(0, len(file_data), 2):
+        lines = [file_data[i], file_data[i+1]]
+        yield lines
+
+coroutine = stream_data_endpoint()
+
+
+# The event loop calls next on the function
+try:
+    data = next(coroutine)
+    # Add to response buffer
+    time.sleep(1)
+except StopIteration:
+    print("Request complete")
+    # Send socket.send(b"0\r\n\r\n") to indicate that the stream is complete
+
+# When EPOLLOUT triggers on the socket file descriptor, write to the socket fd
+# sent = socket.send(response_buffer).
+# Remove send number of bytes from the buffer to indicate that the data has been sent
+```
