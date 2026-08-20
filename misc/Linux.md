@@ -174,8 +174,8 @@ Type=notify
 Restart=always                        # restart policy
 
 [Install]
-WantedBy=default.target
-RequiredBy=network.target
+WantedBy=default.target               # When the current service is enabled, it is added as a symlink to /etc/systemd/system/multi-user.target.wants/default.service. As soon as default.target service is active, this service will be started, but if this service stops, there is no effect on default.target
+RequiredBy=network.target             # When the current service is enabled, it is added as a symlink to /etc/systemd/system/multi-user.target.requires/default.service. As soon as network.target service is active, this service will be started, but if this service stops, network.target is not considered loaded
 ```
 
 - List all services:
