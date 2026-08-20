@@ -144,7 +144,28 @@ To check the file disk usage:
 du -h <filename>
 ```
 
-### Systemctl
+### Systemd
+
+- Its the process with PID 1 responsible for spawning all the required services
+- User created root systemd service files are located at `/etc/systemd/system/`
+- Generic service file:
+
+```bash
+[Unit]
+Description=Apache web server        # Service description
+After=network.target                 # Dependency ordering (Start after network.target service)
+Wants=network.target                 # After does not start the service if it has not been started yet, Wants does that
+
+[Service]
+ExecStart=/startup.sh                 # Command to start the service
+ExecReload=/reload.sh                 # Command to reload the service
+Type=notify
+Restart=always                        # restart policy
+
+[Install]
+WantedBy=default.target
+RequiredBy=network.target
+```
 
 - List all services:
 
