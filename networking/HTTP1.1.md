@@ -205,3 +205,36 @@ async def events():
 Client: Upon receiver data, call a callback function ?
 
 ### WebSockets
+
+- Use when both client and server need to send messages. This is not the typical request -> response HTTP cycle
+- Required headers:
+
+```
+Connection: Upgrade
+Upgrade: websocket
+```
+
+- Maybe, a protocol upgrade is required because in a typical request-response cycle, the server socket is initially explicitly in EPOLLIN mode, after the request is complete, the socket is then explicitly in EPOLLOUT mode. But webosockets do not work like this. Most probably, the socket is in both EPOLLIN and EPOLLOUT mode all the time. A protocol upgrade might be required so that both the client and server are updated regarding the expected socket triggers
+- The WebSocket opening handshake is an HTTP/1.1 request and response.
+
+Client sends:
+
+```bash
+GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: abc123...
+Sec-WebSocket-Version: 13
+```
+
+Server responds:
+
+```bash
+HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: ...
+```
+
+- How is this connection closed ?
+- Is there a timeout ?
