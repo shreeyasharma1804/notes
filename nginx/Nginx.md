@@ -439,10 +439,28 @@ sent = os.sendfile(
 
 ### kTLS
 
+Traditionally, the data path for sending HTTPS traffic is:
+
+- Read data from a file into a user-space buffer
+- Encrypt that data using a user-space cryptography routine
+- Send that encrypted data to a socket
+- The data is copied to a kernel-space socket buffer
+- The kernel sends the encrypted data to the NIC
+- The NIC writes the encrypted data to the wire
+
+With Kernel TLS, this becomes:
+
+- Read data from a file into a user-space buffer
+- Send that plaintext data to a socket
+- The kernel encrypts the data on-the-fly while it copies it to a kernel-space socket buffer
+- The kernel sends the encrypted data to the NIC
+- The NIC writes the encrypted data to the wire
+
+Kernel TLS also enables using sendfile
+
 - Nginx uses openssl for TLS.
 - To check if nginx is using kTLS:
     - Check: `cat /proc/net/tls_stat`
-
 
 ```
 ps aux | grep nginx
