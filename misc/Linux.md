@@ -148,6 +148,7 @@ du -h <filename>
 
 - Its the process with PID 1 responsible for spawning all the required services
 - User created root systemd service files are located at `/etc/systemd/system/`
+- The type of the service (unit, target, timer) etc is determined by he file extension
 - Generic service file:
 
 ```bash
