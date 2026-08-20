@@ -146,9 +146,18 @@ du -h <filename>
 
 ### Systemd
 
-- Its the process with PID 1 responsible for spawning all the required services
+- Its the process with PID 1 responsible for spawning all the required services.
+- Systemd loads units.
+- Units are of 3 types: service, target, timer.
+- The type of the service (unit, target, timer) etc is determined by the file extension.
 - User created root systemd service files are located at `/etc/systemd/system/`
-- The type of the service (unit, target, timer) etc is determined by he file extension
+
+#### Target unit
+
+- A target unit being active means that a specific state of the system has been reached
+
+#### Service unit
+
 - Generic service file:
 
 ```bash
