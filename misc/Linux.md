@@ -163,8 +163,9 @@ du -h <filename>
 ```bash
 [Unit]
 Description=Apache web server        # Service description
-After=network.target                 # Dependency ordering (Start after network.target service)
-Wants=network.target                 # After does not start the service if it has not been started yet, Wants does that
+After=a.target                 # Dependency ordering (Start after a.target service)
+Wants=b.target                 # After does not start the service if it has not been started yet, Wants does that. But if it fails, the current service is still started
+Requires=c.target              # Requires tries to start c.service if it not running, and if c.service fails, the current service will not be started
 
 [Service]
 ExecStart=/startup.sh                 # Command to start the service
