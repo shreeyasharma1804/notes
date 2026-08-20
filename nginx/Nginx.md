@@ -134,6 +134,7 @@ http {
 - If a client closes a connection due to timeout where the response was not sent, the recv() call returns 0 and nginx silently writes 499 to the logs.
 - zone: Ceates a 64 KB shared memory area named backend that all Nginx worker processes can access to store and synchronize upstream state. Since Nginx workers are separate processes with separate memory, without a zone each worker would maintain its own independent view of backend information such as active connection counts, failures, and load-balancing state, which could make features like max_conns inaccurate across workers.
 - default: Multiple domains might route to the same IP, thus the same nginx server. Each server block handles one host. The server block defined with default executes if no host matches
+- The default mode conenction setting for nginx to upstream is close, because this is required to keep a track of max_conns
 
 ### Routing
 
@@ -386,6 +387,7 @@ HTTP Code: 408 request timeout
 
 - Standard streaming does not require any special configuration. For low latency streaming, disable proxy_buffering (proxy_buffering off)
 - Similar for SSE
+- For websockets, only the Connection and Upgrade headers need to be passed to upstream. No other configuration is required. This is because Nginx keeps the EPOLLIN trigger for both the client and server available. If the client buffer has some data to write, the EPOLLOUT is enabled for the server and vice-versa. Thus, websockets work without any extra config.
 
 ### Session persistence
 
