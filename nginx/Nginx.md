@@ -387,9 +387,15 @@ HTTP Code: 408 request timeout
 - Standard streaming does not require any special configuration. For low latency streaming, disable proxy_buffering (proxy_buffering off)
 - Similar for SSE
 
-### Stateful sessions
+### Session persistence
 
-- Use cookies instead of IP
+```bash
+sticky name=srv_id expires=1h secure httponly;
+```
+
+- This directive sends a set-cookie header to the response to the client to create a new cookie named srv_id
+- This cookie is then used to route the client to the same upstream
+- IP is not used because true client information is not available due to NAT
 
 ## Optimizations
 
