@@ -178,21 +178,16 @@ WantedBy=default.target               # When the current service is enabled, it 
 RequiredBy=network.target             # When the current service is enabled, it is added as a symlink to /etc/systemd/system/multi-user.target.requires/default.service. As soon as network.target service is active, this service will be started, but if this service stops, network.target is not considered loaded
 ```
 
-- List all services:
+- Listing:
 
 ```bash
+# Services
 systemctl list-units --type=service
-```
 
-- List all timers:
+# Timers
+sudo systemctl list-units --type=timer
 
-```bash
-sudo systemctl list-unit-files --type=timer
-```
-
-- Edit a service:
-
-```bash
+# Edit
 sudo systemctl cat <service>
 sudo systemctl edit <service>
 ```
