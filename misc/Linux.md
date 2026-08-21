@@ -158,8 +158,6 @@ du -h <filename>
 
 #### Service unit
 
-- Generic service file:
-
 ```bash
 [Unit]
 Description=Apache web server        # Service description
@@ -178,149 +176,7 @@ WantedBy=default.target               # When the current service is enabled, it 
 RequiredBy=network.target             # When the current service is enabled, it is added as a symlink to /etc/systemd/system/multi-user.target.requires/default.service. As soon as network.target service is active, this service will be started, but if this service stops, network.target is not considered loaded
 ```
 
-- Listing:
-
-```bash
-# Services
-systemctl list-units --type=service
-
-# Timers
-sudo systemctl list-units --type=timer
-
-# Edit
-sudo systemctl cat <service>
-sudo systemctl edit <service>
-```
-
-- Define the user of the process:
-
-```
-# /etc/systemd/system/<service>.service
-[Service]
-User=appuser
-Group=appuser
-```
-
-- User systemd
-
-Create a user specific systemd file:
-
-```bash
-~/.config/systemd/user/
-```
-
-Reload user systemd daemon
-
-```bash
-systemctl --user daemon-reload
-```
-
-Common operations
-
-```bash
-systemctl --user start myapp.service
-systemctl --user enable myapp.service
-```
-
-User systemd stops after the user logs out. To keep the service alive:
-
-```bash
-sudo loginctl enable-linger <username>
-```
-
-- Service
-
-```bash
-# /etc/systemd/system/myapp.service
-
-[Unit]
-
-# Human-readable description of the service
-Description=My Example Application
-
-# Optional documentation/reference URL
-Documentation=https://example.com/docs
-
-# Start this service only after network.target is reached
-# (ordering dependency)
-After=network.target
-
-# Soft dependency:
-# systemd will also try to start network.target
-Wants=network.target
-
-
-[Service]
-
-# Service startup type
-#
-# simple  -> process runs in foreground (most common)
-# forking -> daemon forks itself
-# oneshot -> short-lived command
-# notify  -> service sends readiness notification
-Type=simple
-
-# Run service as this user/group instead of root
-User=myuser
-Group=myuser
-
-# Working directory before starting process
-WorkingDirectory=/opt/myapp
-
-# Main command to start service
-ExecStart=/usr/bin/python3 /opt/myapp/app.py
-
-# Command executed on:
-# systemctl reload myapp
-ExecReload=/bin/kill -HUP $MAINPID
-
-# Graceful stop command
-ExecStop=/bin/kill -TERM $MAINPID
-
-# Restart policy
-#
-# no          -> never restart
-# always      -> always restart
-# on-failure  -> restart only on nonzero exit
-Restart=on-failure
-
-# Wait 5 seconds before restarting
-RestartSec=5
-
-# Environment variables passed to process
-Environment="PORT=8080"
-Environment="ENV=production"
-
-# Send stdout/stderr logs to journald
-StandardOutput=journal
-StandardError=journal
-
-# Maximum startup/shutdown wait times
-TimeoutStartSec=30
-TimeoutStopSec=15
-
-
-# ----------------------------
-# Security Hardening Options
-# ----------------------------
-
-# Prevent privilege escalation
-NoNewPrivileges=true
-
-# Give service its own isolated /tmp
-PrivateTmp=true
-
-# Mount much of filesystem read-only
-ProtectSystem=full
-
-
-[Install]
-
-# Start during normal multi-user boot
-WantedBy=multi-user.target
-```
-
-- Timer
+#### Timer unit
 
 ```bash
 # /etc/systemd/system/health.timer
@@ -358,6 +214,57 @@ Persistent=true
 # Start this timer automatically during boot
 WantedBy=timers.target
 ```
+
+#### Commands:
+
+```bash
+# Services
+systemctl list-units --type=service
+
+# Timers
+sudo systemctl list-units --type=timer
+
+# Edit
+sudo systemctl cat <service>
+sudo systemctl edit <service>
+```
+
+- Define the user of the process (the service is managed by the root user but run as the defined User)
+
+```
+# /etc/systemd/system/<service>.service
+[Service]
+User=appuser
+Group=appuser
+```
+
+#### User systemd
+
+Create a user specific systemd file:
+
+```bash
+~/.config/systemd/user/
+```
+
+Reload user systemd daemon
+
+```bash
+systemctl --user daemon-reload
+```
+
+Common operations
+
+```bash
+systemctl --user start myapp.service
+systemctl --user enable myapp.service
+```
+
+User systemd stops after the user logs out. To keep the service alive:
+
+```bash
+sudo loginctl enable-linger <username>
+```
+
 
 ### Networking
 
