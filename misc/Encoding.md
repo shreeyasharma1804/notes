@@ -1,3 +1,8 @@
+### UTF-8
+
+- Variable length encoding scheme (1-4 bytes)
+- ASCII compatible characters are stored in 1 byte, backward compatibility
+
 ### Message pack
 
 Efficient storage of json data
