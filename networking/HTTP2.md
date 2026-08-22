@@ -1,0 +1,3 @@
+- HTTP 2 allows multiple requests through the same TCP socket instead of waiting for one request -> response cycle to complete
+- Why does HTTP 1.1 not support this? Because there is no identifier to decide which response caters to which request
+- Why is the stream ID not a header but in the HTTP 2 frame preface ?
