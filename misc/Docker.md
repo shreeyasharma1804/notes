@@ -105,6 +105,91 @@ Defines the OS, architecture and uncompressed layer hash values
 - The sha value of the OCI Image Configuration
 - Uniquely identifies an image
 
+### Image manifest
+
+- The layer blobs are compressed and stored in the registry, thus the manifest and not the image configuration is not used to define the image in the registry
+- The manifest contains the image configuration + the sha value of compressed layer blobs
+
+```json
+docker buildx imagetools inspect --raw registry.iximiuz.com/single:latest
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.manifest.v1+json",
+  "config": {
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "digest": "sha256:68838b1e71a48b104cc2cd697c9928cf0620c0b170600263a76146c435a4c9af",
+    "size": 5410
+  },
+  "layers": [
+    {
+      "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+      "digest": "sha256:589002ba0eaed121a1dbf42f6648f29e5be55d5c8a6ee0f8eaa0285cc21ac153",
+      "size": 3861821
+    },
+    {
+      "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+      "digest": "sha256:0805a1082be0eb6421d4e4ea162883988394d156972333fe3818728bf2e0416f",
+      "size": 460948
+    },
+    {
+      "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+      "digest": "sha256:3566efde290bd04ef1658d390fe2c17f4a9fdf47499f81e1e52f4ecccec500e6",
+      "size": 13370946
+    },
+    {
+      "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+      "digest": "sha256:2800a7aef8b136106b41f5cd30530992ed6ad5f3b48b1ce9516084d69ba3cea3",
+      "size": 248
+    },
+    {
+      "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+      "digest": "sha256:6836738ade129bf2e9840be0fab56664da5c79f814f8d550df79cba4734e5f6e",
+      "size": 93
+    },
+    {
+      "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+      "digest": "sha256:7a5fde85eaf677c156cec2a70642211fe5f981a483ed6c0a6482209a612f37b8",
+      "size": 394
+    }
+  ]
+```
+
+### Image index
+
+- Used for multi platform image management
+
+```json
+docker buildx imagetools inspect --raw registry.iximiuz.com/multi:latest
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:141e52ec9b7b941c48f98af1ce545897caab91d2fe74a247c3f344fc6a9c85ea",
+      "size": 480,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:65a8bbc6a0b500a9cb45af57d4bacff3ac7b4dbed8f7bad92f03a84f23a180d4",
+      "size": 480,
+      "platform": {
+        "architecture": "arm64",
+        "os": "linux"
+      }
+    }
+  ]
+```
+
+### Image digest
+
+- The SHA value of the topmost image identifier (manifest/index)
+- 2 different image digests do not necessarily mean 2 different images. For example, different compression types could lead to 2 different image manifests which ultimately create the same image
+
 - The image ID defines an image uniquely.
 - It could be `docker image inspect redis:latest | sha256sum`, because of any of the layers change, the sha value changes. It is also different for images for different architectures. os etc
 
