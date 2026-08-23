@@ -210,3 +210,39 @@ Dynamically import and execute a role at a task level
 ```
 
 ### Optimizations
+
+#### Plugins
+
+Enable plugins in ansible.cfg to profile the tasks
+
+```ini
+[defaults]
+callbacks_enabled = timer, profile_tasks, profile_roles
+```
+
+#### Disable fact gathering if not required
+
+#### forks
+
+Define fork value in ansible.cfg to decide the number of hosts the play can be executed on simultaneously.
+
+```ini
+[defaults]
+forks = 20
+```
+
+#### SSH optimizations (Multiplexing)
+
+- Instead of creating a new SSH connection every time, check if an existing connection exists, if yes, use that.
+- Stream IDs similar to HTTP 2 are used to distinguish between different SSH sessions 
+
+```bash
+# ControlMaster: If a master exists, use it, otherwise create a new conenction and become the master
+
+ssh -vvv -o ControlMaster=auto \
+        -o ControlPersist=60s \
+        -o ControlPath=/tmp/ssh-%r@%h:%p \
+        demo@test.rebex.net
+
+debug1: auto-mux: Trying existing master at '/tmp/ssh-demo@test.rebex.net:22'
+```
