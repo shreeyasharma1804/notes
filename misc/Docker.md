@@ -1,4 +1,4 @@
-### Mount Namespace
+## Mount Namespace
 
 - When a new process is started inside a mount namespace, all the mounting operations performed by it are isolated from the other mount namespace (including the host namespace)
 - Start a process inside a new mount namespace:
@@ -84,3 +84,42 @@ mount --make-rprivate /opt/container-1/rootfs
 # After mounting proc, all the processes will be displayed if the new process does not use a new PID namespace
 mount -t proc proc /proc
 ```
+
+### OCI Image Configuration
+
+```json
+docker image inspect redis:latest
+
+{
+    "architecture": "amd64",   // required field
+    "os": "linux",             // required field
+
+    "rootfs": {                // required field
+      "type": "layers",        // required value
+      "diff_ids": [
+          "sha256:c6f988f4874bb0add23a778f753...b66bbd1",
+          "sha256:5f70bf18a086007016e948b04ae...ce3c6ef",
+          ...
+      ]
+    },
+
+    "config": {                // optional but usually present
+        "Cmd": ["/bin/my-app"],
+        "Env": [
+            "PATH=/usr/local/sbin:/usr/local/bin:...",
+            "FOO=bar"
+        ],
+        "User": "alice"
+    }
+}
+```
+
+### Image ID
+
+- The image ID defines an image uniquely.
+- It could be `docker image inspect redis:latest | sha256sum`, because of any of the layers change, the sha value changes. It is also different for images for different architectures. os etc
+
+- OCI Image Configuration is an inherently single-platform construct
+- How does tagging work ?
+- How does latest translate to the latest tag ?
+- How are images for multiple platforms managed
