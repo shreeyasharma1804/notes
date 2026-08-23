@@ -147,9 +147,7 @@ Task level parameters: Task name and the Ansible module to be executed
 
 ### Roles
 
-Role directory structure (`roles` should exist in the root of the directory structure)
-
-Role skeleton directory can be created using
+- Role skeleton directory can be created using
 
 ```bash
 ansible-galaxy init <role-name>
@@ -163,40 +161,22 @@ roles/nginx/
 ├── templates/
 ```
 
+- Role files can only contain task lists, not plays
+- When a role is imported, the tasks.main.yml tasks are executed. Variable files which are imported: defaults/main.yml and vars/main.yml
 
-Role execution flow (This is automatic):
-```
-defaults/main.yml -> vars/main.yml -> tasks/main.yml
-```
+#### roles
 
-Role files can only contain task lists, not plays
-
-Overall variable precedence
-
-```
-role defaults
-↓
-group_vars
-↓
-play vars
-↓
-role vars
-↓
-extra-vars (-e)
-```
-
-- `roles`
-
-Execute a role at a play level (Static)
+Statically import and execute a role at a play level
 
 ```yaml
 - hosts: web
   roles:
     - nginx
 ```
-- `import_role`
 
-Execute a role at a task level (Static)
+#### import_role
+
+Statically import and execute a role at a task level
 
 ```yml
 - name: Play
@@ -205,9 +185,10 @@ Execute a role at a task level (Static)
 	  import_role:
 		  name: nginx
 ```
-- `include_role`
 
-Dynamically execute a role inside a task conditionally
+#### include_role
+
+Dynamically import and execute a role at a task level
 
 ```yml
 - name: Conditionally run nginx role
@@ -216,20 +197,16 @@ Dynamically execute a role inside a task conditionally
   when: install_nginx
 ```
 
-Roles can be tagged to decide which role to run:
+### Password management
 
-```yml
-roles:
-  - role: update
-    tags: update
-  - role: install
-    tags: update
-
-# ansible-playbook -i hosts play.yml --tags update
+- Provide the password required to SSH into the remote server
+```bash
+--ask-pass
 ```
 
-If the become user requires a password:
-
-```
+- Provide the password required to become a different user 
+```bash
 --ask-become-pass
 ```
+
+### Optimizations
