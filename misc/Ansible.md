@@ -122,12 +122,20 @@ group_vars < vars < -e
 
 ### Tasks
 
-Task level parameters: `name`, Ansible module, when (execute the task conditionally)
+Task level parameters: Task name and the Ansible module to be executed
 
-- include_tasks
+#### import_tasks
 
-Execute another file, often conditionally.
-An `include_tasks` file inherits all variables in scope at the point where it is included.
+- Statically import a task from another file
+
+```yml
+- import_tasks: setup.yml
+```
+
+#### include_tasks
+
+- Dynamically import a task from another file and execute it
+- The task executed under the include_tasks/import_tasks directive inherit all variables in scope at the point where it is included.
 
 ```yml
 - hosts: web
@@ -136,7 +144,6 @@ An `include_tasks` file inherits all variables in scope at the point where it is
       include_tasks: install_nginx.yml
       when: ansible_hostname == "abc"
 ```
-`when` clause already uses jinja templating so `"{{ variable }}"` is not required
 
 ### Roles
 
