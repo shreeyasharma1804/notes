@@ -190,10 +190,6 @@ docker buildx imagetools inspect --raw registry.iximiuz.com/multi:latest
 - The SHA value of the topmost image identifier (manifest/index)
 - 2 different image digests do not necessarily mean 2 different images. For example, different compression types could lead to 2 different image manifests which ultimately create the same image
 
-- The image ID defines an image uniquely.
-- It could be `docker image inspect redis:latest | sha256sum`, because of any of the layers change, the sha value changes. It is also different for images for different architectures. os etc
 
-- OCI Image Configuration is an inherently single-platform construct
 - How does tagging work ?
 - How does latest translate to the latest tag ?
-- How are images for multiple platforms managed
