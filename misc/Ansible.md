@@ -246,3 +246,11 @@ ssh -vvv -o ControlMaster=auto \
 
 debug1: auto-mux: Trying existing master at '/tmp/ssh-demo@test.rebex.net:22'
 ```
+
+#### SSH optimizations (Pipelining)
+
+- Instead of copying the generated python module over SSH and then send a command to execute it, SSH pipelining is used:
+
+```bash
+cat test.py | ssh demo@test.rebex.net 'python'
+```
