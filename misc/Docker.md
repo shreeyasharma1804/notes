@@ -73,9 +73,9 @@ Change the root mount in the mount namespace of the calling process
 
 ### OCI Image Configuration
 
-```json
-docker image inspect redis:latest
+Defines the OS, architecture and uncompressed layer hash values
 
+```json
 {
     "architecture": "amd64",   // required field
     "os": "linux",             // required field
@@ -101,6 +101,9 @@ docker image inspect redis:latest
 ```
 
 ### Image ID
+
+- The sha value of the OCI Image Configuration
+- Uniquely identifies an image
 
 - The image ID defines an image uniquely.
 - It could be `docker image inspect redis:latest | sha256sum`, because of any of the layers change, the sha value changes. It is also different for images for different architectures. os etc
