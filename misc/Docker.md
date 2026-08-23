@@ -1,4 +1,6 @@
-## Mount Namespace
+## Internals
+
+### Mount Namespace
 
 - When a new process is started inside a mount namespace, all the mounting operations performed by it are isolated from the other mount namespace (including the host namespace)
 - Start a process inside a new mount namespace:
@@ -66,24 +68,8 @@ Change the root mount in the mount namespace of the calling process
 
 ### Create docker image
 
-```
-# Extract required files
 
-# Create a new mount namespace
-sudo unshare --mount bash
-
-# Change mount propagation type to private
-mount --make-rprivate /
-
-# Convert the directory containing the docker files to a mount point
-mount --rbind /opt/container-1/rootfs /opt/container-1/rootfs
-
-# Change mount propagation of new mount point to private
-mount --make-rprivate /opt/container-1/rootfs
-
-# After mounting proc, all the processes will be displayed if the new process does not use a new PID namespace
-mount -t proc proc /proc
-```
+## Image Management
 
 ### OCI Image Configuration
 
