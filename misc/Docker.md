@@ -198,6 +198,11 @@ docker buildx imagetools inspect --raw registry.iximiuz.com/multi:latest
 curl -v registry.iximiuz.com/v2/<repo>/tags/list
 ```
 
+#### Tag to manifest mapping
+
+```
+docker manifest inspect <registry>/<repository>:<tag>
+```
 
 - How does tagging work ?
 - How does latest translate to the latest tag ?
