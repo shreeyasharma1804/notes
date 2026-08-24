@@ -179,6 +179,11 @@ WantedBy=default.target               # When the current service is enabled, it 
 RequiredBy=network.target             # When the current service is enabled, it is added as a symlink to /etc/systemd/system/multi-user.target.requires/default.service. As soon as network.target service is active, this service will be started, but if this service stops, network.target is not considered loaded
 ```
 
+- Before and After are the only dependency ordering declarations
+- Wants and Requires start the dependency as well. But no ordering is guaranteed
+- WantedBy and RequiredBy decide what happens when the service is enabled
+- Defining a user in this service means that the command will be executed as that user but the service will be managed via the root user
+
 #### Timer unit
 
 ```bash
