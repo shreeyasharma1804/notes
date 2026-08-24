@@ -192,9 +192,15 @@ docker buildx imagetools inspect --raw registry.iximiuz.com/multi:latest
 
 ### Registry
 
+#### Login
+
+```bash
+docker login <registry> -u user
+```
+
 #### List all tags
 
-```
+```bash
 curl -v registry.iximiuz.com/v2/<repo>/tags/list
 ```
 
