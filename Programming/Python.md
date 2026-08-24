@@ -641,3 +641,8 @@ b = a
 
 gc.disable()     # Disable cyclic reference cleanup for faster executions
 ```
+
+### logging
+
+- By default all logs go to stderr
+- Configure the logger to send error to stderr and rest to stdout
