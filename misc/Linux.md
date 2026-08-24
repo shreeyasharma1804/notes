@@ -1,6 +1,9 @@
-### Time Zones
+### stderr
 
-- Unix Standard time: Time elapsed since 1st January, 1970. Use for removing time-zone overhead
+Why would I want to separate the stdout and stderr of a process ?
+
+- Different File directions for stdout and sterr
+- When I pipe the process output to another process's stdin, it only sends the stdout, and not stderr. This is useful to avoid confusion in error situations
 
 ### Memory
 
