@@ -212,7 +212,7 @@ docker manifest inspect <registry>/<repository>:<tag>
 
 #### Pull
 
-If I run:
+- If I run:
 
 ```
 registry.iximiuz.com: registry domain
@@ -223,14 +223,16 @@ v1.2.0: tag
 docker pull registry.iximiuz.com/acme/widget:v1.2.0
 ```
 
-docker runs a GET request to the endpoint
+- docker runs a GET request to the endpoint
 
 ```
 GET /v2/acme/widget/manifests/v1.2.0
 Host: registry.iximiuz.com
 ```
 
-docker tags are mutable pointer to the latest manifest pushed under that tag name
+- The image index automatically pulls the image of the correct architecture based on the host machine
+
+- docker tags are mutable pointer to the latest manifest pushed under that tag name
 
 - How does tagging work ?
 - How does latest translate to the latest tag ?
