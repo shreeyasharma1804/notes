@@ -190,6 +190,14 @@ docker buildx imagetools inspect --raw registry.iximiuz.com/multi:latest
 - The SHA value of the topmost image identifier (manifest/index)
 - 2 different image digests do not necessarily mean 2 different images. For example, different compression types could lead to 2 different image manifests which ultimately create the same image
 
+### Registry
+
+#### List all tags
+
+```
+curl -v registry.iximiuz.com/v2/<repo>/tags/list
+```
+
 
 - How does tagging work ?
 - How does latest translate to the latest tag ?
