@@ -230,9 +230,13 @@ GET /v2/acme/widget/manifests/v1.2.0
 Host: registry.iximiuz.com
 ```
 
-- The image index automatically pulls the image of the correct architecture based on the host machine
-
+- Docker pull automatically pulls the image of the correct architecture of the host machine based on the image index.
 - docker tags are mutable pointer to the latest manifest pushed under that tag name
+- docker images can be pulled both based on the tag and the digest of the index/manifest file
+
+```
+docker pull registry.iximiuz.com/acme/app@sha256:76d822da72eca8d151be12322d54f9ee5ffc330b74f0da29344f06d85761d114
+```
 
 - How does tagging work ?
 - How does latest translate to the latest tag ?
