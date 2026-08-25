@@ -238,5 +238,8 @@ Host: registry.iximiuz.com
 docker pull registry.iximiuz.com/acme/app@sha256:76d822da72eca8d151be12322d54f9ee5ffc330b74f0da29344f06d85761d114
 ```
 
-- How does tagging work ?
-- How does latest translate to the latest tag ?
+#### OverlayFS
+
+```bash
+sudo mount -t overlay overlay -o lowerdir=/home/shreeya/Documents/overlayfs_test/lower/,upperdir=/home/shreeya/Documents/overlayfs_test/upper/,workdir=/home/shreeya/Documents/overlayfs_test/work/ /home/shreeya/Documents/overlayfs_test/merged/
+```
