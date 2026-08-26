@@ -17,4 +17,8 @@ Required extensions:
 - file_storage: Provides a location for otel to store the offsets of the various fds it is reading
 - health_check: Provides an HTTP endpoint for otel healthchecks (Just checks if the otel process is up)
 - k8s_observer: Log enrichment
+
+
+Processors: Log processing
+- batching
 - 
