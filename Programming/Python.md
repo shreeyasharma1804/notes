@@ -642,7 +642,28 @@ b = a
 gc.disable()     # Disable cyclic reference cleanup for faster executions
 ```
 
-### logging
+### Logging
 
 - By default all logs go to stderr
 - Configure the logger to send error to stderr and rest to stdout
+
+### Closures
+
+```python
+def foo():
+    x = 0
+    def bar(callback):
+        nonlocal x             # Required to change the value of a closure variable
+        x = callback(x)
+    
+    def getbar():
+        return x
+
+    return [bar,getbar]
+
+[bar,getbar] = foo()
+bar(lambda x: x+1)
+print(getbar())
+f = lambda x: x+1
+print(f(1))
+```
