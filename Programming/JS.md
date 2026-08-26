@@ -1,3 +1,53 @@
+### State Management
+
+- Traditionally, states are managed through objects
+
+```js
+
+// Equivalent to useState()
+
+class useState {
+    constructor(count){
+        this.count = count;
+    }
+
+    setCount(callback) {
+        this.count = callback(this.count);
+    }
+}
+
+let count = new useState(0); 
+
+count.setCount((c) => c+1)
+
+console.log(count.count);
+```
+
+- To manage states through functions, closures are used
+- Closures allow to access a variable defined in an outer function even after the outer function has exited
+
+```js
+function useState(count) {
+    let internalCount = count;
+
+    function getCount() {
+        return internalCount;
+    }
+
+    function setCount(callback) {
+        internalCount = callback(internalCount);
+    }
+
+    return [getCount(), setCount]
+}
+
+[getCount,setCount] = useState(0);
+// console.log(getCount());
+
+setCount(c => c+1);
+console.log(getCount);
+```
+
 ### Promises
 
 ```js
