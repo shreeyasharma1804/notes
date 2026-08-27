@@ -1,5 +1,11 @@
 What should be logged in k8s ?
 
+- /var/log/pods
+- journald logs for containerd and kubectl
+
+How to read the files (receivers: file log)
+- encoding
+- regex location (both include and exclude)
 
 
 What should an exporter support?
@@ -21,4 +27,4 @@ Required extensions:
 
 Processors: Log processing
 - batching
-- 
+- enriching
