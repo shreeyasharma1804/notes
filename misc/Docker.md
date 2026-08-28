@@ -66,6 +66,10 @@ Change the root mount in the mount namespace of the calling process
 - For the container to have its own hostname, the container needs to use a new network and UTS namespaces
 - If we forget to use a new UTS namespace, setting the hostname in the new container will overwrite the host's hostname, which is something we definitely don't want. And without a new network namespace, the container simply cannot have its own hostname, because then it technically has the same network stack as the host
 
+### PID
+
+### IPC
+
 ### Create docker image
 
 
