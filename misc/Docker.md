@@ -66,6 +66,70 @@ Change the root mount in the mount namespace of the calling process
 - For the container to have its own hostname, the container needs to use a new network and UTS namespaces
 - If we forget to use a new UTS namespace, setting the hostname in the new container will overwrite the host's hostname, which is something we definitely don't want. And without a new network namespace, the container simply cannot have its own hostname, because then it technically has the same network stack as the host
 
+#### Create a new network namespace:
+
+```bash
+ip netns add netns0
+```
+
+#### List the available network namespaces
+
+```bash
+# Similar to: docker list network
+ip netns list
+```
+
+#### Enter a network namespace
+
+```bash
+nsenter --net=/run/netns/netns0 bash
+```
+
+#### What changes after I enter a new network namespace
+
+```bash
+ip link list (Only loopback interface initially)
+ip route list (Empty)
+iptables --list-rules (Empty)
+```
+
+#### veth
+
+- veth devices are virtual Ethernet devices. They can act as tunnels between network namespaces to create a bridge to a physical network device in another namespace, but can also be used as standalone network devices
+
+- Create a veth interface, both peers are initially created in the same namespace
+
+```bash
+ip link add veth0 type veth peer name ceth0
+
+# Creates:
+5: ceth0@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 6a:a2:c8:cf:5e:14 brd ff:ff:ff:ff:ff:ff
+6: veth0@ceth0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether ca:68:0c:9d:6c:da brd ff:ff:ff:ff:ff:ff
+
+# Turn on
+ip link set veth0 up
+```
+
+- Move one of the peers to the other network namespace
+
+```bash
+ip link set ceth0 netns netns0
+
+# Turn on
+ip link set ceth0 up
+```
+
+- Assign a network address to the interfaces
+
+```bash
+# Linux allows multiple addresses for one interface
+ip addr add 172.18.0.10/16 dev ceth0
+
+# same for veth0
+```
+
 ### PID
 
 ### IPC
