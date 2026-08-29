@@ -167,6 +167,37 @@ struct shared_data *data =
 
 - file → mmap()
 - Requires both containers to access the same mounted filesystem
+- Pod spec:
+
+```yaml
+spec:
+  volumes:
+    - name: shared-memory
+      emptyDir:
+        medium: Memory
+```
+
+- Mounted at: /shared
+
+```c
+// Container A
+
+int fd = open(
+    "/shared/data",
+    O_RDWR
+);
+
+char *data = mmap(
+    NULL,
+    SIZE,
+    PROT_READ | PROT_WRITE,
+    MAP_SHARED,
+    fd,
+    0
+);
+
+// Container B creates the same mapping, thus setting up a shared memory block
+```
 
 ### Create docker image
 
