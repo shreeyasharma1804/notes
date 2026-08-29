@@ -71,7 +71,7 @@ pivot_root NEW_ROOT PUT_OLD_ROOT
 
 - For the container to have its own hostname, the container needs to use a new UTS and network namespaces
 - If we forget to use a new UTS namespace, setting the hostname in the new container will overwrite the host's hostname, which is something we definitely don't want. And without a new network namespace, the container simply cannot have its own hostname, because then it technically has the same network stack as the host
-- For network namespace, check: [CiliumAndNetworking]../kubernetes/CiliumAndNetworking.md
+- For network namespace, check: [CiliumAndNetworking](../kubernetes/CiliumAndNetworking.md)
 
 ### PID
 
