@@ -99,3 +99,5 @@ The CNI needs to add the SNAT rules as well
 ```bash
 iptables -t nat -A POSTROUTING -s 10.244.0.1/16 ! -o br0 -j MASQUERADE
 ```
+
+### VXLAN
