@@ -134,6 +134,40 @@ ip addr add 172.18.0.10/16 dev ceth0
 
 ### IPC
 
+#### System V IPC
+
+- shmget() → shmat()
+- Requires shared IPC namespace
+
+```c
+// Container A
+
+int shmid = shmget(
+    key,
+    sizeof(struct shared_data),
+    IPC_CREAT | 0666
+);
+
+struct shared_data *data =
+    shmat(shmid, NULL, 0);
+
+// Container B
+
+int shmid = shmget(
+    key,
+    sizeof(struct shared_data),
+    0666
+);
+
+struct shared_data *data =
+    shmat(shmid, NULL, 0);
+```
+
+#### /dev/shm / tmpfs
+
+- file → mmap()
+- Requires both containers to access the same mounted filesystem
+
 ### Create docker image
 
 
