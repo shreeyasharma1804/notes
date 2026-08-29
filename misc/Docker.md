@@ -199,6 +199,8 @@ char *data = mmap(
 // Container B creates the same mapping, thus setting up a shared memory block
 ```
 
+Extra: fork() -> mmap() creates a shared memory block between the 2 parent and child
+
 ### Create docker image
 
 
