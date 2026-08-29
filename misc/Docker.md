@@ -311,3 +311,10 @@ docker pull registry.iximiuz.com/acme/app@sha256:76d822da72eca8d151be12322d54f9e
 ```bash
 sudo mount -t overlay overlay -o lowerdir=/home/shreeya/Documents/overlayfs_test/lower/,upperdir=/home/shreeya/Documents/overlayfs_test/upper/,workdir=/home/shreeya/Documents/overlayfs_test/work/ /home/shreeya/Documents/overlayfs_test/merged/
 ```
+
+
+#### What if I call fork inside a container ?
+
+- Docker allows it
+- Since the PIDs are isolated, the child process might have PID 2
+- cgroups can enforce PID limits `docker run --pids-limit=100`
