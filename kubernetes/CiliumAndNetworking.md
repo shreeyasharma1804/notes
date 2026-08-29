@@ -100,4 +100,16 @@ The CNI needs to add the SNAT rules as well
 iptables -t nat -A POSTROUTING -s 10.244.0.1/16 ! -o br0 -j MASQUERADE
 ```
 
+Overall flow
+
+```
+kubelet -> Ask containerd to create a new pod -> CNI for networking setup
+```
+
 ### VXLAN
+
+### Kube Proxy
+
+### Network Policy
+
+### Observability using hubble
