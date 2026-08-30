@@ -204,7 +204,7 @@ cgdelete -g cpu,memory:/hog_pen2
 
 #### systemd
 
-```
+```bash
 # Start a restricted process
 # This command will create a transient service and a transient cgroup for hog.service with the specified resource limits.
 systemd-run -u hog -p CPUQuota=50% -p MemoryMax=100M ~/hog
@@ -226,6 +226,9 @@ EOF
 # Start a new process with this slice
 systemd-run -u hog1 --slice=hog_pen.slice ~/hog
 ```
+
+- docker creates a new cgroup for every container ID
+- containerd does the same for the containers and sets the limits according to the requests and limits
 
 
 ### Create docker image
