@@ -144,6 +144,102 @@ char *data = mmap(
 
 Extra: fork() -> mmap() creates a shared memory block between the 2 parent and child
 
+### cgroups
+
+- Control groups, usually referred to as cgroups, are a Linux kernel feature which allow processes to be organized into hierarchical groups whose usage of various types of resources can then be limited and monitored.
+- The only kernel's cgroup interface is a pseudo-filesystem called cgroupfs. There is no dedicated system calls to create, modify, or delete cgroups - all cgroup manipulation is done through creating folders and writing to specially named files in the cgroup pseudo-filesystem.
+- This pseudo-filesystem is usually mounted at /sys/fs/cgroup
+
+```
+root@docker-01:~# mount -l | grep cgroup
+cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot)
+```
+
+- Creating a subfolder in cgroupfs leads to a new cgroup creation. The folder gets automatically populated with a set of files that can be used to configure the new cgroup.
+- The exact set of files depends on the enabled controllers which you can see in the cgroup.controllers file. The most commonly used controllers are cpuset, cpu, io, memory, hugetlb, and pids.
+- Since cgroups are managed via pseudo-filesystem folders and files, granting write access to a certain folder (or its files) can be used to allow non-root users to configure cgroups, including child cgroup creation. If the set of available controllers for a child cgroup needs to be further restricted, it can be done by writing to the parent's cgroup.subtree_control file:
+
+```
+echo "+cpu +memory -io" > /sys/fs/cgroup/<parent>/cgroup.subtree_control
+```
+
+#### cgroupfs
+
+- Create a new cgroup
+
+```bash
+mkdir /sys/fs/cgroup/hog_pen
+```
+
+- Limit CPU usage
+
+```bash
+echo "50000 100000" > /sys/fs/cgroup/hog_pen/cpu.max
+```
+
+- Limit memory usage
+
+```bash
+echo "100M" > /sys/fs/cgroup/hog_pen/memory.max
+```
+
+- Add the process to the cgroup
+
+```
+echo ${HOG_PID} >> /sys/fs/cgroup/hog_pen/cgroup.procs
+```
+
+- Check OOM killed process
+
+```
+sudo dmesg -T | grep -i -E 'out of memory|oom|killed process'
+```
+
+#### libcgroup
+
+```bash
+# Create a new cgroup with cpu and memory controllers
+cgcreate -g cpu,memory:/hog_pen2
+
+# set CPU limitation
+cgset -r cpu.max="50000 100000" hog_pen2
+
+# set memory limitation
+cgset -r memory.max="100M" hog_pen2
+
+# start a process using the cgroup
+cgexec -g cpu,memory:hog_pen2 ~/hog
+
+# delete a cgrouo
+cgdelete -g cpu,memory:/hog_pen2
+```
+
+#### systemd
+
+```
+# Start a restricted process
+# This command will create a transient service and a transient cgroup for hog.service with the specified resource limits.
+systemd-run -u hog -p CPUQuota=50% -p MemoryMax=100M ~/hog
+
+# Check the created cgroup
+systemd-cgls --all
+
+# Check resource usage
+systemd-cgtop
+
+# A persistent cgroup created and managed via systemd can be created through a slice unit
+cat <<EOF > /etc/systemd/system/hog_pen.slice
+[Slice]
+CPUQuota=50%
+MemoryMax=100M
+EOF
+
+
+# Start a new process with this slice
+systemd-run -u hog1 --slice=hog_pen.slice ~/hog
+```
+
+
 ### Create docker image
 
 
