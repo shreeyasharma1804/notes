@@ -165,33 +165,21 @@ echo "+cpu +memory -io" > /sys/fs/cgroup/<parent>/cgroup.subtree_control
 
 #### cgroupfs
 
-- Create a new cgroup
-
 ```bash
+
+# Create a new cgroup
 mkdir /sys/fs/cgroup/hog_pen
-```
 
-- Limit CPU usage
-
-```bash
+# Limit CPU usage
 echo "50000 100000" > /sys/fs/cgroup/hog_pen/cpu.max
-```
 
-- Limit memory usage
-
-```bash
+# Limit memory usage
 echo "100M" > /sys/fs/cgroup/hog_pen/memory.max
-```
 
-- Add the process to the cgroup
-
-```
+# Add the process to the cgroup
 echo ${HOG_PID} >> /sys/fs/cgroup/hog_pen/cgroup.procs
-```
 
-- Check OOM killed process
-
-```
+# Check OOM killed process
 sudo dmesg -T | grep -i -E 'out of memory|oom|killed process'
 ```
 
