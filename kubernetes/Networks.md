@@ -1,5 +1,66 @@
 Kubeproxy only alters the host's routing tables
 
+### General routing table
+
+```
+                         PACKET ARRIVES
+                              │
+                              ▼
+                         eth0 (RX)
+                              │
+                              ▼
+                       ┌─────────────┐
+                       │ PREROUTING  │
+                       └──────┬──────┘
+                              │
+                              ▼
+                       ROUTING LOOKUP
+                              │
+                 ┌────────────┴────────────┐
+                 │                         │
+          Destination local?         Destination remote?
+                 │                         │
+                YES                       NO
+                 │                         │
+                 ▼                         ▼
+            ┌─────────┐              IP FORWARDING
+            │  INPUT  │                    │
+            └────┬────┘                    ▼
+                 │                   ┌───────────┐
+                 ▼                   │  FORWARD  │
+          Local application          └─────┬─────┘
+                                           │
+                                           ▼
+                                    ┌─────────────┐
+                                    │ POSTROUTING │
+                                    └──────┬──────┘
+                                           │
+                                           ▼
+                                      eth1 (TX)
+
+
+                    LOCAL PACKET
+                         │
+                         ▼
+                 Local application
+                         │
+                         ▼
+                  ┌───────────┐
+                  │   OUTPUT  │
+                  └─────┬─────┘
+                        │
+                        ▼
+                  ROUTING LOOKUP
+                        │
+                        ▼
+                  ┌─────────────┐
+                  │ POSTROUTING │
+                  └──────┬──────┘
+                         │
+                         ▼
+                     eth1 (TX)
+```
+
 ### Inside a pod
 
 ### 2 pods on the same node
