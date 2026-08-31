@@ -33,6 +33,7 @@ users:
 - `get`: Only gets one particular object, example, `kubectl get pods nginx`
 - `list`: List all resources
 - Roles define a namespace, ClusterRoles are applicable across the cluster(used by control plane components)
+- Define different roles for different uses, for example, admin, read only etc
 
 ```yml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -51,6 +52,8 @@ rules:
 
 - A rolebinding connects a role to a user
 - The subjects.name is the CN of the certificate used for authentication. O is the group name
+- Define different role bindings for different uses, for example, admin, read only etc
+- The subjects can be User or Group. If the embedded certificate in the kube-config holds the capability of fetching the LDAP group a user belongs to, then LDAP group can be defined in the role-binding. This enables using LDAP as an interface for RBAC management.
 - ClusterRoleBindings are applicable across the cluster
 
 ```yml
