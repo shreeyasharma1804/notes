@@ -20,7 +20,7 @@ Kubeproxy only alters the host's routing tables
                  │                         │
           Destination local?         Destination remote?
                  │                         │
-                YES                       NO
+                YES                       YES
                  │                         │
                  ▼                         ▼
             ┌─────────┐              IP FORWARDING
