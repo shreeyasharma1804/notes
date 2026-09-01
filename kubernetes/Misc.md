@@ -14,6 +14,9 @@ kubectl debug -it \
     <target pod>
 ```
 
+- kubectl get nodes -o wide shows the container runtime installed on that node
+
+
 Create the debug pod within the PID namespace of --target container
  
 ```bash
