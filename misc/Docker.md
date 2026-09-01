@@ -146,6 +146,21 @@ char *data = mmap(
 
 Extra: fork() -> mmap() creates a shared memory block between the 2 parent and child
 
+#### Check all namespaces being used by a container process
+
+```
+laborant@docker-01:~$ sudo lsns -p 1342
+        NS TYPE   NPROCS   PID USER COMMAND
+4026531837 user      106     1 root /sbin/init
+4026532175 mnt         5  1342 root nginx: master process nginx -g daemon off;
+4026532176 uts         5  1342 root nginx: master process nginx -g daemon off;
+4026532177 ipc         5  1342 root nginx: master process nginx -g daemon off;
+4026532178 pid         5  1342 root nginx: master process nginx -g daemon off;
+4026532179 cgroup      5  1342 root nginx: master process nginx -g daemon off;
+4026532180 net         5  1342 root nginx: master process nginx -g daemon off;
+4026532257 time        5  1342 root nginx: master process nginx -g daemon off;
+```
+
 ### cgroups
 
 - Control groups, usually referred to as cgroups, are a Linux kernel feature which allow processes to be organized into hierarchical groups whose usage of various types of resources can then be limited and monitored.
