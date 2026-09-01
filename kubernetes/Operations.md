@@ -91,3 +91,8 @@ kubeadm token create --print-join-command
 - Multiple API servers can run on multiple nodes of a cluster
 - The API server pod uses the host network namespace. Thus it does not need service/nodeport to be reachable
 - This also allows to use a common domain for the API Server with NGINX for loadbalancing across node:<api-server-port>
+- Check the API server location:
+
+```bash
+kubectl cluster-info
+```
