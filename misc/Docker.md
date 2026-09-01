@@ -75,6 +75,8 @@ pivot_root NEW_ROOT PUT_OLD_ROOT
 
 ### PID
 
+- If PID namespace is used, the process being executed as PID 1 from inside the container can still be checked from the host via ps -ef
+
 ### IPC
 
 #### System V IPC
