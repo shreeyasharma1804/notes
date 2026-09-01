@@ -77,6 +77,10 @@ pivot_root NEW_ROOT PUT_OLD_ROOT
 
 - If PID namespace is used, the process being executed as PID 1 from inside the container can still be checked from the host via ps -ef
 
+### User NS
+
+The OCI Runtime Spec mentions the user namespace support. However, while Docker can use this namespace for its containers, it doesn't do it by default due to the inherent limitations and extra operational complexity that it may add. Thus, the root user in a container is likely the root user from your host system. 
+
 ### IPC
 
 #### System V IPC
@@ -438,3 +442,9 @@ sudo mount -t overlay overlay -o lowerdir=/home/shreeya/Documents/overlayfs_test
 - Docker allows it
 - Since the PIDs are isolated, the child process might have PID 2
 - cgroups can enforce PID limits `docker run --pids-limit=100`
+
+#### Check the runtime used by docker
+
+```bash
+docker info | grep -i runtime
+```
