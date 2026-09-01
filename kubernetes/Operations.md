@@ -80,3 +80,14 @@ kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/
 ```
 kubeadm token create --print-join-command
 ```
+
+## High Availability
+
+- The role of a node is just a label
+- `sudo kubeadm init` command adds these labels when bootstrapping the cluster
+
+### API Server
+
+- Multiple API servers can run on multiple nodes of a cluster
+- The API server pod uses the host network namespace. Thus it does not need service/nodeport to be reachable
+- This also allows to use a common domain for the API Server with NGINX for loadbalancing across node:<api-server-port>
