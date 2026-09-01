@@ -122,3 +122,11 @@ NGINX on CP-01
  CP-01      CP-02      CP-03
  :6443      :6443      :6443
 ```
+
+- After the 1st node has been initialized via kubeadm, the other cplane nodes can join via the `kubeadm join <clane>:6443 --control-plane`
+
+### Scheduler and Controller
+
+- Both these components support leader election
+- Lets say one cluster has n control plane nodes, the nodes try to renew a lease object. The node which renews it becomes the current leader
+- These components then watch the etcd events independently
