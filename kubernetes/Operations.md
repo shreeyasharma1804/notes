@@ -83,7 +83,7 @@ kubeadm token create --print-join-command
 
 ## High Availability
 
-- The role of a node is just a label
+- The role of a node is just a label (cplane/worker)
 - `sudo kubeadm init` command adds these labels when bootstrapping the cluster
 
 ### API Server
@@ -95,4 +95,30 @@ kubeadm token create --print-join-command
 
 ```bash
 kubectl cluster-info
+```
+
+- The API Servers can also be made reachable via VRRP (Also, the current master can be checked via `ip address`)
+
+```
+kubectl
+   |
+   | https://k8s-api.example.com:6443
+   |
+   v
+/etc/hosts
+   |
+   | 10.0.0.100
+   v
+VRRP VIP
+   |
+   | currently owned by CP-01
+   v
+NGINX on CP-01
+   |
+   | load balances
+   +----------+----------+
+   |          |          |
+   v          v          v
+ CP-01      CP-02      CP-03
+ :6443      :6443      :6443
 ```
