@@ -448,3 +448,23 @@ sudo mount -t overlay overlay -o lowerdir=/home/shreeya/Documents/overlayfs_test
 ```bash
 docker info | grep -i runtime
 ```
+
+- runc: Default (no kernel installed)
+- crun: runc but faster
+- kata: It is a lightweight VM. Also installs the kernel
+
+Edit the runtime:
+
+```bash
+sudo nano /etc/docker/daemon.json
+
+{
+  "runtimes": {
+    "crun": {
+      "path": "/usr/bin/crun"
+    }
+  }
+}
+
+sudo systemctl restart docker
+```
