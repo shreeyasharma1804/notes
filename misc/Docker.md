@@ -228,7 +228,13 @@ systemd-run -u hog1 --slice=hog_pen.slice ~/hog
 ```
 
 - docker creates a new cgroup for every container ID
-- containerd does the same for the containers and sets the limits according to the requests and limits
+- containerd does the same for the containers and sets the limits according to the requests and limits of a pod template
+- How to check the cgroup driver used by docker
+
+```
+laborant@docker-01:~$ docker info | grep -i cgroup
+ Cgroup Driver: systemd (cgroupfs/ systemc)
+```
 
 
 ### Create docker image
