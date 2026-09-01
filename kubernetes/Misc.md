@@ -14,7 +14,11 @@ kubectl debug -it \
     <target pod>
 ```
 
-- kubectl get nodes -o wide shows the container runtime installed on that node
+- kubectl get nodes -o wide shows the container runtime installed on that node. Check runc vs kata
+
+```bash
+sudo crictl info | grep -i runtime
+```
 
 
 Create the debug pod within the PID namespace of --target container
