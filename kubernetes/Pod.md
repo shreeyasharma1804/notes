@@ -493,3 +493,227 @@ spec:
 - PriorityClass is only used by a scheduler. Eviction occurs based on priority values only when a node is under pressure and a critical pod needs to be deployed.
 - QoS, on the other hand, is used by the kubelet to evict pods purely due to soft/hard resource limit breach
 - A pod with Priority = 1,000,000 and QoS = BestEffort, is still much more vulnerable to memory-pressure eviction than a Guaranteed Pod.
+
+
+### terminationGracePeriodSeconds
+
+#### Kubernetes termination
+
+When Kubernetes terminates a Pod:
+
+```text
+Pod termination
+      │
+      ▼
+   kubelet
+      │
+      │ SIGTERM
+      ▼
+Container PID 1
+      │
+      │ graceful cleanup
+      │
+      ▼
+   process exits
+      │
+      │ if still alive after
+      │ terminationGracePeriodSeconds
+      ▼
+    SIGKILL
+```
+
+`terminationGracePeriodSeconds` gives the application time to shut down gracefully.
+
+The normal sequence is:
+
+```text
+SIGTERM → cleanup → exit
+                  │
+                  └── timeout → SIGKILL
+```
+
+#### The application should handle SIGTERM
+
+For a well-behaved Kubernetes application:
+
+```text
+SIGTERM
+   │
+   ▼
+Application
+   │
+   ├── stop accepting new work
+   ├── finish in-flight work
+   ├── stop workers
+   ├── close connections
+   ├── flush state
+   └── exit
+```
+
+Don't put substantial cleanup directly inside the signal handler. The handler should generally set a flag, and normal application code performs the shutdown.
+
+#### Parent and child processes
+
+Killing a parent **does not normally kill its children**.
+
+For example:
+
+```text
+Parent
+ ├── Child 1
+ └── Child 2
+```
+
+If the parent dies, children can become orphaned and get reparented.
+
+In C, the parent should explicitly terminate and wait for its children:
+
+```c
+kill(child, SIGTERM);
+waitpid(child, &status, 0);
+```
+
+`waitpid()` is important because it **reaps** the child and prevents it from remaining as a zombie.
+
+A good application shutdown pattern is:
+
+```text
+Parent receives SIGTERM
+          │
+          ▼
+   stop parent work
+          │
+          ▼
+ SIGTERM → Child 1
+ SIGTERM → Child 2
+          │
+          ▼
+ waitpid(Child 1)
+ waitpid(Child 2)
+          │
+          ▼
+   parent cleanup
+          │
+          ▼
+        exit
+```
+
+#### PID namespaces are the key concept
+
+A container normally has its own **PID namespace**.
+
+From inside the container:
+
+```text
+Container PID namespace
+
+PID 1  parent
+ ├── PID 2  child
+ └── PID 3  child
+```
+
+From the host, those are different PIDs:
+
+```text
+Host PID namespace
+
+PID 1       systemd
+   │
+   └── PID 5000    container PID 1
+          ├── PID 5001
+          └── PID 5002
+```
+
+So:
+
+> **Container PID 1 ≠ Host PID 1.**
+
+---
+
+#### What happens when a non-PID-1 parent dies?
+
+Suppose:
+
+```text
+Container
+
+PID 1  init
+  │
+  └── PID 20  parent
+        ├── PID 21  child
+        └── PID 22  child
+```
+
+If PID 20 dies:
+
+```text
+PID 1  init
+ ├── PID 21  child
+ └── PID 22  child
+```
+
+The children are **reparented to PID 1 of their PID namespace**.
+
+They don't suddenly become children of the host's PID 1.
+
+#### Special case: container PID 1 dies
+
+This is the important exception.
+
+If:
+
+```text
+Container PID namespace
+
+PID 1  parent
+ ├── PID 2
+ └── PID 3
+```
+
+and PID 1 dies, Linux does **not** simply reparent PID 2 and PID 3 to the host's PID 1.
+
+Instead, the kernel terminates the remaining processes in that PID namespace.
+
+```text
+PID 1 dies
+    │
+    ▼
+PID 2 ──► killed
+PID 3 ──► killed
+    │
+    ▼
+PID namespace terminates
+```
+
+So processes don't escape their container's PID namespace.
+
+#### Why PID 1 matters
+
+This is why a container is ideally structured as:
+
+```text
+Container
+   │
+   └── PID 1: application
+```
+
+rather than unnecessarily:
+
+```text
+Container
+   │
+   └── PID 1: shell/wrapper
+          │
+          └── application
+```
+
+If your application genuinely needs child processes, that's fine:
+
+```text
+PID 1: application
+   ├── worker 1
+   ├── worker 2
+   └── worker 3
+```
+
+But the parent should explicitly manage their lifecycle.
