@@ -133,7 +133,7 @@ NGINX on CP-01
 
 Note: kubeadm can initialize a control plane without the etcd pod. Use this when etcd cluster needs to be bootstrapped separately (Example: etcd nodes > control plane nodes)
 
-### Certificates
+## Certificates
 
 Strored at: `/etc/kubernetes/pki/`
 
@@ -164,12 +164,12 @@ The k8s cluster trusts all certificates signed by ca.crt
 - The controller connects to the api server via the file: `/etc/kubernetes/controller-manager.conf` which also contains its client certificates
 - Similarly, the scheduler connects to the api server via the file: `/etc/kubernetes/scheduler-manager.conf` which also contains its client certificates
 
-### Best Practices
+## Best Practices
 
 - One application per namespace
 - dev and admin role and role binding per namespace, to isolate access per application
 
-### What should the cluster repo contain
+## What should the cluster repo contain
 
 - rbac
 - namespaces
