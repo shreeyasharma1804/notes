@@ -163,3 +163,16 @@ The k8s cluster trusts all certificates signed by ca.crt
 
 - The controller connects to the api server via the file: `/etc/kubernetes/controller-manager.conf` which also contains its client certificates
 - Similarly, the scheduler connects to the api server via the file: `/etc/kubernetes/scheduler-manager.conf` which also contains its client certificates
+
+### Best Practices
+
+- One application per namespace
+- dev and admin role and role binding per namespace, to isolate access per application
+
+### What should the cluster repo contain
+
+- rbac
+- namespaces
+- telenetry
+- flux/argo
+- ingress
