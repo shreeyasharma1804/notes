@@ -155,3 +155,21 @@ subjects:
   name: prometheus
   namespace: telemetry
 ```
+
+#### Usage:
+
+For a service account X, attach it to a pod by defining it in the spec:
+
+```yaml
+serviceAccountName: my-app
+```
+
+The token is available at:
+
+```bash
+TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+```
+
+- This is used when a k8s resource needs to send requests to the API server
+- Token based auth works because k8s api server supports bearer token auth.
+- This is also useful for OIDC based auth in kubectl config file
