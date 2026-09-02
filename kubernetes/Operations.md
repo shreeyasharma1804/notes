@@ -130,3 +130,36 @@ NGINX on CP-01
 - Both these components support leader election
 - Lets say one cluster has n control plane nodes, the nodes try to renew a lease object. The node which renews it becomes the current leader
 - These components then watch the etcd events independently
+
+Note: kubeadm can initialize a control plane without the etcd pod. Use this when etcd cluster needs to be bootstrapped separately (Example: etcd nodes > control plane nodes)
+
+### Certificates
+
+Strored at: `/etc/kubernetes/pki/`
+
+#### ca.crt
+
+The k8s cluster trusts all certificates signed by ca.crt
+
+#### apiserver.crt
+
+- The identity of the api server, signed by ca.crt
+- Used when api server's receives a request and needs to prove its identity as a server
+
+#### apiserver-kubelet-client.crt
+
+- Also the identity of the api server, signed by ca.crt
+- Used when api server's needs to send a request and prove its identity as a client
+
+<span style="color:red">Note:</span> A control plane node also runs the kubelet, because the kubelet is responsible to run the static pods
+
+#### Kubelet certs
+
+- Located at `/var/lib/kubelet/pki/`
+- `kubelet.crt`: Identity of the kubelet as a server
+- `kubelet.key `: Identity of the kubelet as a client
+
+#### Controller and Scheduler
+
+- The controller connects to the api server via the file: `/etc/kubernetes/controller-manager.conf` which also contains its client certificates
+- Similarly, the scheduler connects to the api server via the file: `/etc/kubernetes/scheduler-manager.conf` which also contains its client certificates
