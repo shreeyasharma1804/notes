@@ -667,3 +667,13 @@ print(getbar())
 f = lambda x: x+1
 print(f(1))
 ```
+
+### Faster Disk I/O using MMAP
+
+```
+import mmap
+
+with open("data.txt", "r+b") as f:
+    mm = mmap.mmap(f.fileno(), 0)
+    print(mm[100])
+```
