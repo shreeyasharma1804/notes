@@ -150,6 +150,11 @@ char *data = mmap(
 
 Extra: fork() -> mmap() creates a shared memory block between the 2 parent and child
 
+#### Unix socket
+
+- A socket can be of type AF_INET (TCP) or AF_UNIX (IPC socket)
+- Unix sockets are used for IPC and where TCP is not required, for example, the spire agent working on a node
+
 #### Check all namespaces being used by a container process
 
 ```
