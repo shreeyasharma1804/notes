@@ -21,17 +21,17 @@ helm repo index .
 
 ```bash
 # If a general setting is changed
-Make the changes in the chart code, change the chart version, re-package and re-index
+# Make the changes in the chart code, change the chart version, re-package and re-index
 
 # If an application change is made, for example the image itself is changed
-Make the changes in the chart code, change the chart version and the app version, re-package and re-index
+# Make the changes in the chart code, change the chart version and the app version, re-package and re-index
 
 # perform linting
 helm lint <chart-direcotry>
 
-Also, both chart versions will be available via index.yaml
+# Also, both chart versions will be available via index.yaml
 
-helm repo add basically runs GET https://example.com/charts/index.yaml, thus github pages are required so that the GET request returns a valid yaml file
+# helm repo add basically runs GET https://example.com/charts/index.yaml, thus github pages are required so that the GET request returns a valid yaml file
 ```
 
 ```bash
@@ -42,7 +42,7 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 # List all added repos
 helm repo list
 NAME          	URL
-reinstall-repo	https://shreeyasharma1804.github.io/helm-charts/
+bitnami         https://shreeyasharma1804.github.io/helm-charts/
 
 # Update the repo (fetch remote)
 helm repo update (Only updates the repository index)
