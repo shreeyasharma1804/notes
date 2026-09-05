@@ -1,4 +1,4 @@
-# Helm
+## Helm
 
 ### Repository
 
@@ -6,119 +6,169 @@
 - Helm projects are scaffold through:
 
 ```bash
-# Create the chart.yml, values.yml and templates. Here, the chart name is helm-app
 helm create helm-app
+# Creates the chart.yml, values.yml and templates. Here, the chart name is helm-app
 
-# Compress all the above code into a tar file
 helm package helm-app
+# Compress all the above code into a tar file in the same directory
 
-# Create index.yaml, which contains chart_name: tar file mapping
 helm repo index .
+# Create index.yaml, which contains chart_name: tar file mapping
 
 # Push to index and package to git, this repo will be used to run commands like helm add repo
-# Also push the chart code itself to git, to maintain the changes made to the boilerplate itslef
+# Also push the chart code itself to git, to maintain the changes made to the boilerplate itself
 ```
 
-- Make changes to repo:
+#### Making changes to repo
+
+- If a general setting is changed, Make the changes in the code, change the chart version, re-package and re-index
+- If an application level is made, Make the changes in the code, change the chart version and the app version, re-package and re-index
+- Lint
 
 ```bash
-# If a general setting is changed
-# Make the changes in the chart code, change the chart version, re-package and re-index
-
-# If an application change is made, for example the image itself is changed
-# Make the changes in the chart code, change the chart version and the app version, re-package and re-index
-
-# perform linting
 helm lint <chart-direcotry>
-
-# Also, both chart versions will be available via index.yaml
-
-# helm repo add basically runs GET https://example.com/charts/index.yaml, thus github pages are required so that the GET request returns a valid yaml file
 ```
 
+- All chart versions will be available via index.yaml
+- In case of multiple chart versions, the latest version is used by default
+- helm repo add basically runs GET https://example.com/charts/index.yaml, thus github pages are required so that the GET request returns a valid yaml file
+
+#### Repository Operations
+
+- Add a repository
+
 ```bash
-# Add a repo (repo_name url)
 # This works by fetching https://charts.bitnami.com/bitnami/index.yml and installing it under the name bintami
 helm repo add bitnami https://charts.bitnami.com/bitnami
+```
 
-# List all added repos
+- List all added repos
+
+```bash
 helm repo list
 NAME          	URL
 bitnami         https://shreeyasharma1804.github.io/helm-charts/
+```
 
-# Update the repo (fetch remote)
-helm repo update (Only updates the repository index)
+- Update the repo
 
-# Search the charts in a repo
+```bash
+helm repo update
+# Only updates the repository index
+```
+
+- Search for a chart
+
+```bash
 helm search repo <chart name>
 ```
 
-### View the data
+### Viewing data
 
-```
-# View the installed chart version r(epo_name/chart_name)
+#### View the installed chart version (repo_name/chart_name)
+
+```bash
 helm show chart bitnami/redis
+```
 
-# View the default repo values
+#### View the default repo values
+
+```bash
 helm show values bitnami/redis
-
-helm show all bitnami/redis
 ```
 
-### Render and dry runs
+### Templating and dry installs
 
-```
-# Render the K8s objects which will installed from the chart under the release name redis
+#### Print the template of the K8s objects which will installed from the chart under the release name redis
+
+```bash
 helm template redis bitnami/redis
+```
 
-# Render with custom values
+#### Print the template with custom values
+
+```bash
 helm template redis bitnami/redis -f values.yaml
+```
 
-# Installation dry-run
+#### dry-run the installation
+
+```bash
 helm install redis bitnami/redis --dry-run --debug
+```
 
-# Upgrade dry-run
+# dry-run the upgrade
+
+```bash
 helm upgrade redis bitnami/redis --dry-run --debug
 ```
 
 ### Release management
 
-```
-# Install a new release (release_name repo/chart_name)
+#### Install a new release (release_name repo/chart_name)
+
+```bash 
 helm install redis bitnami/redis
+```
 
-# Upgrade a release, this is run after helm repo update to install the new chart versions
+####  Upgrade a release, this is run after helm repo update to install the new chart versions
+
+```bash
 helm upgrade redis bitnami/redis
+```
 
-# Install and upgrade
+#### Upgrade and install
+
+```bash
 helm upgrade --install redis bitnami/redis
+```
 
-# Install with custom values.yaml
+#### Install with custom values.yaml
+
+```bash
 helm install redis bitnami/redis -f cluster-config/production/values.yaml
+```
 
-# List releases
+#### List all releases
+
+```bash
 helm list
 helm list -A
+```
 
-# Uninstall a release
+#### Uninstall a release
+
+```bash
 helm uninstall redis
+```
 
-# Release status
+#### Release status
+
+```bash
 helm status redis
+```
 
-# Get the values being used in the current release
+#### Get the values being used in the current release
+
+```bash
 helm get values redis
+```
 
-# Get all the variables of the release
-helm get all redis
+#### Check the history of the release
 
-# Check the history of the release
+```bash
 helm history redis
+```
 
-# Rollback release to a previous version
-helm rollback redis 2
+#### Rollback release to a previous version
 
-# Diff the currently installed release with the values in ./chart
+```bash
+helm rollback redis <required revision number>
+```
+
+#### Diff the currently installed release with the values in ./chart
+
+```bash
 helm diff upgrade redis ./chart
 ```
 
@@ -240,11 +290,11 @@ Group + Version + Kind + Namespace + Name
 ```yaml
 ```
 
-# Flux
+## Flux
 
-## Bootstrapping
+### Bootstrapping
 
-### Using flux operator
+#### Using flux operator
 
 - Install flux operator
 
@@ -260,7 +310,7 @@ helm upgrade -i flux-operator \
 - This starts the initial reconciliation
 - Add the files to the git repo for future reconciliations as well
 
-### Manually
+#### Manually
 
 ```bash
 # Install the controllers + The flux manifests at cluster
