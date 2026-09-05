@@ -157,21 +157,20 @@ if __name__ == "__main__":
 
 ### JWT
 
-```
-User submits username + password
-Server verifies the password, creates a JWT and signs it
-Server returns the token to client
-The token sent by the client in all subsequent requests
-```
-
-JWT consists of:
+- User submits username + password
+- Server verifies the password, creates a JWT and signs it
+- Server returns the token to client
+- The token sent by the client in all subsequent requests as `Authorization: Bearer <JWT>`
+ 
+- JWT consists of:
 
 ```bash
 base64url(header).base64url(payload).base64url(signature)
 ```
+
 - Header: Contains the algorithm used for signing the data
 - Payload: The claims of the JWT and the expiry date
-- Signature
+- Signature (Hash based message authentication code):
 
 ```bash
 HMAC(
@@ -180,8 +179,8 @@ HMAC(
 )
 ```
 
-JWT acts like a temporary signed prrof that "This client has already been authenticated by me recently."
-This method is preferred over session_ids because no DB lookup is required
+- JWT acts like a temporary signed proof that "This client has already been authenticated by me recently."
+- This method is preferred over session_ids because no DB lookup is required
 
 ```python
 import sqlite3
