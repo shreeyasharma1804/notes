@@ -1,3 +1,5 @@
+# Helm
+
 ### Repository
 
 - A helm repository is a remote git repository which contains an index.yml file containing all the available charts in the repo, and the tar files of the chart+values+templates
@@ -237,3 +239,94 @@ Group + Version + Kind + Namespace + Name
 
 ```yaml
 ```
+
+# Flux
+
+## Bootstrapping
+
+### Using flux operator
+
+- Install flux operator
+
+```bash
+helm upgrade -i flux-operator \
+  oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator \
+  --namespace flux-system \
+  --create-namespace \
+  --wait
+```
+
+- Apply flux-instance.yaml, GitRepository.yaml, kustomization.yaml (Check local repo)
+- This starts the initial reconciliation
+- Add the files to the git repo for future reconciliations as well
+
+### Manually
+
+```bash
+# Install the controllers + The flux manifests at cluster
+
+flux bootstrap github \
+  --owner=shreeyasharma1804 \
+  --repository=LocalCluster \
+  --branch=main \
+  --path=/ \
+  --personal
+```
+
+### Operations
+
+#### Check the web UI:
+
+```bash
+kubectl -n flux-system port-forward svc/flux-operator 9080:9080
+```
+
+#### Check the installation status (Web ui can also be used)
+
+```bash
+flux check
+flux version
+```
+
+
+#### GitRepository
+
+- At the refresh interval, GitRepository fetches the required branch and creates an artifact if changes are detected
+- Check the events (and logs as well):
+
+```
+kubectl get gitrepository -n flux-system
+
+# Normal  NewArtifact                 3m27s  source-controller  stored artifact for commit 'Update'
+# The events show the commit message which has been reconcileld
+```
+
+#### Kustomization
+
+- Avoid cluster drift due to manual patches
+- prune allows to delete objects not in git 
+
+```bash
+kubectl get kustomization -n flux-system
+```
+
+#### Force Reconcilliation
+
+```bash
+# Force a git refresh
+flux reconcile source git flux-system
+
+# Force a kustomize refresh
+flux reconcile kustomization flux-system
+```
+
+#### Suspend git polling
+
+```
+flux suspend source git flux-system
+
+# Resume
+flux suspend resume git flux-system
+```
+
+Note: If the GitRepository controller creates a new artifact, the Kustomization controller also runs.
