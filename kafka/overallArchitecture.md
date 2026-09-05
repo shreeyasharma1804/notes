@@ -34,13 +34,11 @@
 
 Changes to the cluster metadata are applied through the ZAB protocol (Zookeeper atomic broadcast)
 
-- The leader receives a write request, creates a zid(transaction id) and writes the request to its transaction store.
+- The leader receives a write request, for example, new topic formation, and creates a zid(transaction id) and writes the request to its transaction store.
 - The leader sends a PROPOSAL broadcast to all the followers.
 - Each follower writes the transaction to it's transaction store and sends an ACK back to the leader.
 - If a majority of ACK are received, the leader sends the COMMIT broadcast and all the nodes apply the changes to the znode
-- Response is sent to the client
-- This tolerates network partitions.
-- Multiple IDs are added while connecting to any cluster due to this reason. If a network partition occurs, the leader of the smaller quorum cannot accept writes and the client should retry with the other nodes
+- Since the zid is already in the write ahead log, a success response is sent to the client
 
 ### Leader election
 
@@ -76,22 +74,24 @@ Scenario 3: No network partition, and a real leader zookeeper failure
 - lt sends out the new vote and this time the response should indicate a clear quorum
 - The semaphore is decremented
 
+Note: Multiple IDs are added while connecting to any cluster due to this reason. If a network partition occurs, the leader of the smaller quorum cannot accept writes and the client should retry with the other nodes
 
-### Consumer groups, consumer offset management, and Group coordinator
-
-Any number of consumer clients with the same group.id belong to the same consumer group.
-If a topic has x partitions, it is recommended to have >=x consumers in the consumer group associated with the topic
-
-consumer offset:(group.id, topic, partition) stored in the topic __consumer_offsets.
-After the consumer commits (auto/manually), the coordinator updated the in memory table and __consumer_offsets topic.
-At startup, the group coordinator creates an in memory map of (group.id, topic, partition): offset. This map is updated and managed in memory instead of reading the data in __consumer_offsets topic.
-
-If a consumer leaves a consumer group, the group coordinator triggers a rebalance.
 
 ### Topic
 
-Each topic is configured with the number of partitions and replication factor. The replication factor decides the number of replicas for each partition.
-Each partition has a leader broker and replica brokers.
+- Each topic consists of x partitions where each partition has y replicas and a minimum number of in-sync replicas (<= y)
+- Each partition has a leader which accepts the writes from the client
+- The leader needs to ensure that a write is acknowledged by the quorum, which is based on the client's config and then send a success response back.
+
+### Consumer groups, consumer offset management, and Group coordinator
+
+- Any number of consumer clients with the same group.id belong to the same consumer group.
+- If a topic has x partitions, it is recommended to have >=x consumers in the consumer group of that topic
+- The offsets of a consumer group are stored in an im-memory table `(group.id, topic, partition): offset` and the __consumer_offsets topic with the key `(group.id, topic, partition)`
+- After the consumer commits (auto/manually), the group coordinator updates the in memory table and the __consumer_offsets topic.
+- The partition of a consumer group in the topic _consumer_offsets depends on its group.id. The group coordinator of a consumer group is thus the leader of the partition its writing to.
+- At startup, the group coordinator creates an in memory map of `(group.id, topic, partition): offset`. By reaading the log segment files. This map is updated and managed in memory instead of reading the data in __consumer_offsets topic later.
+- If a consumer leaves a consumer group, the group coordinator triggers a rebalance.
 
 ### Broker failure
 
@@ -101,11 +101,12 @@ The new partition leader is the 1st alive ISR
 
 ### Broker was group coordinator
 
-- Each group coordinator coordinates a certain number of consumer groups. The broker of that group coordinator is also the partition leader of the __consumer_offsets
-- When a broker dies, a new partition leader is elected for the partition of __consumer_offsets. This is usually the next insync replica.
-- That broker is now automatically the coordinator for all groups that write to that partition.
-- Consumers get NOT_COORDINATOR on next request
-- Consumers call FindCoordinator → get directed to new broker
-- Group rebalance triggered
+- Each broker is the group coordinator of a certain number of consumer groups.
+- When a broker dies, a new partition leader is elected for the partition of __consumer_offsets. This is usually the next in-sync replica.
+- That broker is now automatically the coordinator for all consumer groups that write to that partition.
 
+### Internals
 
+- The logs are stored in .log files which are auto-rotated and auto-deleted based on the configuration
+- The .index files make this traversal faster
+- sendfile is used to move offset x: x+y from the OS page cache to the socket
