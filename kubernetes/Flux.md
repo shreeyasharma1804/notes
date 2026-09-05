@@ -7,7 +7,7 @@ flux bootstrap github \
   --owner=shreeyasharma1804 \
   --repository=LocalCluster \
   --branch=main \
-  --path=cluster/ \
+  --path=/ \
   --personal
 ```
 
