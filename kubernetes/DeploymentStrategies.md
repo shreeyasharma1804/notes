@@ -383,3 +383,24 @@ flux suspend resume git flux-system
 ```
 
 Note: If the GitRepository controller creates a new artifact, the Kustomization controller also runs.
+
+## ArgoCD
+
+### Installation
+
+```bash
+kubectl create namespace argocd
+
+kubectl apply -n argocd --server-side --force-conflicts \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# UI
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+# Login secret
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 --decode
+echo
+
+# Add the SSH key for connectivity to git
+```
