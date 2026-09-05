@@ -1,3 +1,92 @@
+## Deployment strategies
+
+### Restarting pods if a change is made in configmap
+
+- Kubernetes only restarts the pods of a deployment if the pod template is changed.
+- Whether a pod has been restarted can be checked with the "AGE" column of pod describe command.
+- Whenever a pod is restarted, a new replicaset is created. The older one is kept for rollback purposes. Check with `kubectl get rs`
+- To ensure that the pods are restarted every-time the configmap is changed, add to the pod metadata:
+
+```yml
+annotations:
+  checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+```
+
+### Blue-green deployments
+
+- Use 2 deployments for the same app, and make the changes to only one of the deployment
+- Keep the service pointed to the older deployment
+- Once the changes are validated, the service can point to the new deployment
+
+### Canary deployments
+
+- Requires 2 deployments
+- x% pods of deployment A use the new image tag whereas 100-x% pods of deployment B use the old image
+
+```yml
+# deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-deployment
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  {{- if .Values.canary.enabled }}
+  replicas: 3
+  {{- else }}
+  replicas: 4
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+        - name: {{ .Values.appName }}-container
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+          - containerPort: 5000
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.appName }}-configmap
+
+# deployment-canary.yml
+{{- if .Values.canary.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-canary-deployment
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+        - name: {{ .Values.appName }}-container
+          image: "{{ .Values.image.repository }}:{{ .Values.image.canaryTag }}"
+          ports:
+          - containerPort: 5000
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.appName }}-configmap
+{{- end }}
+```
+
 ## Helm
 
 ### Repository
@@ -97,7 +186,7 @@ helm template redis bitnami/redis -f values.yaml
 helm install redis bitnami/redis --dry-run --debug
 ```
 
-# dry-run the upgrade
+#### dry-run the upgrade
 
 ```bash
 helm upgrade redis bitnami/redis --dry-run --debug
@@ -170,92 +259,6 @@ helm rollback redis <required revision number>
 
 ```bash
 helm diff upgrade redis ./chart
-```
-
-### Restart pods if a change is made in configmap
-
-- Kubernetes only restarts the pods of a deployment if the pod template is changed.
-- Whether a pod has been restarted can be checked with the "AGE" column of pod describe command.
-- Whenever a pod is restarted, a new replicaset is created. The older one is kept for rollback purposes. Check with `kubectl get rs`
-- To ensure that the pods are restarted every-time the configmap is changed, add to the pod metadata:
-
-```yml
-annotations:
-  checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-```
-
-### Blue-green deployments
-
-- Use 2 deployments for the same app, and make the changes to only one of the deployment
-- Keep the service pointed to the older deployment
-- Once the changes are validated, the service can point to the new pods
-
-### Canary deployments
-
-- x% pods run using the new image tag whereas 100-x% servers run the old image tag
-
-```yml
-# deployment.yml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Values.appName }}-deployment
-  labels:
-    app: {{ .Values.appName }}
-spec:
-  {{- if .Values.canary.enabled }}
-  replicas: 3
-  {{- else }}
-  replicas: 4
-  {{- end }}
-  selector:
-    matchLabels:
-      app: {{ .Values.appName }}
-  template:
-    metadata:
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-      labels:
-        app: {{ .Values.appName }}
-    spec:
-      containers:
-        - name: {{ .Values.appName }}-container
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          ports:
-          - containerPort: 5000
-          envFrom:
-          - configMapRef:
-              name: {{ .Values.appName }}-configmap
-
-# deployment-canary.yml
-{{- if .Values.canary.enabled }}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Values.appName }}-canary-deployment
-  labels:
-    app: {{ .Values.appName }}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: {{ .Values.appName }}
-  template:
-    metadata:
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-      labels:
-        app: {{ .Values.appName }}
-    spec:
-      containers:
-        - name: {{ .Values.appName }}-container
-          image: "{{ .Values.image.repository }}:{{ .Values.image.canaryTag }}"
-          ports:
-          - containerPort: 5000
-          envFrom:
-          - configMapRef:
-              name: {{ .Values.appName }}-configmap
-{{- end }}
 ```
 
 ### Kustomize:
