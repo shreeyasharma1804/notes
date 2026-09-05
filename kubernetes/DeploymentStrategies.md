@@ -402,5 +402,32 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
   -o jsonpath="{.data.password}" | base64 --decode
 echo
 
-# Add the SSH key for connectivity to git
+# Add the SSH key for connectivity to git via UI
+```
+
+- Each application deployment requires the git repository along with the path to reconcile
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-demo
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: git@github.com:shreeyasharma1804/ArgoCheck.git
+    targetRevision: main
+    path: overlays/dev
+    kustomize: {}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
 ```
