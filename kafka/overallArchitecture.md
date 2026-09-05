@@ -1,6 +1,6 @@
-### Zookeeper
+## Zookeeper
 
-Maintains cluster metadata in the znode tree.
+### Cluster metadata znode tree.
 
 ```
 /
@@ -30,22 +30,52 @@ Maintains cluster metadata in the znode tree.
 └── /consumers                           ← legacy consumer groups
 ```
 
+### ZAB
+
 Changes to the cluster metadata are applied through the ZAB protocol (Zookeeper atomic broadcast)
 
-- The leader recieves a write request, creates a zid(transaction id) and writes the request to its transaction store.
+- The leader receives a write request, creates a zid(transaction id) and writes the request to its transaction store.
 - The leader sends a PROPOSAL broadcast to all the followers.
 - Each follower writes the transaction to it's transaction store and sends an ACK back to the leader.
-- If a majority of ACK are recieved, the leader sends the COMMIT broadcast and all the nodes apply the changes to the znode
+- If a majority of ACK are received, the leader sends the COMMIT broadcast and all the nodes apply the changes to the znode
 - Response is sent to the client
+- This tolerates network partitions.
+- Multiple IDs are added while connecting to any cluster due to this reason. If a network partition occurs, the leader of the smaller quorum cannot accept writes and the client should retry with the other nodes
 
-Leader election
+### Leader election
 
 This is triggered when followers do not heartbeats from the leader in a specified time
 
 - Every node broadcasts a vote for itself by sending the tuple (zxid, epoch, sid).
-- When a node recieves a peer's vote, it runs a comparision in the order epoch < zxid < sid. If the recieved vote has a higher precedence, the node revotes with the recieved vote.
+- When a node receives a peer's vote, it runs a comparison in the order epoch < zxid < sid. If the received vote has a higher precedence, the node revotes with the received vote.
 - If the node is voting with an earlier epoch number, it adopts the latest epoch and votes again
 - Every node checks the vote from all the other nodes. The sid which is voted for by the majority of the quorum. is elected as the new leader.
+
+
+#### High Level Design
+
+- A semaphore, value 0 means no leader election required.
+- A thread which waits on this semaphore and does the leader election operations
+- If a heartbeat is not received for x seconds, another thread increments the semaphore
+- The leader election thread(lt) sends a broadcast message.
+
+Scenario 1: lt is in a network partition on the quorum side
+
+- lt evaluates the broadcast responses and checks which node to vote for during the next election
+- lt sends out the new vote and this time a quorum should be formed
+- The semaphore is decremented
+
+Scenario 2: lt is in a network partition not on the quorum side
+
+- lt will not receive enough responses to form a quorum
+- Maybe, the semaphore is not decremented signalling that the node has no leader
+
+Scenario 3: No network partition, and a real leader zookeeper failure
+
+- lt evaluates the broadcast responses and checks which node to vote for during the next election
+- lt sends out the new vote and this time the response should indicate a clear quorum
+- The semaphore is decremented
+
 
 ### Consumer groups, consumer offset management, and Group coordinator
 
