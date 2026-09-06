@@ -409,6 +409,7 @@ SELECT id, name, enabled FROM realm;
 <img width="570" height="437" alt="image" src="https://github.com/user-attachments/assets/4d8b42d7-ed28-405b-9ddf-c9371fdf3734" />
 
 - If the app needs to authenticate a user, it needs to send a get request as below:
+- With standard flow on, all user credentials in a realm can be used to create the auth token for a client
 
 ```bash
 https://localhost:8443/realms/realm-1/protocol/openid-connect/auth?client_id=demo_client_id&response_type=code&redirect_uri=http://localhost:5000/callback&scope=openid
