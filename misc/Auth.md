@@ -470,6 +470,9 @@ curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
 #### ID Token
 - Contains all the user info required as per the scope
 
+<img width="1171" height="635" alt="image" src="https://github.com/user-attachments/assets/07c39bf8-2634-483c-b0e8-2ae52599f2d0" />
+
+
 #### Get access token from refresh token
 
 ```
@@ -506,27 +509,40 @@ curl -k -X POST 'https://localhost:8443/realms/realm-1/protocol/openid-connect/t
 - JWT token validation by an applications checks that whether the token was generated for it through the aud field in the JWT token
 
 ```
-Client -> Client scopes -> <client_id>-dedicated -> Configure new mapper -> Audience
+Client -> Client scopes -> <client_id>-dedicated -> Add mapper  -> Configure new mapper -> Audience
 ```
 
-- The audience needs to be mapped to an actual client_id. Then, the mapped client_id will appear in the access tokens generated for this application.
-- This feature is used when an application authenticates a user through JWT, and not via redirectingthe user to keycloak. (Token exchnage)
+- The audience needs to be mapped to an actual client_id. Then, the mapped client_id will appear in the audience field of the access tokens generated for this application.
+- This feature is used when an application authenticates a user via JWT passed from another application(which redirects and performs user auth), and not via redirecting the user to Keycloak. (Token exchange)
 
-### RBAC and Groups
+### Roles and Groups
 
-- Groups: Add the user to a group, to include in JWT:
+#### Groups
+
+- Define membership
+- Add the user to a group and the group will be included in the access token for the client:
 
 ```bash
+Create a group
+Users -> groups -> join groups
 Clients -> Client Scopes -> <client-id>_dedicated -> Add mapper -> By configuration -> Group membership
 ```
 
-- Roles: Clients -> Roles -> Create Role, Users -> Role Mapping -> Assign Role
+#### Roles
+
+- Define privileges
+
+```bash
+Clients -> Roles -> Create Role
+Users -> Role Mapping -> Assign Role
+```
 
 ### Middleware
 
 - Check if JWT is not expired
 - Verify that the signature is valid
 - Check the user in the sub
+- Check if the token is meant for it via the aud field
 - Check the role
 - Check if the user is mapped to the required groups
 - Check the aud (if token exchange is used)
