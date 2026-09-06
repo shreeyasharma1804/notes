@@ -61,19 +61,19 @@ kubectl scale deployment <deployment name> --replicas=1
 kubectl -n kube-system logs kube-controller-manager-cplane-01
 ```
 
-### Secrets
+## Secrets
 
 - All secrets are stored in a encrypted format in the etcd server.
 - A kubelet is authorized to retrieve a Secret only if that Secret is referenced by a Pod that has been scheduled to that kubelet's node. This is implemented via Node authorizer.
 - The Node authorizer uses information about Pods bound to the node and their referenced resources to determine what the node should be allowed to access.
 
-#### Types:
+### Types:
 
 - generic: Generic user data
 - tls: For TLS certificates (accepts --key and --cert)
 - docker-registry: Docker registry login information
 
-#### Declaration:
+### Declaration:
 
 - Declare in file: Here, the data is base64 encoded
 
@@ -118,9 +118,9 @@ spec:
     - name: regcred
 ```
 
-#### Usage
+### Usage
 
-- Environment variables: Inside the pod, the secret is available as an environment variable
+#### Environment variables
 
 ```yml
 env:
@@ -137,10 +137,10 @@ env:
       key: password
 ```
 
-If the secret is updated, a pod restart is required
+- Inside the pod, the secret is available as an environment variable
+- If the secret is updated, a pod restart is required
 
-- Mount as a file: Inside the pod, the secret is available as files /etc/secrets/username and /etc/secrets/password
-
+#### Mount as a file
 ```yml
 volumes:
 - name: secret-volume
@@ -153,26 +153,27 @@ containers:
     name: secret-volume
 ```
 
-Note: 
-- If a secret is static: Use env variable
-- If a secret can be modified: Use files, since if the secret is updated, the kubelet automatically updates the mounted file contents at kubelet sync time. No restart is required
+- Inside the pod, the secret is available as files /etc/secrets/username and /etc/secrets/password
+
+#### Note: 
+- If a secret is static, use it as an env variable
+- If a secret can be modified, use files since if the secret is updated, the kubelet automatically updates the mounted file contents at kubelet sync time and thus no restart is required
 
 ### Dynamic secret refresh (External vault)
 
-This allows to store the secrets in a vault and not in the cluster/yaml files
+This approach allows storing the secrets in a vault and not in the cluster/yaml files
 
-- Approach1: Use cert-manager to create a certificate with a particular CA, CN, SAN etc(The format should be such that the cert is allowed to access sevrets from the vault). Create a sidecar which loads this certificate from the secret and fetches the secrets at the rate of refreshInterval. Here, every pod is responsible for managing its secrets and the k8s secret object is not used.
+- Approach1: A sidecar which authenticates itself to the vault via, maybe SPIFFE, and keeps refreshing the secret. Each pod is responsible to refresh all the secrets it references. Overlap might occur if pods use same secrets.
 
-- Approach2: Use ESO, which updates the k8s secret and all pods mountiung the secret as a file get the renewed cert at kubelet sync interval. In both these approaches, the application should handle the file data update, maybe through inotify and update it's in memory cache.
+- Approach2: ESO, which updates the k8s secret objects and all the pods mounting the secret as a file get the renewed cert at kubelet sync interval. In both these approaches, the application should handle the file data update, maybe through inotify and update it's in memory cache.
 
-- Approach3:
-    - Vault with a webhook(The secret should be configured with a namepsace) that calls an endpoint on the cluster.
-    - The API updates the k8s secret.
-    - The secret update in the vault is acknowledged only after the k8s secret is updated.
+- Approach3: Configure the vault with a web-hook which calls an endpoint on the cluster responsible for updating the local secret variable.
 
-#### External Secrets operators
+### External Secrets operators
 
-SecretStore: Define how to connect to the secret store with authentication
+#### SecretStore
+
+- Define how to connect to the secret store with authentication (typically via SPIFFE)
 
 ```yml
 apiVersion: external-secrets.io/v1
@@ -185,7 +186,9 @@ spec:
       server: https://vault.example.com
 ```
 
-ESO: Creates a kube secret named database-secret with value fetch from vault secret production/database
+#### ESO
+
+- Creates a kube secret named database-secret with values fetch from vault secret production/database
 
 ```yml
 apiVersion: external-secrets.io/v1
