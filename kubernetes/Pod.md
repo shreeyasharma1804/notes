@@ -7,6 +7,11 @@
 - tolerations
 - affinity
 
+### Labels vs Annotations
+
+- Label: Used to identify a pod
+- Annotation: Additional metadata associated with the resource
+
 ### initContainers
 
 - Init containers are executed strictly in the order they are defined.
