@@ -469,7 +469,7 @@ rate(container_fs_reads_total[5m])
 rate(container_fs_writes_total[5m])
 ```
 
-- Pod with highest numner of write rate
+- Pod with highest numbner of write rate
 
 ```bash
 topk(10,(sum by (pod) (rate(container_fs_writes_total[5m]))))
