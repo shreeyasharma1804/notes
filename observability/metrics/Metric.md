@@ -503,7 +503,8 @@ scrape_configs:
 
     static_configs:
       - targets:
-          - etcd.kube-system.svc.cluster.local:2379
+          - node_ip1:<port>
+          - node_ip2:<port>
 ```
 
 - Metrics:
@@ -515,3 +516,21 @@ etcd_server_proposals_pending
 etcd_mvcc_db_total_size_in_bytes
 etcd_disk_wal_fsync_duration_seconds
 ```
+
+#### APISIX
+
+- Exposes metrics at /metrics endpoint if the prometheus plugin is enabled globally
+
+```yaml
+scrape_configs:
+  - job_name: apisix
+    kubernetes_sd_configs:
+      - role: pod
+
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        regex: apisix
+        action: keep
+```
+
+Note: Cluster IPs are not scraped, k8s service discovery is used along with regular expressions to scrape the correct pods as a part of a single job
