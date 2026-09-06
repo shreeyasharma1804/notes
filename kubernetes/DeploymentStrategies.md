@@ -11,6 +11,8 @@
 annotations:
   checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 ```
+- After this, a `helm upgrade <installation-name> <chart-name>` is required so that the pod template is updated with the latest hash value
+
 
 ### Blue-green deployments
 
