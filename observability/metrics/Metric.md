@@ -339,14 +339,12 @@ spec:
       targetPort: 9090
 ```
 
-Note:
-- port forward to view the logs: `kubectl port-forward -n monitoring svc/prometheus 9090:9090`
+### Important metrics exposed at /metrics:
 
-#### Important metrics exposed at /metrics:
+- kubelet_active_pods: Total number of pods currently running
+- kubelet_desired_pods: Total number of pods that should be running
 
-- kubelet_active_pods
-
-#### Important metrics exposed at /metrics/cAdvisor
+### Important metrics exposed at /metrics/cAdvisor
 
 - For control-plane metrics, use: `node_role_kubernetes_io_control_plane="true"`
 - For CoreDNS, use: `rate(container_network_transmit_bytes_total{pod=~"coredns.*"}[5m])`
@@ -388,6 +386,11 @@ sum by (pod)((rate(container_cpu_usage_seconds_total[5m])))
 container_memory_working_set_bytes = total_usage - file cache
 
 container_memory_working_set_bytes provides the actual pod RAM Usage. In case if a pod is about to be OOM killed, the kernel first releases the file cache. OOM killing depends on the actual pod memory usage then
+
+```bash
+sudo sysctl -w vm.drop_cache=3
+```
+
 
 - Memory usage of pods
 
