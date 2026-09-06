@@ -208,32 +208,206 @@ peer-trusted-ca-file: /etc/etcd/pki/ca.crt
 
 ### Bootstrapping using ansible
 
-- Create the certificates and store them in a vault. The certificates should be signed by the same authority as the cacerts in the apiserver.
-- Create the cacerts file and store it in the vault.
-- Download etcd and etcdctl binaries and place them in the configured locations.
-- Download the certificates and cacerts and place them in the required location
-- Start the etcd process on the 1st node(leader) using:
+#### Bootsrap one node
+
+```yaml
+---
+- name: Bootstrap first etcd node
+  hosts: node1
+  become: true
+
+  vars:
+    etcd_name: "{{ inventory_hostname }}"
+    etcd_data_dir: /var/lib/etcd
+    etcd_config_dir: /etc/etcd
+    etcd_config_file: /etc/etcd/etcd.conf
+    etcd_bin: /usr/local/bin/etcd
+
+  tasks:
+
+    # ---------------------------------------------------------
+    # 1. Create directories
+    # ---------------------------------------------------------
+
+    - name: Create etcd directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - "{{ etcd_config_dir }}"
+        - "{{ etcd_data_dir }}"
+
+
+    # ---------------------------------------------------------
+    # 2. Create etcd configuration
+    # ---------------------------------------------------------
+
+    - name: Create first-node etcd configuration
+      ansible.builtin.copy:
+        dest: "{{ etcd_config_file }}"
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          name: "{{ etcd_name }}"
+
+          data-dir: "{{ etcd_data_dir }}"
+
+          listen-client-urls: "https://0.0.0.0:2379"
+          advertise-client-urls: "https://{{ inventory_hostname }}:2379"
+
+          listen-peer-urls: "https://0.0.0.0:2380"
+          initial-advertise-peer-urls: "https://{{ inventory_hostname }}:2380"
+
+          initial-cluster: "{{ etcd_name }}=https://{{ inventory_hostname }}:2380"
+          initial-cluster-state: "new"
+          initial-cluster-token: "my-etcd-cluster"
+
+
+    # ---------------------------------------------------------
+    # 3. Create systemd service
+    # ---------------------------------------------------------
+
+    - name: Create etcd systemd service
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/etcd.service
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=etcd
+          Documentation=https://etcd.io/docs/
+          After=network-online.target
+          Wants=network-online.target
+
+          [Service]
+          Type=notify
+          ExecStart={{ etcd_bin }} --config-file={{ etcd_config_file }}
+
+          Restart=always
+          RestartSec=5
+
+          LimitNOFILE=40000
+
+          [Install]
+          WantedBy=multi-user.target
+
+
+    # ---------------------------------------------------------
+    # 4. Tell systemd about the new service
+    # ---------------------------------------------------------
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+
+    # ---------------------------------------------------------
+    # 5. Start etcd
+    # ---------------------------------------------------------
+
+    - name: Enable and start etcd
+      ansible.builtin.systemd:
+        name: etcd.service
+        enabled: true
+        state: started
+
+
+    # ---------------------------------------------------------
+    # 6. Wait until etcd is healthy
+    # ---------------------------------------------------------
+
+    - name: Wait for etcd client port
+      ansible.builtin.wait_for:
+        host: "{{ inventory_hostname }}"
+        port: 2379
+        delay: 2
+        timeout: 60
+
+
+    - name: Check etcd health
+      ansible.builtin.command:
+        cmd: >
+          /usr/local/bin/etcdctl
+          --endpoints=https://{{ inventory_hostname }}:2379
+          endpoint health
+      register: etcd_health
+      retries: 10
+      delay: 3
+      until: etcd_health.rc == 0
+      changed_when: false
+
+
+    - name: Show etcd health
+      ansible.builtin.debug:
+        var: etcd_health.stdout
+```
+
+- Add the remaining nodes to the cluster
+
 
 ```
- ~/etcd/bin/etcdctl --endpoints=https://${host}:2379 \
-  --cert="{{ etcd_cert_path }}/{{ host }}.pem" \
-  --key="{{ etcd_cert_path }}/{{ host }}.key" \
-  --cacert="{{ etcd_cert_path }}/{{ host }}.crt" \
+- name: Add remaining etcd members
+  hosts: etcd[1:]
+  gather_facts: true
+  serial: 1
+
+  tasks:
+
+    - name: Add member to existing cluster
+      ansible.builtin.command:
+        cmd: >
+          {{ etcdctl_bin }}
+          --endpoints=https://{{ hostvars[groups['etcd'][0]].ansible_host }}:2379
+          --cert={{ etcd_cert_path }}/{{ inventory_hostname }}.pem
+          --key={{ etcd_cert_path }}/{{ inventory_hostname }}.key
+          --cacert={{ etcd_cert_path }}/{{ inventory_hostname }}.crt
+          member add {{ inventory_hostname }}
+          --peer-urls=https://{{ ansible_host }}:2380
+      register: member_add
+
+
+    - name: Extract initial cluster
+      ansible.builtin.set_fact:
+        etcd_initial_cluster: >-
+          {{
+            member_add.stdout
+            | regex_search('ETCD_INITIAL_CLUSTER="([^"]+)"', '\1')
+            | first
+          }}
+
+
+    - name: Generate member config
+      ansible.builtin.template:
+        src: etcd.conf.j2
+        dest: "{{ ansible_env.HOME }}/etcd/config/etcd.conf"
+
+
+    - name: Start member
+      ansible.builtin.systemd:
+        name: etcd
+        scope: user
+        state: started
+        enabled: true
+        daemon_reload: true
+
+
+    - name: Wait for member to become healthy
+      ansible.builtin.command:
+        cmd: >
+          {{ etcdctl_bin }}
+          --endpoints=https://{{ ansible_host }}:2379
+          --cert={{ etcd_cert_path }}/{{ inventory_hostname }}.pem
+          --key={{ etcd_cert_path }}/{{ inventory_hostname }}.key
+          --cacert={{ etcd_cert_path }}/{{ inventory_hostname }}.crt
+          endpoint health
+      register: result
+      retries: 30
+      delay: 2
+      until: result.rc == 0
+      changed_when: false
 ```
-
-- In a loop:
-
-    - Add a new etcd node to the cluster from the leader
-    
-    ```
-    ~/etcd/bin/etcdctl --endpoints=https://{{ leader_host }}:2379 \
-      --cert="{{ etcd_cert_path }}/{{ host }}.pem" \
-      --key="{{ etcd_cert_path }}/{{ host }}.key" \
-      --cacert="{{ etcd_cert_path }}/{{ host }}.crt" \
-      member add {{ host }} \
-      --peer-urls=https://{{ host }}:2380
-    ```
-
-    - Start the etcd process on the new node
- 
-- Now the 
