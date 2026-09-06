@@ -1,5 +1,10 @@
 ## Application metrics 
 
+### Application
+
+- Defines an open-telemetry metric exporter and send the metrics to the open-telemetry collector
+- The open-telemetry daemonset exposes the metrics at one endpoint
+
 ```python
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
@@ -7,7 +12,7 @@ from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExp
 from opentelemetry import metrics
 
 exporter = OTLPMetricExporter(
-    endpoint="http://otel-collector:4317",
+    endpoint="http://otel-collector:4318",
     insecure=True
 )
 
@@ -69,14 +74,7 @@ while(True):
     time.sleep(5)
 ```
 
-
-```bash
-Application -> sends metrics to otel collector -> otel collector exposes the metrics on one port -> prometheus scrapes the port and stores the data in a TSDB
-
-prometheus also scrapes /metrics/cadvisor on every kubelet for container resource usage metrics
-
-Overall node statistics require daemonset of node exporter
-```
+#### open-telemetry configuration
 
 ```yml
 # otel-configmap
@@ -113,51 +111,17 @@ data:
         metrics:
           receivers: [otlp]
           exporters: [debug, prometheus]
+```
 
-# prometheus configmap
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: prometheus-config
-  namespace: metric
+#### Prometheus job
 
-data:
-  prometheus.yml: |
-    global:
-      scrape_interval: 5s
+```yaml
 
-    scrape_configs:
+- job_name: otel
 
-    - job_name: otel
-
-      static_configs:
-      - targets:
-        - otel-collector:9464
-
-    - job_name: kubelet
-
-      scheme: https
-
-      kubernetes_sd_configs:
-      - role: node
-
-      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
-      tls_config:
-        insecure_skip_verify: true
-
-      relabel_configs:
-
-      - action: labelmap
-        regex: __meta_kubernetes_node_label_(.+)
-
-      - target_label: __address__
-        replacement: kubernetes.default.svc:443
-
-      - source_labels:
-        - __meta_kubernetes_node_name
-        target_label: __metrics_path__
-        replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+  static_configs:
+  - targets:
+    - otel-collector:9464
 ```
 
 ## K8S metrics (Advisor and cAdvisor)
