@@ -78,7 +78,89 @@ prometheus also scrapes /metrics/cadvisor on every kubelet for container resourc
 Overall node statistics require daemonset of node exporter
 ```
 
-## K8S metrics
+```yml
+# otel-configmap
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-config
+  namespace: metric
+
+data:
+  otel-config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+    exporters:
+      prometheus:
+        endpoint: "0.0.0.0:9464"
+
+      debug:
+        verbosity: detailed
+
+    service:
+      telemetry:
+        logs:
+          level: debug
+
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          exporters: [debug, prometheus]
+
+# prometheus configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: metric
+
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 5s
+
+    scrape_configs:
+
+    - job_name: otel
+
+      static_configs:
+      - targets:
+        - otel-collector:9464
+
+    - job_name: kubelet
+
+      scheme: https
+
+      kubernetes_sd_configs:
+      - role: node
+
+      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+      tls_config:
+        insecure_skip_verify: true
+
+      relabel_configs:
+
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+
+      - target_label: __address__
+        replacement: kubernetes.default.svc:443
+
+      - source_labels:
+        - __meta_kubernetes_node_name
+        target_label: __metrics_path__
+        replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+```
+
+## K8S metrics (Advisor and cAdvisor)
 
 ### Setup
 
@@ -238,89 +320,33 @@ Note:
 - Default TSDB retention time: 15 days
 - PVC is required for the tsdb storage
 
-```yml
-# otel-configmap
+#### Service.yaml
 
+```yaml
 apiVersion: v1
-kind: ConfigMap
+kind: Service
 metadata:
-  name: otel-config
-  namespace: metric
-
-data:
-  otel-config.yaml: |
-    receivers:
-      otlp:
-        protocols:
-          grpc:
-            endpoint: 0.0.0.0:4317
-          http:
-            endpoint: 0.0.0.0:4318
-
-    exporters:
-      prometheus:
-        endpoint: "0.0.0.0:9464"
-
-      debug:
-        verbosity: detailed
-
-    service:
-      telemetry:
-        logs:
-          level: debug
-
-      pipelines:
-        metrics:
-          receivers: [otlp]
-          exporters: [debug, prometheus]
-
-# prometheus configmap
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: prometheus-config
-  namespace: metric
-
-data:
-  prometheus.yml: |
-    global:
-      scrape_interval: 5s
-
-    scrape_configs:
-
-    - job_name: otel
-
-      static_configs:
-      - targets:
-        - otel-collector:9464
-
-    - job_name: kubelet
-
-      scheme: https
-
-      kubernetes_sd_configs:
-      - role: node
-
-      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
-      tls_config:
-        insecure_skip_verify: true
-
-      relabel_configs:
-
-      - action: labelmap
-        regex: __meta_kubernetes_node_label_(.+)
-
-      - target_label: __address__
-        replacement: kubernetes.default.svc:443
-
-      - source_labels:
-        - __meta_kubernetes_node_name
-        target_label: __metrics_path__
-        replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+  name: prometheus
+  namespace: monitoring
+spec:
+  type: ClusterIP
+  selector:
+    app: prometheus
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
 ```
 
-## K8S Metrics
+Note:
+- port forward to view the logs: `kubectl port-forward -n monitoring svc/prometheus 9090:9090`
+
+#### Important metrics exposed at /metrics:
+
+- kubelet_active_pods
+
+#### Important metrics exposed at /metrics/cAdvisor
 
 - For control-plane metrics, use: `node_role_kubernetes_io_control_plane="true"`
 - For CoreDNS, use: `rate(container_network_transmit_bytes_total{pod=~"coredns.*"}[5m])`
