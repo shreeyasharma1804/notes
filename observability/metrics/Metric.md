@@ -1,4 +1,4 @@
-### Metrics emitted by application using opentelemetry
+## Application metrics 
 
 ```python
 from opentelemetry.sdk.metrics import MeterProvider
@@ -69,7 +69,109 @@ while(True):
     time.sleep(5)
 ```
 
-### K8S setup
+## K8S metrics
+
+### Setup
+
+### Prerequisites
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+  - apiGroups: [""]
+    resources:
+      - nodes
+      - nodes/proxy
+      - nodes/metrics
+      - services
+      - endpoints
+      - pods
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: monitoring
+```
+
+#### ConfigMap
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+
+      # Kubelet metrics
+      - job_name: kubernetes-kubelet
+        scheme: https
+
+        kubernetes_sd_configs:
+          - role: node
+
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        tls_config:
+          insecure_skip_verify: true
+
+        relabel_configs:
+          - source_labels: [__address__]
+            regex: '(.*):.*'
+            target_label: __address__
+            replacement: '${1}:10250'
+
+          - source_labels: [__meta_kubernetes_node_name]
+            target_label: node
+
+
+      # Kubelet cAdvisor metrics
+      - job_name: kubernetes-cadvisor
+        scheme: https
+
+        metrics_path: /metrics/cadvisor
+
+        kubernetes_sd_configs:
+          - role: node
+
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        tls_config:
+          insecure_skip_verify: true
+
+        relabel_configs:
+          - source_labels: [__address__]
+            regex: '(.*):.*'
+            target_label: __address__
+            replacement: '${1}:10250'
+
+          - source_labels: [__meta_kubernetes_node_name]
+            target_label: node
+```
+
 
 ```bash
 Application -> sends metrics to otel collector -> otel collector exposes the metrics on one port -> prometheus scrapes the port and stores the data in a TSDB
@@ -161,7 +263,7 @@ data:
         replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
 ```
 
-### K8S Metrics
+## K8S Metrics
 
 - For control-plane metrics, use: `node_role_kubernetes_io_control_plane="true"`
 - For CoreDNS, use: `rate(container_network_transmit_bytes_total{pod=~"coredns.*"}[5m])`
