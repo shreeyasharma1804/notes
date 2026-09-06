@@ -74,7 +74,7 @@ while(True):
     time.sleep(5)
 ```
 
-#### open-telemetry configuration
+### open-telemetry configuration
 
 ```yml
 # otel-configmap
@@ -113,7 +113,7 @@ data:
           exporters: [debug, prometheus]
 ```
 
-#### Prometheus job
+### Prometheus job
 
 ```yaml
 
