@@ -350,7 +350,7 @@ peer-trusted-ca-file: /etc/etcd/pki/ca.crt
 - Add the remaining nodes to the cluster
 
 
-```
+```yaml
 - name: Add remaining etcd members
   hosts: etcd[1:]
   gather_facts: true
