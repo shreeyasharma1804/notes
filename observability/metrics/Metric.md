@@ -69,11 +69,20 @@ while(True):
     time.sleep(5)
 ```
 
+
+```bash
+Application -> sends metrics to otel collector -> otel collector exposes the metrics on one port -> prometheus scrapes the port and stores the data in a TSDB
+
+prometheus also scrapes /metrics/cadvisor on every kubelet for container resource usage metrics
+
+Overall node statistics require daemonset of node exporter
+```
+
 ## K8S metrics
 
 ### Setup
 
-### Prerequisites
+#### Prerequisites
 
 ```yaml
 apiVersion: v1
@@ -130,21 +139,23 @@ data:
       - job_name: kubernetes-kubelet
         scheme: https
 
-        kubernetes_sd_configs:
+        # metrics_path not defined here because the default is /metrics
+
+        kubernetes_sd_configs:       # Service Discovery config (equivalent to describing all the nodes in the cluster)
           - role: node
 
-        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token   # Bearer token for connecting to API server
 
         tls_config:
           insecure_skip_verify: true
 
         relabel_configs:
-          - source_labels: [__address__]
+          - source_labels: [__address__]          # Relabel the __address__ field of all discovered nodes from ip:<port> to ip:<10250> which is the kubelet server port
             regex: '(.*):.*'
             target_label: __address__
             replacement: '${1}:10250'
 
-          - source_labels: [__meta_kubernetes_node_name]
+          - source_labels: [__meta_kubernetes_node_name]      # Rename the label __meta_kubernetes_node_name to node
             target_label: node
 
 
@@ -172,14 +183,60 @@ data:
             target_label: node
 ```
 
+#### Deployment
 
-```bash
-Application -> sends metrics to otel collector -> otel collector exposes the metrics on one port -> prometheus scrapes the port and stores the data in a TSDB
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
 
-prometheus also scrapes /metrics/cadvisor on every kubelet for container resource usage metrics
+  template:
+    metadata:
+      labels:
+        app: prometheus
 
-Overall node statistics require daemonset of node exporter
+    spec:
+      serviceAccountName: prometheus
+
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v3.5.0
+
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/prometheus
+            - --web.enable-lifecycle
+
+          ports:
+            - name: http
+              containerPort: 9090
+
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus
+
+            - name: data
+              mountPath: /prometheus
+
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus-config
+
+        - name: data
+          emptyDir: {}
 ```
+
+Note:
+- Default TSDB retention time: 15 days
+- PVC is required for the tsdb storage
 
 ```yml
 # otel-configmap
