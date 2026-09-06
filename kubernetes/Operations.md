@@ -176,3 +176,64 @@ The k8s cluster trusts all certificates signed by ca.crt
 - telenetry
 - flux/argo
 - ingress
+
+
+## etcd
+
+### config file template (to be modified with the correct ansible variables)
+
+```
+name: node1
+
+data-dir: /var/lib/etcd
+
+listen-client-urls: https://10.0.0.11:2379
+advertise-client-urls: https://10.0.0.11:2379
+
+listen-peer-urls: https://10.0.0.11:2380
+initial-advertise-peer-urls: https://10.0.0.11:2380
+
+initial-cluster: node1=https://10.0.0.11:2380
+initial-cluster-state: new
+initial-cluster-token: my-etcd-cluster
+
+cert-file: /etc/etcd/pki/node1.crt
+key-file: /etc/etcd/pki/node1.key
+trusted-ca-file: /etc/etcd/pki/ca.crt
+
+peer-cert-file: /etc/etcd/pki/node1.crt
+peer-key-file: /etc/etcd/pki/node1.key
+peer-trusted-ca-file: /etc/etcd/pki/ca.crt
+```
+
+### Bootstrapping using ansible
+
+- Create the certificates and store them in a vault. The certificates should be signed by the same authority as the cacerts in the apiserver.
+- Create the cacerts file and store it in the vault.
+- Download etcd and etcdctl binaries and place them in the configured locations.
+- Download the certificates and cacerts and place them in the required location
+- Start the etcd process on the 1st node(leader) using:
+
+```
+ ~/etcd/bin/etcdctl --endpoints=https://${host}:2379 \
+  --cert="{{ etcd_cert_path }}/{{ host }}.pem" \
+  --key="{{ etcd_cert_path }}/{{ host }}.key" \
+  --cacert="{{ etcd_cert_path }}/{{ host }}.crt" \
+```
+
+- In a loop:
+
+    - Add a new etcd node to the cluster from the leader
+    
+    ```
+    ~/etcd/bin/etcdctl --endpoints=https://{{ leader_host }}:2379 \
+      --cert="{{ etcd_cert_path }}/{{ host }}.pem" \
+      --key="{{ etcd_cert_path }}/{{ host }}.key" \
+      --cacert="{{ etcd_cert_path }}/{{ host }}.crt" \
+      member add {{ host }} \
+      --peer-urls=https://{{ host }}:2380
+    ```
+
+    - Start the etcd process on the new node
+ 
+- Now the 
