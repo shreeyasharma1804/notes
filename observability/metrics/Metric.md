@@ -526,4 +526,25 @@ kubelet_volume_stats_used_bytes{namespace="openebs",persistentvolumeclaim="expor
 kubelet_volume_stats_used_bytes{namespace="openebs",persistentvolumeclaim="storage-openebs-loki-0"} 2.83034345472e+11
 ```
 
-- ETCD Dashboard
+#### ETCD
+
+- etcd natively exposes Prometheus metrics at /metrics endpoint
+- Prometheus job (where etcd is the service)
+
+```yaml
+scrape_configs:
+  - job_name: etcd
+    scheme: http
+    metrics_path: /metrics
+
+    static_configs:
+      - targets:
+          - etcd.kube-system.svc.cluster.local:2379
+```
+
+- Metrics:
+
+```
+etcd_server_has_leader
+etcd_server_leader_changes_seen_total
+```
