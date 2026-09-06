@@ -63,6 +63,10 @@ kubectl -n kube-system logs kube-controller-manager-cplane-01
 
 ### Secrets
 
+- All secrets are stored in a encrypted format in the etcd server.
+- A kubelet is authorized to retrieve a Secret only if that Secret is referenced by a Pod that has been scheduled to that kubelet's node. This is implemented via Node authorizer.
+- The Node authorizer uses information about Pods bound to the node and their referenced resources to determine what the node should be allowed to access.
+
 #### Types:
 
 - generic: Generic user data
@@ -93,13 +97,25 @@ kubectl create secret generic db-secret \
     --from-literal=username=admin \
     --from-literal=password=password
 
-kubectl create secret generic tls-secret \
-    --from-file=tls.crt \
-    --from-file=tls.key
+kubectl create secret generic db-secret \
+  --from-file=admin=/path/to/admin \
+  --from-file=password=/path/to/password
 
 kubectl create secret tls tls-secret \
     --key=tls.crt \
     --cert=tls.key
+
+kubectl create secret docker-registry regcred \
+  --docker-server=https://index.docker.io/v1/ \
+  --docker-username=<username> \
+  --docker-password=<password-or-token> \
+  --docker-email=<email>
+
+Usage of docker-registry secret
+
+spec:
+  imagePullSecrets:
+    - name: regcred
 ```
 
 #### Usage
@@ -137,14 +153,9 @@ containers:
     name: secret-volume
 ```
 
-If the secret is updated, kubelet automatically updates the mounted file contents at kubelet sync time. No restart is required
-
-- All secrets are stored in a encrypted format in the etcd server.
-- A kubelet is authorized to retrieve a Secret only if that Secret is referenced by a Pod that has been scheduled to that kubelet's node.
-
-If a secret is static: Use env variable
-
-If a secret can be modified: Use files
+Note: 
+- If a secret is static: Use env variable
+- If a secret can be modified: Use files, since if the secret is updated, the kubelet automatically updates the mounted file contents at kubelet sync time. No restart is required
 
 ### Dynamic secret refresh (External vault)
 
