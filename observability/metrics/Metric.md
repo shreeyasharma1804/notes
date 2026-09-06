@@ -363,7 +363,7 @@ topk(10, rate(container_cpu_usage_seconds_total[5m]))
 rate(container_cpu_usage_seconds_total{container="hi-bye-app"}[5m])
 ```
 
-- CPU usage of a namepsace:
+- CPU usage of a namespace:
 
 ```bash
 sum(rate(container_cpu_usage_seconds_total{namespace="default"}[5m]))
@@ -378,7 +378,7 @@ sum by (namespace)((rate(container_cpu_usage_seconds_total[5m])))
 - CPU Usage of all pods:
 
 ```bash
-sum by (pod)((rate(container_cpu_usage_seconds_total[5m])))
+sum by (pod, namespace)((rate(container_cpu_usage_seconds_total[5m])))
 ```
 
 #### Memory (guage)
