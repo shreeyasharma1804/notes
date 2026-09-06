@@ -392,11 +392,11 @@ Blocks:
 * `hostPID`
 * `hostIPC`
 * Dangerous capabilities (`SYS_ADMIN`, `NET_ADMIN`, `SYS_PTRACE`, etc.)
+* HostPath volumes
 
 Allows:
 
 * Running as root
-* HostPath volumes
 * Default Linux capabilities
 
 Used for:
