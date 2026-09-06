@@ -1,4 +1,4 @@
-### Deployments
+## Deployments
 
 - Check the history of a deployment:
 
@@ -46,7 +46,7 @@ This field is updated when the deployment spec changes
 
 - If a pod is created from a deployment, not all changes are allowed on the pod. Also, the changes are not kept if the deployment is restarted. Similar to a deployment, if an edit is accepted, the pod generation is updated
 
-### Replicasets
+## Replicasets
 
 - Change the desired number of replicas
 
@@ -211,7 +211,7 @@ spec:
         property: password
 ```
 
-### ConfigMap
+## ConfigMap
 
 Store environment variables, if the variables are static, mount them as environment variables, else, mount them as files
 
@@ -261,11 +261,9 @@ volumeMounts:
   mountPath: /etc/config
 ```
 
-#### Generators and automatic pod restart
+## cert-manager
 
-### cert-manager
-
-#### Issuer
+### Issuer
 
 ```yml
 apiVersion: cert-manager.io/v1
@@ -276,7 +274,7 @@ spec:
   selfSigned: {}
 ```
 
-#### Certificate
+### Certificate
 
 - Create a tls secret named api-server-tls, with issuer defined in issuerRef, other details and expiry time
 
