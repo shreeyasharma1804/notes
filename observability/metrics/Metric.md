@@ -547,4 +547,7 @@ scrape_configs:
 ```
 etcd_server_has_leader
 etcd_server_leader_changes_seen_total
+etcd_server_proposals_pending
+etcd_mvcc_db_total_size_in_bytes
+etcd_disk_wal_fsync_duration_seconds
 ```
