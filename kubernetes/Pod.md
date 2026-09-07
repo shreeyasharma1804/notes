@@ -234,7 +234,7 @@ affinity:
 
 ### Probes
 
-Probes are defined on a per container basis only.
+Probes are defined on a per container basis.
 
 ```yml
 apiVersion: v1
@@ -280,15 +280,23 @@ spec:
 
 #### startupProbe
 
-The kubelet executes the command httpGet after initialDelaySeconds every periodSeconds, waits for the response of the command for timeoutSeconds before timing out and tolerates failureThreshold number of failures. This provides a slow pod some time to start. After the threshold exceeds, the container is restarted
+- The kubelet executes the command httpGet after initialDelaySeconds every periodSeconds, waits for the response of the command for timeoutSeconds before timing out and tolerates failureThreshold number of failures.
+- After failureThreshold is reached, the container is restarted.
+- This probe does not mark the pod as Ready
+- Failures should reflect a pod startup problem.
+- This provides a slow pod some time to start. After the threshold exceeds, the container is restarted
 
 #### livenessProbe
 
-Starts after startupProbe, similar to it and also restarts the container incase of failure
+- Starts after startupProbe succeeds
+- Similar mechanism, also restarts the container in-case of failures
+- Since the probe reflects of the container is alive, any failures should suggest problems related to the same
 
 #### readinessProbe
 
-Decides if the point is included in the service endpoint
+- Decides if the pod is included in the service endpoints
+- This probe marks the pod as Ready
+- No restarts in case of failures, only the pod is removed from the service discovery
 
 ### Static pods
 
