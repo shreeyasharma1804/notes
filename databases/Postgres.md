@@ -1,6 +1,6 @@
 ## DDL
 
-### Create a new table
+#### CREATE
 
 ```sql
 CREATE TABLE users (
@@ -10,4 +10,27 @@ CREATE TABLE users (
     age INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
+
+#### ALTER
+
+```sql
+ALTER TABLE users
+ALTER COLUMN name TYPE VARCHAR(50),
+ALTER COLUMN name SET NOT NULL;
+
+ALTER TABLE users
+DROP COLUMN email;
+```
+
+#### DROP
+
+```sql
+DROP TABLE users;
+```
+
+#### TRUNCATE
+
+```sql
+TRUNCATE TABLE users;
 ```
