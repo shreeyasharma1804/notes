@@ -411,3 +411,7 @@ peer-trusted-ca-file: /etc/etcd/pki/ca.crt
       until: result.rc == 0
       changed_when: false
 ```
+
+### HNC
+
+https://oneuptime.com/blog/post/2026-02-09-hierarchical-namespaces-hnc/view
