@@ -62,3 +62,11 @@ SELECT customer_id, SUM(amount) AS total
 FROM sales
 GROUP BY customer_id;
 ```
+
+#### Unclogged Tables
+
+- Skips the WAL logs
+- A table can be defined as clogged or unclogged at any point in its lifecycle
+- The table is entirely truncated after a restart because it might be violating the ACID properties
+- Since WAL logs are not written, replication is not supported
+- https://www.crunchydata.com/blog/postgresl-unlogged-tables
