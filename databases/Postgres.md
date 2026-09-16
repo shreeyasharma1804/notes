@@ -108,3 +108,11 @@ CREATE TABLE child (
 ) INHERITS (parent);
 ```
 
+- Propagating indexes to the child tables
+
+```
+CREATE TABLE child (
+    LIKE parent INCLUDING INDEXES
+    age int,
+) INHERITS (parent);
+```
