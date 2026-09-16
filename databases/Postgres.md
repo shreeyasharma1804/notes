@@ -161,3 +161,24 @@ select * from datatypes_mviewcustomer_sales; # This is faster because the groupi
 ```sql
 REFRESH MATERIALIZED VIEW datatypes_mviewcustomer_sales;
 ```
+
+#### Partition tables
+
+- Create a table and define the key based on which the data will be partitioned and the partitioning scheme
+- Schemes: range, list, hash
+- Useful for dividing data across tables for faster searches
+- No data is stored in the parent table
+- Performance benefits: Partition pruning, Each partition has its own index, Detach a partition from the parent for archiving/ delete the entire partition based on retention policy instead of scanning the entire table based on a where clause
+- Range and List scheme inserts might fail if the required child table does not exist
+- Uniqueness of the primary key across partitions is not guaranteed since each partition is a unique table
+
+
+### Indexing
+
+#### Concurrent indexing
+
+### Performance testing tools
+
+#### pgbench
+
+#### EXPLAIN
