@@ -1,3 +1,22 @@
+### Creating a new DB
+
+- Every postgres installation has a catalogue table called pg_database which stores the metadata of every database
+
+```sql
+select datname, datistemplate  from pg_database;
+```
+
+- A new database is created based on the template1 db (template1 appears as one of the rows in the above query output)
+
+```sql
+# Copied from template1
+CREATE DATABASE appdb;
+```
+
+- template1 can be edited
+- template0 is the original unedited version of template1
+- New templates can be created, which also appear in pg_database and can be used to create DB's from them
+
 ### DDL
 
 - CREATE
@@ -70,3 +89,5 @@ GROUP BY customer_id;
 - The table is entirely truncated after a restart because it might be violating the ACID properties
 - Since WAL logs are not written, replication is not supported
 - https://www.crunchydata.com/blog/postgresl-unlogged-tables
+
+- 
