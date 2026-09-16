@@ -105,6 +105,7 @@ GROUP BY customer_id;
 - Tables support inheritance
 - Partition tables are an example of it
 - Changes in the parent are propagated to the child
+- Columns and the constraints defined on them are propagated by default, but the physical storage remains different
 
 ```sql
 CREATE TABLE parent (
@@ -125,3 +126,5 @@ CREATE TABLE child (
     age int,
 ) INHERITS (parent);
 ```
+
+- Can suffer with something similar to the diamond problem, example, if a table inherits from 2 tables, which define the same column name but of different types
