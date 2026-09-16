@@ -100,7 +100,7 @@ GROUP BY customer_id;
 - Since WAL logs are not written, replication is not supported
 - https://www.crunchydata.com/blog/postgresl-unlogged-tables
 
-#### Inheritance in tables
+#### Inherited tables
 
 - Tables support inheritance
 - Partition tables are an example of it
@@ -128,3 +128,36 @@ CREATE TABLE child (
 ```
 
 - Can suffer with something similar to the diamond problem, example, if a table inherits from 2 tables, which define the same column name but of different types
+
+
+#### Views
+
+- A view is a stored query
+
+```sql
+CREATE VIEW active_users AS
+SELECT id, name
+FROM users
+WHERE active = true;
+
+SELECT * FROM active_users; # Executes the above query
+```
+
+#### Materialized views
+
+- The query is executed once and the result is stored as a table
+
+```sql
+CREATE MATERIALIZED VIEW  datatypes_mviewcustomer_sales AS
+SELECT customer_id, SUM(amount) AS total_sales
+FROM orders
+GROUP BY customer_id;
+
+select * from datatypes_mviewcustomer_sales; # This is faster because the grouping operation is not performed again
+```
+
+- Refresh the view
+
+```sql
+REFRESH MATERIALIZED VIEW datatypes_mviewcustomer_sales;
+```
