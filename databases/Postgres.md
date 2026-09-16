@@ -16,6 +16,7 @@ CREATE DATABASE appdb;
 - template1 can be edited
 - template0 is the original unedited version of template1
 - New templates can be created, which also appear in pg_database and can be used to create DB's from them
+- template DB tables can have normal data in them
 
 ### DDL
 
