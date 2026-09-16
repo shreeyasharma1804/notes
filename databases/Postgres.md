@@ -67,6 +67,15 @@ CREATE TABLE people OF person_type;
 # Will contain id, name and age columns
 ```
 
+### Auto Increments
+
+```
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name TEXT
+);
+```
+
 ### Types of tables
 
 #### Typed tables
