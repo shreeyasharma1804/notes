@@ -91,4 +91,20 @@ GROUP BY customer_id;
 - Since WAL logs are not written, replication is not supported
 - https://www.crunchydata.com/blog/postgresl-unlogged-tables
 
-- 
+#### Inheritance in tables
+
+- Tables support inheritance
+- Partition tables are an example of it
+- Changes in the parent are propagated to the child
+
+```sql
+CREATE TABLE parent (
+    id   int,
+    name text
+);
+
+CREATE TABLE child (
+    age int
+) INHERITS (parent);
+```
+
