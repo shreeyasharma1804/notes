@@ -94,7 +94,8 @@ CREATE TABLE users (
 );
 ```
 
-### Types of tables ()
+
+### Types of tables
 
 #### Typed tables
 
