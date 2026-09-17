@@ -69,7 +69,7 @@ CREATE TABLE people OF person_type;
 
 ### Auto Increments
 
-```
+```sql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name TEXT
@@ -120,7 +120,7 @@ CREATE TABLE child (
 
 - Propagating indexes to the child tables
 
-```
+```sql
 CREATE TABLE child (
     LIKE parent INCLUDING INDEXES
     age int,
@@ -172,6 +172,25 @@ REFRESH MATERIALIZED VIEW datatypes_mviewcustomer_sales;
 - Range and List scheme inserts might fail if the required child table does not exist
 - Uniqueness of the primary key across partitions is not guaranteed since each partition is a unique table
 
+### Constraints
+
+#### NOT NULL
+
+- A column value cannot be null
+
+#### UNIQUE
+
+- A column value needs to be unique across the table
+- A NULL value is allowed because it is not checked for uniqueness
+
+#### CHECK
+
+- A defined condition should be true while inserting a value into the table for a particular column
+
+```
+CHECK (age >= 18)
+CHECK (area in (IN))
+```
 
 ### Indexing
 
