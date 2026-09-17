@@ -353,6 +353,13 @@ GRANT privilege ON object TO role
 
 #### Concurrent indexing
 
+### Internals
+
+- Each row entry is called a tuple
+- Pages are 8KB chunks inside a real file which hold the data
+- New file segments are rolled out at 1GB (not configurable)
+- A tuple's location is defined by ctid (page number, tuple offset). 
+
 ### Performance testing tools
 
 #### pgbench
