@@ -349,16 +349,20 @@ GRANT privilege ON object TO role
 
 ### Procedures
 
-### Indexing
-
-#### Concurrent indexing
-
 ### Internals
 
-- Each row entry is called a tuple
+- Each row entry is stored as a tuple
+- A tuple's location is defined by ctid (page number, tuple offset). 
 - Pages are 8KB chunks inside a real file which hold the data
 - New file segments are rolled out at 1GB (not configurable)
-- A tuple's location is defined by ctid (page number, tuple offset). 
+- Since data of variable length is allowed, postgres does not update a tuple's value in place (for an UPDATE operation). Instead, it creates a new entry (preferably in the same page).
+
+### Indexing
+
+- Why are B-Trees used: Rebalancing
+- When a row is updated, a new ctid is created,this change needs to be reflected in all the indexes defined on the table
+
+#### Concurrent indexing
 
 ### Performance testing tools
 
