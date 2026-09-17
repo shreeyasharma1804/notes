@@ -192,6 +192,37 @@ CHECK (age >= 18)
 CHECK (area in (IN))
 ```
 
+#### PRIMARY KEY
+
+- Defines a row uniquely
+- Uses the constraints NOT NULL and UNIQUE
+
+#### FOREIGN KEY
+
+- Enforces a column value to be a valid value in a foreign table
+
+```sql
+CREATE TABLE employees (
+    id INT PRIMARY KEY,
+    name TEXT,
+    department_id INT,
+    FOREIGN KEY (department_id)
+        REFERENCES departments(id)
+);
+```
+
+#### Composite key
+
+```sql
+CREATE TABLE student_courses (
+    student_id INT,
+    course_id INT,
+    enrolled_at DATE,
+
+    PRIMARY KEY (student_id, course_id)
+);
+```
+
 ### Indexing
 
 #### Concurrent indexing
