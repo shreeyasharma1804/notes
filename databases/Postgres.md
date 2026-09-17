@@ -242,6 +242,18 @@ CREATE TABLE student_courses (
 );
 ```
 
+### Sequences
+
+```sql
+CREATE SEQUENCE mysequence
+INCREMENT 5
+START 100;
+
+SELECT nextval('mysequence');
+```
+
+### Roles
+
 ### Indexing
 
 #### Concurrent indexing
