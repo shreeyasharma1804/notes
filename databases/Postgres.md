@@ -18,6 +18,22 @@ CREATE DATABASE appdb;
 - New templates can be created, which also appear in pg_database and can be used to create DB's from them
 - template DB tables can have normal data in them
 
+### Schema
+
+- Namespaces inside a DB which hold all the objects such as tables, views, indexes etc
+- Check the current schema
+
+```sql
+SELECT current_schema();
+```
+
+- Create a new schema and use it
+
+```sql
+CREATE SCHEMA hr
+SET search_path TO hr;
+```
+
 ### DDL
 
 - CREATE
