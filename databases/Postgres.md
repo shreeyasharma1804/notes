@@ -254,6 +254,91 @@ SELECT nextval('mysequence');
 
 ### Roles
 
+- Roles represent interaction with the database
+- A role with a login privilege is a user
+
+```sql
+-- A basic login role (application user)
+CREATE ROLE app_user WITH LOGIN PASSWORD 'strong_password_here';
+
+-- A role that can create databases (for a developer)
+CREATE ROLE dev_user WITH LOGIN CREATEDB PASSWORD 'dev_password';
+
+-- A group role (no login, used for grouping permissions)
+CREATE ROLE readonly_group;
+
+-- A role with a password expiration
+CREATE ROLE temp_contractor WITH LOGIN PASSWORD 'temp_pass' VALID UNTIL '2026-06-01';
+```
+
+
+#### Privileges
+
+```
+PostgreSQL Privileges
+│
+├── DATABASE
+│   │
+│   ├── CONNECT
+│   │   └── Connect to the database
+│   │
+│   └── CREATE
+│       └── Create schemas in the database
+│
+├── SCHEMA
+│   │
+│   ├── USAGE
+│   │   └── Access objects inside the schema
+│   │
+│   └── CREATE
+│       └── Create objects inside the schema
+│
+├── TABLE
+│   │
+│   ├── SELECT
+│   │   └── Read rows
+│   │
+│   ├── INSERT
+│   │   └── Add rows
+│   │
+│   ├── UPDATE
+│   │   └── Modify rows
+│   │
+│   ├── DELETE
+│   │   └── Remove rows
+│   │
+│   ├── TRUNCATE
+│   │   └── Empty table
+│   │
+│   ├── REFERENCES
+│   │   └── Create foreign-key constraints
+│   │
+│   └── TRIGGER
+│       └── Create triggers
+│
+├── SEQUENCE
+│   │
+│   ├── USAGE
+│   │   └── Use sequence values
+│   │
+│   ├── SELECT
+│   │   └── Read sequence value
+│   │
+│   └── UPDATE
+│       └── Modify sequence value
+│
+└── FUNCTION
+    │
+    └── EXECUTE
+        └── Run the function
+```
+
+- Granting a privilege to a role
+
+```sql
+GRANT privilege ON object TO role
+```
+
 ### Indexing
 
 #### Concurrent indexing
