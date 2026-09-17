@@ -34,6 +34,8 @@ CREATE SCHEMA hr
 SET search_path TO hr;
 ```
 
+- The default schema is `public`
+
 ### DDL
 
 - CREATE
