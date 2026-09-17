@@ -339,6 +339,16 @@ PostgreSQL Privileges
 GRANT privilege ON object TO role
 ```
 
+### Rules
+
+### Triggers
+
+### Policies
+
+### Functions
+
+### Procedures
+
 ### Indexing
 
 #### Concurrent indexing
