@@ -692,3 +692,10 @@ while True:
   except StopIteration:
     break
 ```
+
+### Walrus operator
+
+```python
+if (x := get_value()) > 10:
+    print(x)
+```
