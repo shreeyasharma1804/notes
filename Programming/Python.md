@@ -677,3 +677,18 @@ with open("data.txt", "r+b") as f:
     mm = mmap.mmap(f.fileno(), 0)
     print(mm[100])
 ```
+
+### Iterators
+
+```python
+l = [1,2,3]
+
+iterator = iter(l)
+
+while True:
+  try:
+    value = next(iterator)
+    print(value)
+  except StopIteration:
+    break
+```
