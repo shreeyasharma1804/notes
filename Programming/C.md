@@ -1,6 +1,7 @@
 ### General
 
 - In C, declared variables initially hold a garbage value, i.e, they are not 0 initialized
+- Both implicit and explicit casting is supported
 
 ### Void Pointers
 
