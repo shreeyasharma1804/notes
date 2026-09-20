@@ -1,3 +1,7 @@
+## General
+
+- Python does not have the concept of only declaring a variable and not initializing it
+
 ## Async Programming
 
 - async: Convert the function to a coroutine, i.e it becomes schedulable on the event loop
