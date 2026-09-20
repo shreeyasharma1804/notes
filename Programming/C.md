@@ -1,3 +1,7 @@
+### General
+
+- In C, declared variables initially hold a garbage value, i.e, they are not 0 initialized
+
 ### Void Pointers
 
 - Use when the type of the data/pointer is not relevant
