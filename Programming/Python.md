@@ -1,6 +1,20 @@
 ## General
 
 - Python does not have the concept of only declaring a variable and not initializing it
+- Explicit casting is generally not required because a variable is a pointer to a type class holding the value and python is not strongly typed.
+
+```python
+y = 1.2
+x = int(y) # Explicit casting
+```
+
+- Python does perform implicit casting, example:
+
+```python
+x = 10
+y = 2.4
+print(x+y)
+```
 
 ## Async Programming
 
