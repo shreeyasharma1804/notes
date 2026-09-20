@@ -12,3 +12,6 @@ var x int;
 ```go
 x := 10
 ```
+
+- Explicit casting is supported
+- Implicit casting is only supported for untyped variables
