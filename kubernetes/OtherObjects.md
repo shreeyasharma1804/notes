@@ -442,3 +442,7 @@ spec:
 - Allowed restart policies: OnFailure, Never
 - With restart policy OnFailure: The container in the pod is restarted. There is no limit to the numbe rof restarts and is limited by exponential backoff
 - With restart policy Never: A new pod is created for running the job until backoffLimit is reached
+
+### Kueue
+
+https://dev.to/hkhelil/meet-kueue-smart-job-queueing-for-kubernetes-3gj
