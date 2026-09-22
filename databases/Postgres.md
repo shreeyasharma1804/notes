@@ -341,6 +341,18 @@ GRANT privilege ON object TO role
 
 ### Rules
 
+```sql
+CREATE [ OR REPLACE ] RULE name AS ON event
+    TO table_name [ WHERE condition ]
+    DO [ ALSO | INSTEAD ] { NOTHING | command | ( command ; command ... ) }
+
+CREATE OR REPLACE RULE AUDIT_EMPLOYEE AS ON UPDATE
+    TO EMPLOYEE 
+    DO ALSO INSERT INTO TABLE EMPLOYEE_LOG () values ();
+```
+
+https://www.sqlservercentral.com/articles/rules-in-postgresql
+
 ### Triggers
 
 ### Policies
@@ -357,10 +369,12 @@ GRANT privilege ON object TO role
 - New file segments are rolled out at 1GB (not configurable)
 - Since data of variable length is allowed, postgres does not update a tuple's value in place (for an UPDATE operation). Instead, it creates a new entry (preferably in the same page).
 
+#### TableSpace
+
 ### Indexing
 
 - Why are B-Trees used: Rebalancing
-- When a row is updated, a new ctid is created,this change needs to be reflected in all the indexes defined on the table
+- When a row is updated, a new ctid is created, and the new ctid needs to be updated in all the indexes defined on the table
 
 #### Concurrent indexing
 
