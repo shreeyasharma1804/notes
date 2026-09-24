@@ -724,3 +724,28 @@ if (x := get_value()) > 10:
 ```python
 MAX_RETRIES: Final = 5
 ```
+
+### Interning
+
+- Variables are interned in Python, i.e, a 2 variables holding the same integer value will most probably hold the same memory address
+
+```python
+x = 10
+y = 10
+
+print(x is y)    # True
+```
+
+- Strings are also interned
+
+```python
+x = "Hello"
+y = "Hello"
+
+print(x is y)
+```
+
+#### is vs ==
+
+- == check is the value of the two objects is the same
+- is checks if the memory address of the 2 values is also the same
