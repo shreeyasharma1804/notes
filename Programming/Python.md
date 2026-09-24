@@ -717,3 +717,10 @@ while True:
 if (x := get_value()) > 10:
     print(x)
 ```
+
+
+### consts
+
+```python
+MAX_RETRIES: Final = 5
+```
