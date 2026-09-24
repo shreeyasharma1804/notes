@@ -15,3 +15,5 @@ https://internals-for-interns.com/posts/filesystems-introduction/
 - A hard link uses the same inode as the original file. If the original file is deleted, the data can still be accessed because the inode reference count > 0
 - A soft link uses a new inode which contains the filename of the original file, thus, if the original file is deleted, the soft link also becomes invalid
 - A write to a soft link writes to the original file
+- A directory is a file name to inode mapping. The mapping can be stored linearly or a btree indexed on the file name
+- An extent is a contiguous array of blocks
