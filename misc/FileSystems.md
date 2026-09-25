@@ -17,3 +17,32 @@ https://internals-for-interns.com/posts/filesystems-introduction/
 - A write to a soft link writes to the original file
 - A directory is a file name to inode mapping. The mapping can be stored linearly or a btree indexed on the file name
 - An extent is a contiguous array of blocks
+
+
+### FAT32
+
+- cluster ~= block
+
+#### SuperBlock
+
+- The superblock stores the cluster size, root directory cluster location
+
+#### Reading a file
+
+- The root directory cluster location is found from the superblock.
+- The file system stores FAT Tables, which holds a mapping of a cluster value to the next cluster value. This forms a linked list like structure for traversing directory/file data spanning across multiple clusters.
+- Each directory entry is 32 bytes in size which holds the file name (11 bytes), attributes, timestamps, cluster, file size(4 bytes) resulting in a maximum file size of 4GB
+- The file system is traversed based on these cluster linked lists stores in the FAT tables and the file content is read
+
+#### Writing to a file (New cluster allocation)
+
+- The FAT table stores all the available cluster
+- Clusters belonging to file form a linked list where the key value mapping contains the next cluster value
+- EOF is represented by 0xFFFFFFFF
+- Empty cluster is represented as 0x00000000
+- The file system scans the FAT tables to find the required number of clusters (Slow!)
+- The last found free cluster is cached by the FS so that spacial locality can be used to find the next free cluster faster
+
+#### Crash recovery
+
+- No crash recovery
