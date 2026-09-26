@@ -55,3 +55,40 @@ int main() {
     return 0;
 }
 ```
+
+### Malloc
+
+- Dynamic memory allotment
+
+```c
+int* end = malloc(sizeof(int)*4);
+```
+
+- If the requested memory can be allotted by moving the moving the program break, malloc calls brk
+- Otherwise, mmap is called
+
+### calloc
+
+- malloc with memset to 0
+
+### realloc
+
+- Change the size of the requested memory
+- Only accepts the pointer with 0 offset
+
+```c
+int* start2 = realloc(start, sizeof(int)*6);
+int* start2 = realloc(++start, sizeof(int)*6);     // Wont work
+```
+
+### free
+
+- Release the allotted memory
+
+```c
+free(start);
+free(++start);    // Wont work
+```
+
+### brk
+
