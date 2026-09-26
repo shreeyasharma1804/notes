@@ -375,11 +375,18 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 
 - Why are B-Trees used: Rebalancing
 - When a row is updated, a new ctid is created, and the new ctid needs to be updated in all the indexes defined on the table
+- Index can be defined on a composite key
+- Index needs to be re-built as index performance degrades with more deletions
 
 #### Concurrent indexing
 
-### Performance testing tools
+- Normal index creation locks the table
+- Using concurrent indexing avoids that, uses MVCC and is slower
+
+### Performance tools
 
 #### pgbench
 
 #### EXPLAIN
+
+#### VACUUM
