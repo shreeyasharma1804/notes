@@ -116,4 +116,17 @@ return 0;
 
 ### mmap
 
+- Map a virtual address to the program memory
 
+```c
+    int* new_memory = mmap(NULL, 4096, PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+
+    printf("%d\n", *new_memory++);
+
+    *new_memory = 10;
+
+    printf("%d\n", *new_memory++);
+    
+    return 0;
+}
+```
