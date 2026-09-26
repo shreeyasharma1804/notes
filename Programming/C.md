@@ -90,5 +90,30 @@ free(start);
 free(++start);    // Wont work
 ```
 
+### memset
+
+- Set all bytes of a memory block to the defined value
+- Note: The value is assigned on a per byte basis
+
 ### brk
+
+```c
+void* first = sbrk(0);
+void* second = sbrk(4096);
+void* third = sbrk(0);
+
+printf("%p\n", first);
+printf("%p\n", third);
+
+int* new_memory = (int*)second;
+*new_memory = 10;
+
+printf("%d\n", *new_memory++);
+printf("%p\n", new_memory);
+
+return 0;
+```
+
+### mmap
+
 
