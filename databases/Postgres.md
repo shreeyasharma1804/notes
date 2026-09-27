@@ -431,7 +431,15 @@ Concurrent transactions on a role introduces the following problems
 
 Each issue is solved by isolation levels
 
-1. Read committed: This is
+1. Read committed: Only committed rows are visible to a transaction, i.e, the transaction state of a row should be DONE
+2. Repeatable read: Uses snapshots. For a transaction with id t, only rows which have been created, updated or deleted by transactions with id < t are visible to t. Also, with this isolation mode, any operation, if it tries to update a row that is not the latest value compared to the snapshot, the transaction is aborted
+3. SERIALIZABLE
+
+
+### General
+
+- Double quotes are identifiers, single quotes are used for strings
+- <>: All values except the specified one
 
 ### Performance tools
 
