@@ -423,6 +423,15 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 
 #### Isolation
 
+Concurrent transactions on a role introduces the following problems
+
+- Dirty reads: A new transaction(T2) reads a value which has not been committed yet(by T1). If T1 fails, then T2 was always operating on a wrong value
+- Non repeatable reads: Two select statement in T2 might return different values if T1 has updated a row while T2 was running.
+- Lost updates: T1 and T2 both read a row. T1 commits and ends, followed by T2. Now the update from T1 is lost
+
+Each issue is solved by isolation levels
+
+1. Read committed: This is
 
 ### Performance tools
 
