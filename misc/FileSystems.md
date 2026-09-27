@@ -80,6 +80,8 @@ number_free_inodes
 
 - Free inodes are tracked via a bitmap
 
+- Since the FS tree traversal always starts from /, the inode of the root directory is fixed to 2 in ext4. Check it: `ls -id /` 
+
 #### Data blocks
 
 - The data blocks store the actual file/directory content
@@ -90,12 +92,12 @@ number_free_inodes
 - An extent is a continuous set of blocks
 - An extent is identified by the starting block number + number of blocks
 - The purpose is to optimize the spacial locality of file blocks
+- Extents are used for huge files and may not be associated with how the blocks are referenced in the inode
 
 #### Inode to data block mapping
 
-- The file content is stored in an extent btree
-- The extent btree is indexed on the block numbers of the starting block of the extent, and the node also contains the number of blocks
-- The leftmost block number is the initial block number of the file
+- The file content can be referenced via direct pointers, 1st indirect pointer, 2nd indirect pointer, 3rd indirect pointer or btrees
+- For btrees, the leftmost block number is the initial block number of the file
 
 #### Preallocation and delayed allocation
 
@@ -105,6 +107,14 @@ number_free_inodes
 #### Journaling
 
 - WAL logs of metadata such as assigned inodes, updating bitmaps, assigned blocks etc are stored to ensure that the root data structures remain consistent
+
+#### Inode exhaustion
+
+- When a file system runs out of inodes for assigning to a new file
+
+```bash
+df -i
+```
 
 ### XFS
 
