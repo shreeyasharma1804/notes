@@ -383,6 +383,47 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 - Normal index creation locks the table
 - Using concurrent indexing avoids that, uses MVCC and is slower
 
+### MVCC
+
+- Metadata of a row: ctid, xmin, xmax, state of the transaction
+
+#### Insert
+
+- The transaction begins
+- The new row is written with xmin = current transaction id, xmax = 0 and transaction state = IN_PROGRESS
+- The transaction ends and the state is converted to COMPLETE
+
+#### Update
+
+- The transaction begins
+- For the existing row, update xmax = current transaction id
+- Create a new row with a new ctid, with xmin = current transaction id, xmax = 0
+- The transaction ends and the state is converted to COMPLETE
+- The ctids form a chain, a ctid with a non zero xmax value means that it has been updated/deleted
+- Find the ctid with the xmin value as the previous xmax value and that ctid reflects the latest version of the row
+
+#### Delete
+
+- The transaction begins
+- For the existing row, update xmax = current transaction id
+- No new row is created which means that the row is deleted
+
+#### VACUUM
+
+- Previous versions of a row are deleted using VACUUM
+
+#### Atomicity
+
+- All the operations in a transaction should be committed
+- If one of the operations fail, the transaction is marked as ABORTED
+- For INSERT, a rollback means remove the new tuple
+- For UPDATE, a rollback means remove the new tuple and revert the xmax value of the previous tuple
+- For DELETE, a rollback means revert the xmax value of the deleted tuple
+- Commit a transaction only after a unit of work has been completed, and not after every operation
+
+#### Isolation
+
+
 ### Performance tools
 
 #### pgbench
