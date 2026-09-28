@@ -441,6 +441,10 @@ Each issue is solved by isolation levels
 - Double quotes are identifiers, single quotes are used for strings
 - <>: All values except the specified one
 
+```sql
+FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT
+```
+
 ### Performance tools
 
 #### pgbench
