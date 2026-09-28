@@ -127,18 +127,18 @@ df -i
 
 #### Inodes
 
-- Managed via BTree rather than arrays for faster traversal
-- Each Btree node contains 64 inodes
-- If a node has atleast one free inode, it ilso tracked in the Free Inode Btree
+- EXT4 uses preallocated blocks for inodes. The retrieval of an inode is o(1), getting a new inode requires traversing the bitmap array which is o(n). But this system suffers from inode exhaution. XFS does not preallocate a set of block for inodes. Instead it allocates inodes in chunks (to avoid fragmentation) of 64 inodes and tracks them using a Btree.
+- The index of the btree can be the block number + offset of the chunk
+- If a node has atleast one free inode, it also tracked in the Free Inode Btree
 - If a file is small, a map of all the blocks are tracked via the inode itself
-- Similarly, if a directory is very small, all of its entries are stored in the inode itself
 
 #### Data Blocks
 
-- Similar to ext4, huge directories and files are stores in extents whose block numbers are discovered via BTrees
-- Directory BTrees are indexed via filename hashes
-- File BTrees are indexed via byte offset
+- Unlike EXT4, data blocks are only managed via extents. If the number of extents are small, they can be tracked inside the inode itself. FOr a large number of extents a Btree is used.
+- Free data blocks(extents) are tracked via 2 BTrees, one indexed on the block number, and the 2nd indexed on the block size. This allows searching based on locality and size
 - Preallocation and delayed allocation is also supported
+
+Note: Extents can be variable sized and can be allocated based on the file size requirements. They are typically used for avoiding fragmentation
 
 #### Journaling
 
