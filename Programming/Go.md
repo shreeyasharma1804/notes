@@ -66,4 +66,72 @@ func main() {
 	fmt.Println(i.Load())
 
 }
-⁄```
+```
+
+#### False sharing 
+
+- Locking a cache line can introduce false sharing between 2 threads updating different variables but on the same cache line
+
+```go
+package main
+
+import (
+	"sync"
+	"sync/atomic"
+)
+
+type Counter struct {
+	count1 atomic.Int64
+	_      [56]byte
+	count2 atomic.Int64
+}
+
+func incrementSharedState(s *Counter, wg *sync.WaitGroup, id int) {
+	defer wg.Done()
+	for j := 0; j < 1000000; j++ {
+		if id == 0 {
+			s.count1.Add(1)
+		} else {
+			s.count2.Add(1)
+		}
+	}
+}
+
+func main() {
+	// var myCounter atomic.Uint64
+	// myCounter.Add(1)
+	// fmt.Println(myCounter.Load())
+
+	c := Counter{}
+
+	var wg1 sync.WaitGroup
+	wg1.Add(1)
+	var wg2 sync.WaitGroup
+	wg2.Add(1)
+	go incrementSharedState(&c, &wg1, 0)
+	go incrementSharedState(&c, &wg2, 1)
+	wg1.Wait()
+	wg2.Wait()
+
+}
+```
+Without and with false sharing
+
+```bash
+concurrency ⟩ time ./concurrency                                                                                                                 ~/D/g/concurrency
+
+________________________________________________________
+Executed in   15.24 millis    fish           external
+   usr time   14.33 millis    0.31 millis   14.02 millis
+   sys time    5.29 millis    1.38 millis    3.91 millis
+
+
+concurrency ⟩ go build -o concurrency .                                                                                                          ~/D/g/concurrency
+
+concurrency ⟩ time ./concurrency                                                                                                                 ~/D/g/concurrency
+
+________________________________________________________
+Executed in  857.11 millis    fish           external
+   usr time   29.26 millis    0.25 millis   29.01 millis
+   sys time    6.10 millis    1.16 millis    4.94 millis
+```
