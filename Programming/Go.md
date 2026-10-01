@@ -29,7 +29,7 @@ x := 10
 - The memory is memset to 0
 - The capacity defines how much initial memory to allocate
 
-#### Atomic Synchronization
+### Atomic Synchronization
 
 - For synchronization, the cache line is locked and the increment is done using one instruction
 
@@ -68,7 +68,7 @@ func main() {
 }
 ```
 
-#### False sharing 
+### False sharing 
 
 - Locking a cache line can introduce false sharing between 2 threads updating different variables but on the same cache line
 
@@ -135,3 +135,15 @@ Executed in  857.11 millis    fish           external
    usr time   29.26 millis    0.25 millis   29.01 millis
    sys time    6.10 millis    1.16 millis    4.94 millis
 ```
+
+### Mutexes
+
+```go
+c.mu.Lock()
+defer c.mu.Unlock()
+c.counters[name]++
+```
+
+- Mutexes and semaphores also use lock inc instruction to atomically increment and decrement a shared variable which acts as a software level lock
+- A goroutine waiting on a lock is eventually put on waiting queue
+- Unlock() wakes up one process from the queue
