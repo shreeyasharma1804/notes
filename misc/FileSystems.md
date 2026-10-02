@@ -143,3 +143,49 @@ Note: Extents can be variable sized and can be allocated based on the file size 
 #### Journaling
 
 - Similar to EXT4
+
+#### xfs_repair
+
+#### Why does XFS scale better than ext4:
+
+- The system does not suffer from inode exhaustion
+- Free inodes and data blocks are also tracked through Btrees instead of bitmaps
+- All the files are tracked using extents
+
+### BTRFS
+
+- Runs on a pool of devices instead of just one device, thus eliminates the requirement of using opnelvm. To enable this, logical addresses are used which are translated to block numbers (Juts assume for now that block numbers are what's exposed by the device drivers)
+- A chunk tree maps the logical address to the disk + block number
+- Subvolume: An independent file system tree. A snapshot can be taken of a subvolume
+
+#### SuperBlock
+
+- Every device has its own superblock with backups
+- It holds the metadata such as total file system UUID, device ID, pointers to the chunk_root tree, root tree and log_root tree
+
+#### Chunk Tree
+
+- Since the pointer to the chunk tree is also a logical address, a direct mapping for the chunk tree root to its block address is stored to load the chunk tree
+- Its called a chunk tree because a BTRFS file system is divided into 3 chunks: DATA, METADATA and SYSTEM
+- This tree is indexed on the logical address
+- The payload in the leaf defines the device id and the block address
+
+#### Root Tree
+
+- This is a directory of the root pointers of all the essential trees of the file system
+- It contains the root id and its logical address
+- All subvolumes and their snapshots are also tracked here meaning that subvolumes and their snapshots are different FS trees altogether. A snapshot can be mounted on a direcotry using /etc/fstab
+
+#### FS Trees
+
+- Each subvolume has its own FS tree
+- The inodes, directories, file data etc everything is stored in this tree
+- This tree is indexed on the inode number + item type
+- The leaf key associated with the inode has the key (inode_number, INODE_ITEM, 0) and the payload contains standard data held by an inode but not the data block locations
+- Data leaf nodes have the key (inode_number, EXTENT_DATA, byte_offset_in_file) and the payload contains the logical address
+- Available inodes and data extents are tracked seperately
+
+#### Copy On Write
+
+- Essential for snapshots
+- Blocks are never modified in place, instead of copy of the block is created and that copy is edited
