@@ -377,6 +377,8 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 - When a row is updated, a new ctid is created, and the new ctid needs to be updated in all the indexes defined on the table
 - Index can be defined on a composite key
 - Index needs to be re-built as index performance degrades with more deletions
+- Sequential scans are faster whereas indexes use random access. The DB prefers to use a seq scan for smaller tables, bitmaps for having a more sequential access to the index pages and purely indexing for a very large table
+- Partial indexes are created using where clause
 
 #### Concurrent indexing
 
@@ -450,5 +452,8 @@ FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT
 #### pgbench
 
 #### EXPLAIN vs EXPLAIN ANALYZE
+
+- Explain returns the path which might be followed to execute the query by the query engine based on statiscal estimates about the table
+- EXPLAIN ANALYZE runs the query and shows the actual query cost
 
 #### VACUUM
