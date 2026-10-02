@@ -454,6 +454,6 @@ FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT
 #### EXPLAIN vs EXPLAIN ANALYZE
 
 - Explain returns the path which might be followed to execute the query by the query engine based on statiscal estimates about the table
-- EXPLAIN ANALYZE runs the query and shows the actual query cost
+- ANALYZE runs the analysis query again and shows the latest estimated query cost
 
 #### VACUUM
