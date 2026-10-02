@@ -449,6 +449,6 @@ FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT
 
 #### pgbench
 
-#### EXPLAIN
+#### EXPLAIN vs EXPLAIN ANALYZE
 
 #### VACUUM
