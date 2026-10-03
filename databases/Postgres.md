@@ -455,5 +455,21 @@ FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT
 
 - Explain returns the path which might be followed to execute the query by the query engine based on statiscal estimates about the table
 - ANALYZE runs the analysis query again and shows the latest estimated query cost
+- The stored analysis can be viewed using:
+
+```sql
+SELECT * FROM pg_stats WHERE tablename = 'sensor_reading';
+schemaname
+tablename
+attribute name: The column name
+inherited
+null_frac: Fraction of rows that are null
+avg_width: The average number of bytes required to store the value
+n_distinct: NUmber of distinct values
+most_common_vals
+most_common_freqs: Frequencies of the most common values
+histogram_bounds: Boundry values
+correlation: correlation(sorted values, page size). This determines how sequential the disk access would be and the cost if the query
+```
 
 #### VACUUM
