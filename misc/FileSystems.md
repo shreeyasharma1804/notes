@@ -189,3 +189,9 @@ Note: Extents can be variable sized and can be allocated based on the file size 
 
 - Essential for snapshots
 - Blocks are never modified in place, instead of copy of the block is created and that copy is edited
+- Because of this functionality, btrfs is not suitable for database servers. Example, a small change of updating the xmax creates a new copy in the file system
+
+#### Where to use
+
+- Build systems where a clone essentially means a new snapshot which can also be deleted quickly
+- S3 Glacier like storage: SInce BTRFS provides compression, old data which does not require fast access can be compressed and stored
