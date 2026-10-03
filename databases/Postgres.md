@@ -410,6 +410,14 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 - For the existing row, update xmax = current transaction id
 - No new row is created which means that the row is deleted
 
+### Locks
+
+- Read-Read concurrent transactions do not require any concurrency support
+- Read-Write: MVCC
+- Write-Write: Lock
+- Read: https://github.com/TheOtherBrian1/Postgres_Lock_Explainer
+- Example: For update lock blocks a different query acting on the same row. It also blocks any query whose update might cause a constraint violation after the query blocking the row
+
 #### VACUUM
 
 - Previous versions of a row are deleted using VACUUM
@@ -422,6 +430,9 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 - For UPDATE, a rollback means remove the new tuple and revert the xmax value of the previous tuple
 - For DELETE, a rollback means revert the xmax value of the deleted tuple
 - Commit a transaction only after a unit of work has been completed, and not after every operation
+- All changes made by a transaction can be rolled back using ROLLBACK;
+- A save point is like a checkpoint during a transaction. Like a snapshot, which only considers tuples of xmin < current_tid and xmax < current_tid where xmax should be DONE, maybe a save point considers all tuples with xmin <= current_tid and xmax <= current_tid. The ntransaction_id could be updated so that the further changes can reflect that they were executed after the savepoint.
+- A transaction can rollback to a save point and a release it
 
 #### Isolation
 
@@ -435,7 +446,18 @@ Each issue is solved by isolation levels
 
 1. Read committed: Only committed rows are visible to a transaction, i.e, the transaction state of a row should be DONE
 2. Repeatable read: Uses snapshots. For a transaction with id t, only rows which have been created, updated or deleted by transactions with id < t are visible to t. Also, with this isolation mode, any operation, if it tries to update a row that is not the latest value compared to the snapshot, the transaction is aborted
-3. SERIALIZABLE
+3. Lost Update: Locks
+
+#### Consistency
+
+- A transaction is allowed only if it does not violate any constraints
+
+#### Durability
+
+- A successfully committed transaction should always be reflected in the DB
+- WAL is used for this
+- If the transaction was reported as committed but its WAL wasn't durable, PostgreSQL cannot recover that transaction after a crash, so its changes may be lost.
+- With fsync=on and synchronous_commit=on, PostgreSQL prevents this by waiting for the required WAL to become durable before confirming COMMIT.
 
 
 ### General
