@@ -69,3 +69,6 @@ sudo vgextend vg1 /dev/sda2
 - Instead of doing a CoW on every modification, LVM only does it when a snapshot exists and a block referenced by it is being modified
 - Again, might cause some slowness in a DB server, thus prefer application level backups for DBs
 - Can use used for an NFS volume backup though
+
+
+#### Rsync vs LVMSnapshots for NFS Backups
