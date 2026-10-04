@@ -196,6 +196,7 @@ REFRESH MATERIALIZED VIEW datatypes_mviewcustomer_sales;
 #### NOT NULL
 
 - A column value cannot be null
+- Checked in the INSET/ UPDATE query syntax itself
 
 #### UNIQUE
 
@@ -205,6 +206,7 @@ REFRESH MATERIALIZED VIEW datatypes_mviewcustomer_sales;
 #### CHECK
 
 - A defined condition should be true while inserting a value into the table for a particular column
+- Checked in the INSET/ UPDATE query syntax itself
 
 ```
 CHECK (age >= 18)
@@ -422,37 +424,58 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 
 - Previous versions of a row are deleted using VACUUM
 
-#### Atomicity
+### Atomicity
 
-- All the operations in a transaction should be committed
+- In Postgres, atomicity is represented at a transaction level
+- All the operations in a transaction should be either be committed or rolled back
 - If one of the operations fail, the transaction is marked as ABORTED
-- For INSERT, a rollback means remove the new tuple
-- For UPDATE, a rollback means remove the new tuple and revert the xmax value of the previous tuple
-- For DELETE, a rollback means revert the xmax value of the deleted tuple
-- Commit a transaction only after a unit of work has been completed, and not after every operation
+- In an ongoing transaction, the data is written to a postgres pages. WAL logs are also written but not marked committed yet. The pages may also get flushed to the disk as per the fsync. After COMMIT, the transaction is marked as committed in WAL and transaction state table(pg_xact). After this the response is returned to the client
+- For INSERT, a rollback theoretically means remove the new tuple
+- For UPDATE, a rollback theoretically means remove the new tuple and revert the xmax value of the previous tuple
+- For DELETE, a rollback theoretically means revert the xmax value of the deleted tuple
+- In practice, the tuples are left as such, the transaction state is updated to ABORTED and VACUUM eventually performs the garbage collection
+- Best Practice: Commit a transaction only after a unit of work has been completed, and not after every operation
 - All changes made by a transaction can be rolled back using ROLLBACK;
 - A save point is like a checkpoint during a transaction. Like a snapshot, which only considers tuples of xmin < current_tid and xmax < current_tid where xmax should be DONE, maybe a save point considers all tuples with xmin <= current_tid and xmax <= current_tid. The ntransaction_id could be updated so that the further changes can reflect that they were executed after the savepoint.
 - A transaction can rollback to a save point and a release it
 
-#### Isolation
+### Isolation
 
-Concurrent transactions on a role introduces the following problems
+Concurrent transactions on a row introduces the following problems:
 
 - Dirty reads: A new transaction(T2) reads a value which has not been committed yet(by T1). If T1 fails, then T2 was always operating on a wrong value
 - Non repeatable reads: Two select statement in T2 might return different values if T1 has updated a row while T2 was running.
 - Lost updates: T1 and T2 both read a row. T1 commits and ends, followed by T2. Now the update from T1 is lost
+- Constraint violation
 
-Each issue is solved by isolation levels
+Each issue is solved by isolation levels, locks and constraint checks
 
-1. Read committed: Only committed rows are visible to a transaction, i.e, the transaction state of a row should be DONE
-2. Repeatable read: Uses snapshots. For a transaction with id t, only rows which have been created, updated or deleted by transactions with id < t are visible to t. Also, with this isolation mode, any operation, if it tries to update a row that is not the latest value compared to the snapshot, the transaction is aborted
-3. Lost Update: Locks
+1. Read committed: Only committed rows are visible to a transaction, i.e, the transaction state of a row should be DONE. Example, during the scan all the rows with xmin and xmax belonging to committed transactions are valid.
+2. Repeatable read: Uses snapshot isolation. A snapshot is used to perform all reads in the table. During the scan, all rows with xmin and xmax belonging to committed transactions and both less than current_transaction_id are considered valid. This isolation level only solves the repeatable read problem. Updates inside a transaction with repeatable reads are aborted if the current version of the row belongs to a committed transaction with higher id. This ensures that updates are not performed on stale snapshot versions
+4. Lost Update: FOR UPDATE lock for row level locks used in update queries.
 
-#### Consistency
+#### UNIQUE Constraint checks (Also includes primary key violations)
+
+For UPDATE lock does not allow concurrent writes to the same row. But what if 2 transactions try to write the same primary key to the table. Locks do not stop this because the rows are different. Example: T1 updates id 1 to id 2, T2 updates id 3 to id 2. Both transactions are running on different rows but end up causing a UNIQUE constraint violation. When 2 transactions try to update a row such that the key being updated has a UNIQUE constraint, a unique index is created using all the values with transaction state DONE and IN PROGRESS. The write is allowed only if the row can be inserted in this index. Access to this index is serialized
+
+#### FOREIGN KEY
+
+T1 updates a row to use a foreign key reference. T2 concurrently deleted the foreign key reference from the foreign table. Maybe: T1 and T2 need to acquire a common lock before proceeding. If T1 acquires it, then T2 fails and vice versa
+
+#### CHECK across row values
+
+Again, maybe a common lock is introduced before making changes to rows affected by a common CHECK constraint
+
+#### Serializability
+
+- Would the changes made by 2 transactions be the same had they been executed serially ?
+- 
+
+### Consistency
 
 - A transaction is allowed only if it does not violate any constraints
 
-#### Durability
+### Durability
 
 - A successfully committed transaction should always be reflected in the DB
 - WAL is used for this
