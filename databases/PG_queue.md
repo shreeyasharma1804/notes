@@ -1,60 +1,41 @@
-### Using postgres as a Kakfa
+### Using Postgres as a Queue
 
 #### Schema
 
 - Topic_Name
-- Partition_Name
-- Is_Replica
 - Data
+- Consumed
 
 ```sql
-(TOPIC_A, 1, False, 'a')
-(TOPIC_A, 1, True, 'a')
-(TOPIC_A, 1, False, 'b')
-(TOPIC_A, 1, True, 'b')
-(TOPIC_A, 2, False, 'a')
-(TOPIC_A, 2, True, 'a')
-(TOPIC_A, 2, False, 'b')
-(TOPIC_A, 2, True, 'b')
-(TOPIC_B, 1, False, 'a')
-(TOPIC_B, 1, True, 'a')
-(TOPIC_B, 1, False, 'b')
-(TOPIC_B, 1, True, 'b')
-(TOPIC_B, 2, False, 'a')
-(TOPIC_B, 2, True, 'a')
-(TOPIC_B, 2, False, 'b')
-(TOPIC_B, 2, True, 'b')
+(TOPIC_A,'a', False)
+(TOPIC_A, 'b', False)
+(TOPIC_B, 'a', False)
+(TOPIC_B, 'b', False)
 ```
 
-Topic_A has 2 partitions, one replica per partition and 2 data points
+Each topic holds multiple data points
 
 #### Producing data
 
 ```sql
-INSERT INTO KAFKA_TABLE (Topic_Name, Partition_Name, Is_Replica, Data) VALUES (TOPIC_A, 1, False, 'c')
-INSERT INTO KAFKA_TABLE (Topic_Name, Partition_Name, Is_Replica, Data) VALUES (TOPIC_A, 1, True, 'c')
-```
-
-2 records are entered in Topic A both main and replica partition number 1
-
-#### Consumer Groups
-
-```sql
-
+INSERT INTO KAFKA_TABLE (Topic_Name, Data, Consumed) VALUES (TOPIC_A, 'c', False)
 ```
 
 #### Consumer
 
+- Consumer which consumes from TOPIC_A
+
 ```sql
-UPDATE KAFKA_TABLE
-SET balance = balance + 100
-WHERE id IN (
+UPDATE kafka_table
+SET consumed = true
+WHERE id = (
     SELECT id
-    FROM accounts
-    WHERE status = 'active'
+    FROM kafka_table
+    WHERE topic_name = 'TOPIC_A'
+      AND consumed = false
     ORDER BY id
     FOR UPDATE SKIP LOCKED
     LIMIT 1
 )
-RETURNING *;
+RETURNING data;
 ```
