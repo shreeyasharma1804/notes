@@ -416,65 +416,67 @@ peer-trusted-ca-file: /etc/etcd/pki/ca.crt
 
 https://oneuptime.com/blog/post/2026-02-09-hierarchical-namespaces-hnc/view
 
-### Cordon, Drain and Taints
+## Cordon, Drain and Taints
 
-kubectl cordon <node>
-- Sets spec.unschedulable: true on the node.
-- Kubernetes shows this as the taint node.kubernetes.io/unschedulable:NoSchedule.
-- New pods won't be scheduled there.
-- Existing pods keep running.
-- DaemonSet pods still get scheduled, because the DaemonSet controller automatically tolerates the unschedulable taint.
 
-kubectl drain <node>
-- Cordons the node, then evicts every pod on it through the Eviction API.
-- Respects PodDisruptionBudgets (PDBs). If an eviction would violate a PDB, drain waits and retries.
-- Honors each pod's terminationGracePeriodSeconds, so shutdown is graceful.
+### `kubectl cordon <node>`
+
+- Sets `spec.unschedulable: true` on the node.
+- Kubernetes shows this as the taint `node.kubernetes.io/unschedulable:NoSchedule`.
+- **New pods won't be scheduled** there.
+- **Existing pods keep running.**
+- **DaemonSet pods still get scheduled**, because the DaemonSet controller automatically tolerates the unschedulable taint.
+
+### `kubectl drain <node>`
+
+- **Cordons the node**, then **evicts** every pod on it through the Eviction API.
+- **Respects PodDisruptionBudgets (PDBs).** If an eviction would violate a PDB, drain waits and retries.
+- **Honors each pod's `terminationGracePeriodSeconds`**, so shutdown is graceful.
 - Common flags:
-  - --ignore-daemonsets leaves DaemonSet pods alone. They would just come back anyway.
-  - --delete-emptydir-data evicts pods that use emptyDir volumes, whose data is lost.
-  - --force evicts bare pods that have no controller. They won't be recreated.
-- Pods managed by Deployments, StatefulSets and similar controllers get rescheduled elsewhere.
+  - `--ignore-daemonsets` leaves DaemonSet pods alone. They would just come back anyway.
+  - `--delete-emptydir-data` evicts pods that use `emptyDir` volumes, whose data is lost.
+  - `--force` evicts bare pods that have no controller. They won't be recreated.
+- Pods managed by Deployments, StatefulSets and similar controllers get **rescheduled elsewhere**.
 
-Custom NoSchedule taint, e.g. kubectl taint nodes <node> maint=true:NoSchedule
-- New pods without a matching toleration won't be scheduled.
-- Existing pods keep running.
-- New DaemonSet pods are also blocked unless they tolerate this specific key. DaemonSets don't tolerate custom taints automatically.
-- Pods that do tolerate it can still land there, which lets you reserve the node for certain workloads.
+### Custom NoSchedule taint
 
-NoExecute taint, e.g. kubectl taint nodes <node> maint=true:NoExecute
-- Immediately evicts running pods that don't tolerate it. Pods can delay this with tolerationSeconds.
-- Does NOT respect PDBs. It can take down every replica on the node at once.
+Example: `kubectl taint nodes <node> maint=true:NoSchedule`
+
+- **New pods without a matching toleration won't be scheduled.**
+- **Existing pods keep running.**
+- **New DaemonSet pods are also blocked** unless they tolerate this specific key. DaemonSets don't tolerate custom taints automatically.
+- Pods that *do* tolerate it can still land there, which lets you **reserve** the node for certain workloads.
+
+### NoExecute taint
+
+Example: `kubectl taint nodes <node> maint=true:NoExecute`
+
+- **Immediately evicts** running pods that don't tolerate it. Pods can delay this with `tolerationSeconds`.
+- **Does NOT respect PDBs.** It can take down every replica on the node at once.
 - This is effectively a forceful drain. Avoid it for routine maintenance.
 
-Comparison
+### Comparison
 
-┌───────────────────────────────┬─────────────────┬────────────────────────────────────────┬─────────────────────────────────┬─────────────────────────────────┐
-│                               │     Cordon      │                 Drain                  │        NoSchedule taint         │         NoExecute taint         │
-├───────────────────────────────┼─────────────────┼────────────────────────────────────────┼─────────────────────────────────┼─────────────────────────────────┤
-│ Blocks new pods               │ ✅              │ ✅                                     │ ✅ (unless tolerated)           │ ✅ (unless tolerated)           │
-├───────────────────────────────┼─────────────────┼────────────────────────────────────────┼─────────────────────────────────┼─────────────────────────────────┤
-│ Moves existing pods           │ ❌              │ ✅ graceful                            │ ❌                              │ ✅ abrupt                       │
-├───────────────────────────────┼─────────────────┼────────────────────────────────────────┼─────────────────────────────────┼─────────────────────────────────┤
-│ Respects PDBs                 │ n/a             │ ✅                                     │ n/a                             │ ❌                              │
-├───────────────────────────────┼─────────────────┼────────────────────────────────────────┼─────────────────────────────────┼─────────────────────────────────┤
-│ DaemonSet pods                │ still scheduled │ left in place with --ignore-daemonsets │ blocked unless they tolerate it │ evicted unless they tolerate it │
-├───────────────────────────────┼─────────────────┼────────────────────────────────────────┼─────────────────────────────────┼─────────────────────────────────┤
-│ Selective (some pods allowed) │ ❌              │ ❌                                     │ ✅ via tolerations              │ ✅ via tolerations              │
-├───────────────────────────────┼─────────────────┼────────────────────────────────────────┼─────────────────────────────────┼─────────────────────────────────┤
-│ Undo                          │ uncordon        │ uncordon                               │ taint ... maint-                │ taint ... maint-                │
-└───────────────────────────────┴─────────────────┴────────────────────────────────────────┴─────────────────────────────────┴─────────────────────────────────┘
+|                               | Cordon          | Drain                                    | NoSchedule taint                | NoExecute taint                 |
+|-------------------------------|-----------------|------------------------------------------|---------------------------------|---------------------------------|
+| Blocks new pods               | ✅              | ✅                                       | ✅ (unless tolerated)           | ✅ (unless tolerated)           |
+| Moves existing pods           | ❌              | ✅ graceful                              | ❌                              | ✅ abrupt                       |
+| Respects PDBs                 | n/a             | ✅                                       | n/a                             | ❌                              |
+| DaemonSet pods                | still scheduled | left in place with `--ignore-daemonsets` | blocked unless they tolerate it | evicted unless they tolerate it |
+| Selective (some pods allowed) | ❌              | ❌                                       | ✅ via tolerations              | ✅ via tolerations              |
+| Undo                          | `uncordon`      | `uncordon`                               | `taint ... maint-`              | `taint ... maint-`              |
 
-When to use which
+### When to use which
 
-- Node maintenance, reboot, kernel or OS patch, decommission: cordon + drain. It's graceful, respects PDBs, and workloads move before you take the node down.
-- Stop new work but let current pods finish naturally, for example long-running jobs or a slow phase-out: cordon only, or a NoSchedule taint.
-- Dedicate a node to specific workloads such as GPU nodes or a team's pool: NoSchedule taint plus tolerations on the allowed pods. This is a permanent placement policy, not maintenance.
-- Block everything, including new DaemonSet pods: a custom NoSchedule taint, because cordon still lets DaemonSets in.
-- Node is broken and pods must leave now: a NoExecute taint, accepting that PDBs won't protect you. Kubernetes already does this automatically with node.kubernetes.io/not-ready and unreachable.
+- **Node maintenance, reboot, kernel or OS patch, decommission:** **cordon + drain.** It's graceful, respects PDBs, and workloads move before you take the node down.
+- **Stop new work but let current pods finish naturally**, for example long-running jobs or a slow phase-out: **cordon only**, or a **NoSchedule taint**.
+- **Dedicate a node to specific workloads** such as GPU nodes or a team's pool: **NoSchedule taint** plus tolerations on the allowed pods. This is a permanent placement policy, not maintenance.
+- **Block everything, including new DaemonSet pods:** a **custom NoSchedule taint**, because cordon still lets DaemonSets in.
+- **Node is broken and pods must leave now:** a **NoExecute taint**, accepting that PDBs won't protect you. Kubernetes already does this automatically with `node.kubernetes.io/not-ready` and `unreachable`.
 
-Gotchas
+### Gotchas
 
-- A NoSchedule taint is not maintenance-safe by itself. If you reboot a node that only has a NoSchedule taint, every pod on it dies abruptly, with no PDB protection and no rescheduling ahead of time.
-- Drain can hang when a PDB allows zero disruptions, for example minAvailable equals the replica count, or a single-replica app with minAvailable: 1. Use --timeout and fix the PDB rather than forcing it.
-- Local or emptyDir data is lost on drain. StatefulSets with local PVs won't reschedule elsewhere.
-- Remember to uncordon, or remove the taint, after maintenance. Otherwise the node quietly sits empty.
+- **A NoSchedule taint is not maintenance-safe by itself.** If you reboot a node that only has a NoSchedule taint, every pod on it dies abruptly, with no PDB protection and no rescheduling ahead of time.
+- **Drain can hang** when a PDB allows zero disruptions, for example `minAvailable` equals the replica count, or a single-replica app with `minAvailable: 1`. Use `--timeout` and fix the PDB rather than forcing it.
+- **Local or `emptyDir` data is lost** on drain. StatefulSets with local PVs won't reschedule elsewhere.
+- **Remember to `uncordon`**, or remove the taint, after maintenance. Otherwise the node quietly sits empty.
