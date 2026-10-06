@@ -72,9 +72,58 @@ WHERE search_vector @@
 - Fuzzy search can be implemented in various ways such as edits in a string, cosine similarity of 2 strings, ngram etc.
 - Here ngram is used.
 - The words are split in groups of 3, and words high a nigh number of matching ngrams are returned
+- Create a new index on the message column of type GIN. The ngram conversion is not done on the stemmed column because the stemming operation removes characters which we do not want
+- 2 strings are considered a match if x% of the trigrams match. The threshold is defined as:
+
+```sql
+SHOW pg_trgm.similarity_threshold;
+
+pg_trgm.similarity_threshold 
+------------------------------
+ 0.3
+```
+
+- This index stores the trigram to row id relation
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
-
+CREATE INDEX logs_message_trgm_idx
+ON logs
+USING GIN (message gin_trgm_ops);
 ```
+
+```sql
+select * from logs where message % 'databse connection'
+# Works
+
+select * from logs where message % 'databse'
+# Does not work
+```
+
+Why: The similarity score is calculated between the message and the user query. The number of trigrams which match are less than the threshold. This approach matches strings to strings and not search for a word in a string
+
+#### ngram Limitation
+
+- The storage requirements explode because the string characters repeat across the ngrams the string is divided into
+- A different table could be created which maps a single ngram to the log ids connected to it. But to retrieve the exact message, we now need 2 tables.
+      - log_id: message
+      - ngram: log_id
+
+  Again, storage explodes
+
+
+### How does ElasticSearch do it
+
+- Consider the document:
+
+"Database connection failed while connecting to PostgreSQL"
+
+- Stemming is performed and IFS is used to break it down to: database, connect, fail, postgresql
+- Assume that a service like opentelemetry is batching the logs and calling the log database's API for ingestion. Similar to how postgres writes data to disk files, the log database might be writing to segment files. No MVCC is required since the writes are append only (The mmap + pread optimization is used here)
+- Since it is an append only write, the log database can write to the file and send a success message back to otel
+
+
+Term dictionary: Trie
+
+
