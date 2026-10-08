@@ -1,3 +1,34 @@
+### Virtual Memory
+
+For a 64 bit machine a logical address looks like:
+
+0x0005A0320C82A000
+
+This logical address in divided in bit groups of 7, 9(P0), 9(P1), 9(P2), 9(P3), 9(P4) and 12(offset) for a 5 level hierarchy
+
+The logical to physical address translation happens as: 
+- Read the Page Table Pointer Register
+- The address points to the page P0
+- A page is of size 4kB which means it can store 2^12/2^3 = 512 addresses of size 8 bytes (64 bit addressing). The value of P0 in the logical address (also 9 bytes) identifies the slot number which holds the next page address.
+- The chain continues until the offset is reached
+- A 4KB page requires a 12 bit address to uniquely identify a byte inside it. Thus the offset is a 12 bit address. The offset can be any value inside the page and is not slotted unlike the address pages
+
+
+512^4 becomes the total address range of the process. This memory is divided in virtual memory areas because a new allocation also means defining if the memory area is read only, write only, private, shared, mapped to a file, anonymous etc. Example, an mmap call with a new set of permissions creates a new VMA.
+
+Initially mmap only creates the VMA or extends an existing VMA based on the memory request. The actual translated physical address might not exist yet
+
+Only when the application tries to read or write to a page is when a page fault is generated to load the data. This is called demand paging
+
+The current page at the address is swapped out to load the new page. Swapped out pages are marked as dirty pages in the process's page table.
+
+#### Swapping out
+
+- If the page has been flushed to disk, its dropped
+- If the page can be flushed to disk, its flushed
+- If the page is a pure memory page, it is swapped to disk
+- If the swap space is also full, the kernel initiates an OOM kill
+
 ### stderr
 
 Why would I want to separate the stdout and stderr of a process ?
