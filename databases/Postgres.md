@@ -363,13 +363,23 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 
 ### Procedures
 
-### Internals
+### Storage policy
 
-- Each row entry is stored as a tuple
-- A tuple's location is defined by ctid (page number, tuple offset). 
-- Pages are 8KB chunks inside a real file which hold the data
-- New file segments are rolled out at 1GB (not configurable)
+- Postgres divides the file for one table in multiple segments of size 1GB (not configurable)
+- Each file has slots in the header and pages which hold the data of size 8KB
+- A row or a tuple's location is defined by ctid (page number, slot number).
+- The slot number holds the offset of the data in the file segment
 - Since data of variable length is allowed, postgres does not update a tuple's value in place (for an UPDATE operation). Instead, it creates a new entry (preferably in the same page).
+
+### read vs pread
+
+- When open() is called on a file, a file descriptor is returned
+- Each file descriptor has a global file offset
+- read uses that offset. Thus, read should be used when a file is accessed sequentially.
+- For random access, which databases need, pread is used. The offset needs to be defined in each pread call. 2 threads can thus access a file at different offsets without modifying the global offset
+- Postgres uses this system call for a disk read
+- The files are usually mmaped for faster IO. pread is executed only for a major page fault
+
 
 #### TableSpace
 
@@ -418,6 +428,8 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 - Read-Write: MVCC
 - Write-Write: Lock
 - Read: https://github.com/TheOtherBrian1/Postgres_Lock_Explainer
+- Locking behaviour is defined using xmax. A row with a non zero xmax value whose tid is an the ongoing transaction is considered locked. The update to the xmax value itself is a separate atomic operation.
+- When inserting a row to a table which references a foreign key, the foreign table's corresponding row is locked using the FOR KEY SHARE lock.
 - Example: For update lock blocks a different query acting on the same row. It also blocks any query whose update might cause a constraint violation after the query blocking the row
 
 #### VACUUM
