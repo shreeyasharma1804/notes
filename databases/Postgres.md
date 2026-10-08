@@ -151,7 +151,7 @@ CREATE TABLE child (
 
 #### Views
 
-- A view is a stored query
+- A view is a stored procedure. The query is executed and the results are not stored.
 
 ```sql
 CREATE VIEW active_users AS
@@ -180,6 +180,8 @@ select * from datatypes_mviewcustomer_sales; # This is faster because the groupi
 ```sql
 REFRESH MATERIALIZED VIEW datatypes_mviewcustomer_sales;
 ```
+
+- Materialized view vs CREATE TABLE AS: The query is executed each time and the results are also stored.
 
 #### Partition tables
 
