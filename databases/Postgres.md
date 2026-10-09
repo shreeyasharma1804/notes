@@ -532,3 +532,17 @@ correlation: correlation(sorted values, page size). This determines how sequenti
 ```
 
 #### VACUUM
+
+```sql
+VACUUM <table name>
+```
+
+- Delete all row versions which have been updated/deleted
+
+### Monitoring
+
+- Size of a table
+
+```sql
+SELECT pg_relation_size(<table name>);
+```
