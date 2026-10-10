@@ -539,6 +539,10 @@ VACUUM <table name>
 
 - Delete all row versions which have been updated/deleted
 
+#### VACUUM FULL
+
+#### REPACK
+
 ### Monitoring
 
 - Size of a table
