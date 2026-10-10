@@ -21,7 +21,7 @@ AS $$
 DECLARE
     table_name VARCHAR(50);
 BEGIN
-    table_name := 'metrics_' || TO_CHAR(partition_date, 'YYYY_MM_DD');
+    table_name := 'metrics_' || TO_CHAR(partition_date, 'YYYY-MM-D');
 
     EXECUTE format(
         'CREATE TABLE %I PARTITION OF metrics
@@ -36,6 +36,36 @@ $$;
 
 - Create a procedure to delete partitions older than x days
 
+```sql
+CREATE OR REPLACE PROCEDURE detach_partitions () 
+LANGUAGE plpgsql 
+AS $$ 
+DECLARE 
+    table_name VARCHAR(50);
+    partition RECORD;
+    partition_date DATE;
+BEGIN 
+FOR partition IN
+select
+    child.relname as partition_name
+from
+    pg_inherits
+    join pg_class parent on pg_inherits.inhparent = parent.oid
+    join pg_class child on pg_inherits.inhrelid = child.oid
+where
+    parent.relname = 'metrics'
+LOOP
+    partition_date := split_part(partition.partition_name, '_', 2)::DATE;
+    IF 
+        partition_date < CURRENT_DATE - 7 THEN
+            DROP TABLE partition.partition_name;
+    END IF;
+END LOOP;
+
+END;
+
+$$;
+```
 
 
 ### Inserting with a cumulative update
