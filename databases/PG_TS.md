@@ -70,16 +70,8 @@ $$;
 
 ### Inserting with a cumulative update
 
-select * from metrics;
+- Cumulative data on a per day basis can be stored in a separate table.
+- This allows running queries on a very large dataset sampled on a per day basis for example linear regressions.
+- A procedure which updates both the tables in one transaction should be used here
 
-CREATE PROCEDURE insert_data(
-  IN ingest_time TIMESTAMP,
-  IN metric DOUBLE PRECISION
-)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-     INSERT INTO metrics (ingest_time, metric)
-     VALUES (ingest_time, metric);
-END;
-$$;
+### Columnar storage
