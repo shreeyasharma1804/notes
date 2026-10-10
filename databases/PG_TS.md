@@ -73,5 +73,18 @@ $$;
 - Cumulative data on a per day basis can be stored in a separate table.
 - This allows running queries on a very large dataset sampled on a per day basis for example linear regressions.
 - A procedure which updates both the tables in one transaction should be used here
+- Complex functions like linear regressions can be run bu calling python script from the procedures
+
+```sql
+CREATE FUNCTION getSomeData()
+RETURNS trigger
+AS $$
+begin
+import subprocess
+subprocess.call(['/path/to/your/virtual/environment/bin/python3', '/some_folder/some_sub_folder/get_data.py'])
+end;
+$$ 
+LANGUAGE plpythonu;
+```
 
 ### Columnar storage
