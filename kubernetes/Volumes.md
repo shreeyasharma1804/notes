@@ -1,9 +1,9 @@
-### K8s managed volume
+### K8s managed volume (empty-dir)
 
-- A volume is created if a pod/deployment decalres it at the location: `/var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~empty-dir/`
-- If a pod is restarted, the same volume is mounted on it, because the pod has the same uid.
-- If a pod is evicted/deleted, the volume is deleted by the garbage collector and the data is lost
-- In a deployment, all pods get a seperate volumne.
+- A volume is created if a pod/deployment declares it at the location: `/var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~empty-dir/`
+- Containers are the atomic units which get restarted when a probe fails, not the pod. Thus, if any of the probes fail, the pod persists and thus the empty-dir is safe
+- If a pod is evicted/deleted, the volume is deleted by the garbage collector and the data is lost. The drain commands requires special flags to evict pods which have an empty-dir
+- In a deployment, all pods get a separate volume.
 
 ```yml
 apiVersion: v1
@@ -22,6 +22,13 @@ spec:
   - name: data
     emptyDir: {}
 ```
+
+### tmpfs
+
+- Memory backed FS for faster IO
+- Does not persist VM restarts
+- It is an empty-dir with medium: Memory
+- Works exactly similar to a disk based empty-dir in terms of eviction, garbage collection etc
 
 ### HostPath
 
