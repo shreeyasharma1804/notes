@@ -495,6 +495,8 @@ Again, maybe a common lock is introduced before making changes to rows affected 
 - WAL is used for this
 - If the transaction was reported as committed but its WAL wasn't durable, PostgreSQL cannot recover that transaction after a crash, so its changes may be lost.
 - With fsync=on and synchronous_commit=on, PostgreSQL prevents this by waiting for the required WAL to become durable before confirming COMMIT.
+- With synchronous_commit=off, a transaction might not be flushed to the WAL and any crash before the write is persisted to the WAL causes the changes to be never reflected in the DB
+- CHECKPOINT: Postgres runs this command internally as a checkpoint on which last WAL lsn has been flushed to the disk. This provides the lower bound of replaying the WAL logs and thus improves crash recovery time
 
 
 ### General
