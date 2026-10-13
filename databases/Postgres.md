@@ -148,6 +148,7 @@ CREATE TABLE child (
 
 - Can suffer with something similar to the diamond problem, example, if a table inherits from 2 tables, which define the same column name but of different types
 
+### Views
 
 #### Views
 
@@ -181,7 +182,13 @@ select * from datatypes_mviewcustomer_sales; # This is faster because the groupi
 REFRESH MATERIALIZED VIEW datatypes_mviewcustomer_sales;
 ```
 
-- Materialized view vs CREATE TABLE AS: The query is executed each time and the results are also stored.
+#### CREATE TABLE AS
+
+- The query is executed each time and the results are also stored.
+
+#### CTE (Common Table Expression)
+
+- The query results are only available during the statement execution, unlike a temporary table which exists for the entire session
 
 #### Partition tables
 
