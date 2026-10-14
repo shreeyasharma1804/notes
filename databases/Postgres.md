@@ -163,6 +163,8 @@ WHERE active = true;
 SELECT * FROM active_users; # Executes the above query
 ```
 
+- Views allow INSERT queries regardless of the rows the view filters. But if the inserted data is not displayed by the view statement, it can create confusion. Use `WITH CHECK OPTION` to test against the view's own WHERE clause after the new values are applied, and a row that would fall outside is rejected outright
+
 #### Materialized views
 
 - The query is executed once and the result is stored as a table
