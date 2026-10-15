@@ -12,13 +12,9 @@ kubectl rollout history deployment/myapp
 kubectl rollout history deployment/myapp --revision=2
 ```
 
-- Rolling restart
+### Restart strategies
 
-```bash
-kubectl rollout restart deployment/myapp
-```
-
-A automatic rolling restart is performed by a deployment if the pod template is changed. This is possible because a new replicaset is created and the older replicaset is still available
+- An automatic restart is performed by a deployment if the pod template is changed. This is possible because a new replicaset is created and the older replicaset is still available
 
 -  Every deployments is annotated with:
 
@@ -45,6 +41,16 @@ generation: 8
 This field is updated when the deployment spec changes
 
 - If a pod is created from a deployment, not all changes are allowed on the pod. Also, the changes are not kept if the deployment is restarted. Similar to a deployment, if an edit is accepted, the pod generation is updated
+
+#### Rolling restart (Restart with no downtime)
+
+```bash
+kubectl rollout restart deployment/myapp
+```
+
+#### Recreate (Restart with downtime)
+
+
 
 ## Replicasets
 
