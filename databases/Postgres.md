@@ -184,6 +184,8 @@ select * from datatypes_mviewcustomer_sales; # This is faster because the groupi
 REFRESH MATERIALIZED VIEW datatypes_mviewcustomer_sales;
 ```
 
+- Refreshing requires the ACCESS EXCLUSIVE LOCK and thus no reads are allowed during this operations. Check REFRESH MATERIALIZED VIEW CONCURRENTLY
+
 #### CREATE TABLE AS
 
 - The query is executed each time and the results are also stored.
