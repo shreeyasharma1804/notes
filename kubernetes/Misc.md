@@ -5,6 +5,10 @@
 
 - If a PVC directory has permissions such that the runAsUser UID cannot access it, the mount cannot be read/written to
 
+- A pod is scheduled on the cluster only if the total requests are less than the cluster capacity, but the limits can be more that the cluster capacity
+
+- Every node has a maximum number of pods which can be scheduled on it
+
 - debug pod: `kubectl debug -it <target pod> --image=busybox:latest`
 
 ```bash
