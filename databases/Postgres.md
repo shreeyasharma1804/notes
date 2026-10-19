@@ -563,3 +563,21 @@ VACUUM <table name>
 ```sql
 SELECT pg_relation_size(<table name>);
 ```
+
+### Schema Migration
+
+#### ALTER query holds the ACCESS EXCLUSIVE LOCK
+
+- An ALTER query can make the whole table offline
+- For rows where default data needs to be added, Postgres stores the default once, in the catalog, as the missing value for that column, and rows written before the ALTER return it from there. New rows get it written normally. The rewrite is skipped and the statement returns in milliseconds however many rows the table holds.
+- If the data has to be uniquely calculated, make the new column nullable, backfill the data and then make the column not nullable
+
+#### CONSTRAINTS
+
+- When altering a table to add a constraint, again, ACCESS EXCLUSIVE LOCK is acquired to check the current rows which brings the table down.
+- Use `NOT VALID`  to add the constraint without checking for violations in the current data.
+- Check the constraint violation independently:
+
+```sql
+ALTER TABLE crew VALIDATE CONSTRAINT crew_clearance_known;
+```
