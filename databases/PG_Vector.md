@@ -14,3 +14,4 @@
 
 - Operator: <=>
 - For 2 vectors (a_i, a_j) and (b_i, b_j) the cosine similarity is the cos(angle between the 2 vectors)
+- Batch and queue inserts (Kafka → embedding worker → vector DB)
