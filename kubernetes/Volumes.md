@@ -23,12 +23,27 @@ spec:
     emptyDir: {}
 ```
 
-### tmpfs
+#### tmpfs
 
 - Memory backed FS for faster IO
 - Does not persist VM restarts
 - It is an empty-dir with medium: Memory
 - Works exactly similar to a disk based empty-dir in terms of eviction, garbage collection etc
+
+#### Eviction
+
+- If a pod defines the maximum empty-dir storage it can claim and crosses that, it is evicted and the storage is then deleted
+
+```yaml
+resources:
+  requests:
+    ephemeral-storage: "512Mi"
+  limits:
+    ephemeral-storage: "1Gi"
+```
+
+- Even if the pod does not define the limits, it is evicted in case of DiskNodePressure
+- The ephemeral storage capacity, and the values which trigger eviction due to DiskNodePressure are defined in the cluster config
 
 ### HostPath
 
