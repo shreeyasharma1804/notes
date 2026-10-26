@@ -96,9 +96,7 @@ pg_trgm.similarity_threshold
  0.3
 ```
 
-- Create a new index on the message column of type GIN. The ngram conversion is not done on the stemmed column because the stemming operation removes characters which we do not want
-
-- This index stores the trigram to row id relation
+- In the same table, create a new index on the message column of type GIN where data is ingested in the index through gin_trgm_ops
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
@@ -107,6 +105,8 @@ CREATE INDEX logs_message_trgm_idx
 ON logs
 USING GIN (message gin_trgm_ops);
 ```
+
+- Search
 
 ```sql
 select * from logs where message % 'databse connection'
@@ -121,24 +121,9 @@ Why: The similarity score is calculated between the message and the user query. 
 #### ngram Limitation
 
 - The storage requirements explode because the string characters repeat across the ngrams the string is divided into
-- A different table could be created which maps a single ngram to the log ids connected to it. But to retrieve the exact message, we now need 2 tables.
-      - log_id: message
-      - ngram: log_id
+- Only string to string searches work
 
-  Again, storage explodes
+#### Workaround
 
-
-### How does ElasticSearch do it
-
-- Consider the document:
-
-"Database connection failed while connecting to PostgreSQL"
-
-- Stemming is performed and IFS is used to break it down to: database, connect, fail, postgresql
-- Assume that a service like opentelemetry is batching the logs and calling the log database's API for ingestion. Similar to how postgres writes data to disk files, the log database might be writing to segment files. No MVCC is required since the writes are append only (The mmap + pread optimization is used here)
-- Since it is an append only write, the log database can write to the file and send a success message back to otel
-
-
-Term dictionary: Trie
-
-
+- Store the stemmed data with a GIN
+- For each word in the user query, iterate the trie with a maximum edit distance of x and then perform a search on the expanded search space using to_tsquery. 
