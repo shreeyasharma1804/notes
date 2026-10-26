@@ -79,12 +79,13 @@ WHERE search_vector @@
 # Outputs nothing
 ```
 
-### Add fuzzy search to tolerate spelling mistakes
+### Fuzzy search
 
-- Fuzzy search can be implemented in various ways such as edits in a string, cosine similarity of 2 strings, ngram etc.
-- Here ngram is used.
-- The words are split in groups of 3, and words high a nigh number of matching ngrams are returned
-- Create a new index on the message column of type GIN. The ngram conversion is not done on the stemmed column because the stemming operation removes characters which we do not want
+- Fuzzy search can be implemented in various ways such as edits in a string, cosine similarity (Storing each log event as a vector using a generated column and then running a cosine similarity search), ngram etc.
+
+#### ngram (trigram)
+
+- The words are split in groups of 3
 - 2 strings are considered a match if x% of the trigrams match. The threshold is defined as:
 
 ```sql
@@ -94,6 +95,8 @@ pg_trgm.similarity_threshold
 ------------------------------
  0.3
 ```
+
+- Create a new index on the message column of type GIN. The ngram conversion is not done on the stemmed column because the stemming operation removes characters which we do not want
 
 - This index stores the trigram to row id relation
 
