@@ -57,13 +57,25 @@ VALUES (
 SELECT *
 FROM logs
 WHERE search_vector @@
-      to_tsquery('english', 'conection');
+      to_tsquery('english', 'connection');
 # Outputs the row
 
 SELECT *
 FROM logs
 WHERE search_vector @@
-      to_tsquery('english', 'connection');
+      to_tsquery('english', 'database & connection');
+# Outputs the row
+
+SELECT *
+FROM logs
+WHERE search_vector @@
+      to_tsquery('english', 'database | conection');
+# Outputs the row
+
+SELECT *
+FROM logs
+WHERE search_vector @@
+      to_tsquery('english', 'conection');
 # Outputs nothing
 ```
 
