@@ -126,4 +126,5 @@ Why: The similarity score is calculated between the message and the user query. 
 #### Workaround
 
 - Store the stemmed data with a GIN
-- For each word in the user query, iterate the trie with a maximum edit distance of x and then perform a search on the expanded search space using to_tsquery. 
+- For each word in the user query, iterate the trie with a maximum edit distance of x and then perform a search on the expanded search space using to_tsquery.
+- Use an LLM model to run the spell check
