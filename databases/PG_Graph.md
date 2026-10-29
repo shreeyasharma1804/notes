@@ -84,3 +84,15 @@ from
 ├─────┼───────────┼──────────────┼──────┼───────────┼───────────┼────────────┼────────────┼──────┤
 │ R4  │ N2 Carol  │ N3 Matrix    │ T0   │ head      │ ∅         │ head       │ R2         │ ∅    │
 └─────┴───────────┴──────────────┴──────┴───────────┴───────────┴────────────┴────────────┴──────┘
+
+-  One store file per kind of data (nodes, relationships, properties, …)
+-  Fixed-size records: 15 B node, 34 B relationship unlike 8KB pages in postgres for a single/multiple tuples
+-  Location = record ID. Offset = ID × record_size
+-  No MVCC, thus in place edits are possible
+-  Insert: Nothing hits the store before commit. A new record is written at commit with inUse=1.
+-  Update: In-place overwrite of the fixed-size record at commit. No chain, no old version
+-  Delete: Set inUse=0 at commit. The ID goes on a free list for reuse.
+-  Atomicity: Each transaction is atomic with commit/rollback
+-  Consistency: UNIQUE constraints are handled similar to Postgres
+-  Isolation: Read committed, transaction edits are stored in memory only and thus rollbacks are free. Read-Write on the same row is lock free (edits are stored in memory). For write-write scenarios, a row-level lock is acquired
+-  Durability: WAl
