@@ -64,7 +64,7 @@ SET search_path TO hr;
 - time related data
 - UUID
 
-### Composite types
+#### Composite types
 
 - Create a composite type
 
@@ -85,7 +85,7 @@ CREATE TABLE people OF person_type;
 # Will contain id, name and age columns
 ```
 
-### Auto Increments
+#### Auto Increment Type
 
 ```sql
 CREATE TABLE users (
@@ -98,6 +98,8 @@ CREATE TABLE users (
 ### Types of tables
 
 #### Typed tables
+
+- Created from composite type
 
 #### Temporary tables
 
@@ -148,6 +150,24 @@ CREATE TABLE child (
 
 - Can suffer with something similar to the diamond problem, example, if a table inherits from 2 tables, which define the same column name but of different types
 
+#### LIKE
+
+- The tables have the same columns but no inheritance relations between them
+
+```sql
+CREATE TABLE A LIKE B
+```
+
+#### Partition tables
+
+- Create a table and define the key based on which the data will be partitioned and the partitioning scheme
+- Schemes: range, list, hash
+- Useful for dividing data across tables for faster searches
+- No data is stored in the parent table
+- Performance benefits: Partition pruning, Each partition has its own index, Detach a partition from the parent for archiving/ delete the entire partition based on retention policy instead of scanning the entire table based on a where clause
+- Range and List scheme inserts might fail if the required child table does not exist
+- Uniqueness of the primary key across partitions is not guaranteed since each partition is a unique table
+
 ### Views
 
 #### Views
@@ -193,16 +213,6 @@ REFRESH MATERIALIZED VIEW datatypes_mviewcustomer_sales;
 #### CTE (Common Table Expression)
 
 - The query results are only available during the statement execution, unlike a temporary table which exists for the entire session
-
-#### Partition tables
-
-- Create a table and define the key based on which the data will be partitioned and the partitioning scheme
-- Schemes: range, list, hash
-- Useful for dividing data across tables for faster searches
-- No data is stored in the parent table
-- Performance benefits: Partition pruning, Each partition has its own index, Detach a partition from the parent for archiving/ delete the entire partition based on retention policy instead of scanning the entire table based on a where clause
-- Range and List scheme inserts might fail if the required child table does not exist
-- Uniqueness of the primary key across partitions is not guaranteed since each partition is a unique table
 
 ### Constraints
 
@@ -376,14 +386,6 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 
 ### Procedures
 
-### Storage policy
-
-- Postgres divides the file for one table in multiple segments of size 1GB (not configurable)
-- Each file has slots in the header and pages which hold the data of size 8KB
-- A row or a tuple's location is defined by ctid (page number, slot number).
-- The slot number holds the offset of the data in the file segment
-- Since data of variable length is allowed, postgres does not update a tuple's value in place (for an UPDATE operation). Instead, it creates a new entry (preferably in the same page).
-
 ### read vs pread
 
 - When open() is called on a file, a file descriptor is returned
@@ -394,7 +396,7 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 - The files are usually mmaped for faster IO. pread is executed only for a major page fault
 
 
-#### TableSpace
+### TableSpace
 
 ### Indexing
 
@@ -409,6 +411,16 @@ https://www.sqlservercentral.com/articles/rules-in-postgresql
 
 - Normal index creation locks the table
 - Using concurrent indexing avoids that, uses MVCC and is slower
+
+### Internals
+
+#### Storage policy
+
+- Postgres divides the file for one table in multiple segments of size 1GB (not configurable)
+- Each file has slots in the header and pages which hold the data of size 8KB
+- A row or a tuple's location is defined by ctid (page number, slot number).
+- The slot number holds the offset of the data in the file segment
+- Since data of variable length is allowed, postgres does not update a tuple's value in place (for an UPDATE operation). Instead, it creates a new entry (preferably in the same page).
 
 ### MVCC
 
@@ -479,6 +491,15 @@ Each issue is solved by isolation levels, locks and constraint checks
 2. Repeatable read: Uses snapshot isolation. A snapshot is used to perform all reads in the table. During the scan, all rows with xmin and xmax belonging to committed transactions and both less than current_transaction_id are considered valid. This isolation level only solves the repeatable read problem. Updates inside a transaction with repeatable reads are aborted if the current version of the row belongs to a committed transaction with higher id. This ensures that updates are not performed on stale snapshot versions
 4. Lost Update: FOR UPDATE lock for row level locks used in update queries.
 
+#### Serializability
+
+- Would the changes made by 2 transactions be the same had they been executed serially ?
+
+
+### Consistency
+
+- A transaction is allowed only if it does not violate any constraints
+
 #### UNIQUE Constraint checks (Also includes primary key violations)
 
 For UPDATE lock does not allow concurrent writes to the same row. But what if 2 transactions try to write the same primary key to the table. Locks do not stop this because the rows are different. Example: T1 updates id 1 to id 2, T2 updates id 3 to id 2. Both transactions are running on different rows but end up causing a UNIQUE constraint violation. When 2 transactions try to update a row such that the key being updated has a UNIQUE constraint, a unique index is created using all the values with transaction state DONE and IN PROGRESS. The write is allowed only if the row can be inserted in this index. Access to this index is serialized
@@ -490,15 +511,6 @@ T1 updates a row to use a foreign key reference. T2 concurrently deleted the for
 #### CHECK across row values
 
 Again, maybe a common lock is introduced before making changes to rows affected by a common CHECK constraint
-
-#### Serializability
-
-- Would the changes made by 2 transactions be the same had they been executed serially ?
-- 
-
-### Consistency
-
-- A transaction is allowed only if it does not violate any constraints
 
 ### Durability
 
