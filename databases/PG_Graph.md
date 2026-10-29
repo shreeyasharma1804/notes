@@ -43,6 +43,7 @@ from
 
 #### For the graph:
 
+```
    (Alice:Person) ──LIKES {rating:5}──► (The Matrix:Movie {released:1999})
         │                                    ▲         ▲
         └──────LIKES──────┐                  │         │
@@ -52,38 +53,27 @@ from
         └────────────LIKES───────────────────┘         │
                                                        │
    (Carol:Person) ──────────────LIKES──────────────────┘
+```
 
 #### Node store
 
-┌─────┬────────┬───────┬──────────┬───────────┬────────┬────────────┐
-│ ID  │ Offset │ inUse │ firstRel │ firstProp │ labels │ (meaning)  │
-├─────┼────────┼───────┼──────────┼───────────┼────────┼────────────┤
-│ N0  │ 0      │ 1     │ R1       │ P0        │ L0     │ Alice      │
-├─────┼────────┼───────┼──────────┼───────────┼────────┼────────────┤
-│ N1  │ 15     │ 1     │ R3       │ P1        │ L0     │ Bob        │
-├─────┼────────┼───────┼──────────┼───────────┼────────┼────────────┤
-│ N2  │ 30     │ 1     │ R4       │ P2        │ L0     │ Carol      │
-├─────┼────────┼───────┼──────────┼───────────┼────────┼────────────┤
-│ N3  │ 45     │ 1     │ R4       │ P3        │ L1     │ The Matrix │
-├─────┼────────┼───────┼──────────┼───────────┼────────┼────────────┤
-│ N4  │ 60     │ 1     │ R3       │ P5        │ L1     │ Inception  │
-└─────┴────────┴───────┴──────────┴───────────┴────────┴────────────┘
+| ID | Offset | inUse | firstRel | firstProp | labels | (meaning) |
+|---|---|---|---|---|---|---|
+| N0 | 0 | 1 | R1 | P0 | L0 | Alice |
+| N1 | 15 | 1 | R3 | P1 | L0 | Bob |
+| N2 | 30 | 1 | R4 | P2 | L0 | Carol |
+| N3 | 45 | 1 | R4 | P3 | L1 | The Matrix |
+| N4 | 60 | 1 | R3 | P5 | L1 | Inception |
 
 #### Relationship store
 
-┌─────┬───────────┬──────────────┬──────┬───────────┬───────────┬────────────┬────────────┬──────┐
-│ ID  │ firstNode │  secondNode  │ type │ firstPrev │ firstNext │ secondPrev │ secondNext │ prop │
-├─────┼───────────┼──────────────┼──────┼───────────┼───────────┼────────────┼────────────┼──────┤
-│ R0  │ N0 Alice  │ N3 Matrix    │ T0   │ R1        │ ∅         │ R2         │ ∅          │ P7   │
-├─────┼───────────┼──────────────┼──────┼───────────┼───────────┼────────────┼────────────┼──────┤
-│ R1  │ N0 Alice  │ N4 Inception │ T0   │ head      │ R0        │ R3         │ ∅          │ ∅    │
-├─────┼───────────┼──────────────┼──────┼───────────┼───────────┼────────────┼────────────┼──────┤
-│ R2  │ N1 Bob    │ N3 Matrix    │ T0   │ R3        │ ∅         │ R4         │ R0         │ ∅    │
-├─────┼───────────┼──────────────┼──────┼───────────┼───────────┼────────────┼────────────┼──────┤
-│ R3  │ N1 Bob    │ N4 Inception │ T0   │ head      │ R2        │ head       │ R1         │ ∅    │
-├─────┼───────────┼──────────────┼──────┼───────────┼───────────┼────────────┼────────────┼──────┤
-│ R4  │ N2 Carol  │ N3 Matrix    │ T0   │ head      │ ∅         │ head       │ R2         │ ∅    │
-└─────┴───────────┴──────────────┴──────┴───────────┴───────────┴────────────┴────────────┴──────┘
+| ID | firstNode | secondNode | type | firstPrev | firstNext | secondPrev | secondNext | prop |
+|---|---|---|---|---|---|---|---|---|
+| R0 | N0 Alice | N3 Matrix | T0 | R1 | ∅ | R2 | ∅ | P7 |
+| R1 | N0 Alice | N4 Inception | T0 | head | R0 | R3 | ∅ | ∅ |
+| R2 | N1 Bob | N3 Matrix | T0 | R3 | ∅ | R4 | R0 | ∅ |
+| R3 | N1 Bob | N4 Inception | T0 | head | R2 | head | R1 | ∅ |
+| R4 | N2 Carol | N3 Matrix | T0 | head | ∅ | head | R2 | ∅ |
 
 -  One store file per kind of data (nodes, relationships, properties, …)
 -  Fixed-size records: 15 B node, 34 B relationship unlike 8KB pages in postgres for a single/multiple tuples
