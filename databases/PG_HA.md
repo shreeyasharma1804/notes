@@ -30,3 +30,4 @@ tuple:
 ```
 
 - With PostgreSQL physical (streaming) replication, the block numbers and tuple offsets are preserved across the primary and standby.
+- Setup sync and async replication: https://www.percona.com/blog/a-practical-guide-to-postgresql-replication-with-both-asynchronous-and-synchronous-standbys/
