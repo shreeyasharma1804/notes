@@ -147,3 +147,6 @@ c.counters[name]++
 - Mutexes and semaphores also use lock inc instruction to atomically increment and decrement a shared variable which acts as a software level lock
 - A goroutine waiting on a lock is eventually put on waiting queue
 - Unlock() wakes up one process from the queue
+
+
+https://hackernoon.com/tracing-gos-garbage-collection-journey-reference-counting-tri-color-and-beyond
