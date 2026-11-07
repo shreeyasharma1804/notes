@@ -749,3 +749,12 @@ print(x is y)
 
 - == check is the value of the two objects is the same
 - is checks if the memory address of the 2 values is also the same
+
+#### Access Modifiers
+
+| Access location | Public (`method`) | Protected (`_method`) | Private (`__method`) |
+|---|---|---|---|
+| Inside the same class (through another method) | Allowed | Allowed | Allowed |
+| Through an object of the class | Allowed | Allowed (discouraged) | Not directly allowed |
+| From a child class | Allowed | Allowed | Not directly allowed |
+| From a completely unrelated class | Allowed | Allowed (discouraged) | Not directly allowed |
